@@ -3,7 +3,10 @@
 use App\Http\Controllers\Admin\AdminBookingController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Admin\CategoryManagementController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
+use App\Http\Controllers\Admin\SuperAdminDashboardController;
+use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
@@ -55,7 +58,10 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard (redirects based on role)
     Route::get('/dashboard', function () {
-        if (auth()->user()->isAdmin()) {
+        if (auth()->user()->hasRole('super-admin')) {
+            return redirect()->route('superadmin.dashboard');
+        }
+        if (auth()->user()->hasRole('admin')) {
             return redirect()->route('admin.dashboard');
         }
         return view('dashboard');
@@ -78,6 +84,17 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::get('/bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
     Route::patch('/bookings/{booking}/status', [AdminBookingController::class, 'updateStatus'])->name('bookings.updateStatus');
+});
+
+// Super Admin Routes
+Route::prefix('superadmin')->middleware(['auth', 'superadmin'])->name('superadmin.')->group(function () {
+    Route::get('/dashboard', [SuperAdminDashboardController::class, 'index'])->name('dashboard');
+
+    // User Management
+    Route::resource('users', UserManagementController::class)->except(['show']);
+
+    // Category Management
+    Route::resource('categories', CategoryManagementController::class)->except(['show']);
 });
 
 require __DIR__.'/auth.php';

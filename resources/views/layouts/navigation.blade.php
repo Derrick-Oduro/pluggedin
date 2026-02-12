@@ -33,7 +33,11 @@
             <!-- Right Side -->
             <div class="hidden sm:flex sm:items-center sm:gap-4">
                 @auth
-                    @if(auth()->user()->isAdmin())
+                    @if(auth()->user()->hasRole('super-admin'))
+                        <a href="{{ route('superadmin.dashboard') }}" class="text-red-500 hover:text-red-400 font-semibold">
+                            🔐 Super Admin
+                        </a>
+                    @elseif(auth()->user()->hasRole('admin'))
                         <a href="{{ route('admin.dashboard') }}" class="text-orange hover:text-orange-light font-semibold">
                             Admin
                         </a>

@@ -1,6 +1,13 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 class="text-4xl font-bold mb-8">Admin Dashboard</h1>
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-bold">Admin Dashboard</h1>
+            @if(auth()->user()->hasRole('super-admin'))
+                <a href="{{ route('superadmin.dashboard') }}" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold transition">
+                    🔐 Super Admin Panel
+                </a>
+            @endif
+        </div>
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">

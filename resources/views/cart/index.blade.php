@@ -5,11 +5,11 @@
         @if($cartItems->count() > 0)
             <div class="space-y-4 mb-8">
                 @foreach($cartItems as $item)
-                    <div class="bg-dark-secondary rounded-lg p-6 flex items-center gap-6">
+                    <div class="bg-white dark:bg-dark-secondary rounded-lg p-6 flex items-center gap-6 border border-gray-200 dark:border-gray-800">
                         @if($item->product->image_path)
                             <img src="{{ asset('storage/' . $item->product->image_path) }}" alt="{{ $item->product->name }}" class="w-24 h-24 object-cover rounded">
                         @else
-                            <div class="w-24 h-24 bg-gray-800 rounded"></div>
+                            <div class="w-24 h-24 bg-gray-200 dark:bg-gray-800 rounded"></div>
                         @endif
 
                         <div class="flex-1">
@@ -21,7 +21,7 @@
                             @csrf
                             @method('PATCH')
                             <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" max="{{ $item->product->stock_quantity }}"
-                                   class="w-20 bg-dark border border-gray-700 rounded px-2 py-1 text-center">
+                                   class="w-20 bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded px-2 py-1 text-center">
                             <button type="submit" class="bg-orange hover:bg-orange-light text-white px-4 py-1 rounded text-sm">
                                 Update
                             </button>
@@ -40,7 +40,7 @@
                 @endforeach
             </div>
 
-            <div class="bg-dark-secondary rounded-lg p-6">
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6 border border-gray-200 dark:border-gray-800">
                 <div class="flex justify-between items-center mb-6">
                     <span class="text-2xl font-bold">Total:</span>
                     <span class="text-3xl font-bold text-orange">${{ number_format($total, 2) }}</span>
@@ -52,7 +52,7 @@
             </div>
         @else
             <div class="text-center py-12">
-                <p class="text-text-secondary text-xl mb-6">Your cart is empty</p>
+                <p class="text-gray-600 dark:text-text-secondary text-xl mb-6">Your cart is empty</p>
                 <a href="{{ route('products.index') }}" class="inline-block bg-orange hover:bg-orange-light text-white px-8 py-3 rounded-lg font-semibold transition">
                     Continue Shopping
                 </a>

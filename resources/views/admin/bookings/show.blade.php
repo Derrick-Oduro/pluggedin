@@ -9,18 +9,18 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <!-- Customer Info -->
-            <div class="bg-dark-secondary rounded-lg p-6">
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
                 <h2 class="text-xl font-bold mb-4">Customer Information</h2>
-                <div class="space-y-2 text-text-secondary">
+                <div class="space-y-2 text-gray-600 dark:text-text-secondary">
                     <p><span class="font-semibold text-text-primary">Name:</span> {{ $booking->user->name }}</p>
                     <p><span class="font-semibold text-text-primary">Email:</span> {{ $booking->user->email }}</p>
                 </div>
             </div>
 
             <!-- Service Info -->
-            <div class="bg-dark-secondary rounded-lg p-6">
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
                 <h2 class="text-xl font-bold mb-4">Service Details</h2>
-                <div class="space-y-2 text-text-secondary">
+                <div class="space-y-2 text-gray-600 dark:text-text-secondary">
                     <p><span class="font-semibold text-text-primary">Service:</span> {{ $booking->service->name }}</p>
                     <p><span class="font-semibold text-text-primary">Price:</span> <span class="text-orange font-bold">${{ number_format($booking->service->price, 2) }}</span></p>
                     <p><span class="font-semibold text-text-primary">Device Model:</span> {{ $booking->device_model }}</p>
@@ -31,14 +31,14 @@
 
         <!-- Notes -->
         @if($booking->notes)
-            <div class="bg-dark-secondary rounded-lg p-6 mb-8">
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6 mb-8">
                 <h2 class="text-xl font-bold mb-4">Customer Notes</h2>
-                <p class="text-text-secondary">{{ $booking->notes }}</p>
+                <p class="text-gray-600 dark:text-text-secondary">{{ $booking->notes }}</p>
             </div>
         @endif
 
         <!-- Update Status -->
-        <div class="bg-dark-secondary rounded-lg p-6">
+        <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
             <h2 class="text-xl font-bold mb-4">Update Booking Status</h2>
             <form action="{{ route('admin.bookings.updateStatus', $booking) }}" method="POST" class="flex gap-4 items-end">
                 @csrf
@@ -46,7 +46,7 @@
 
                 <div class="flex-1">
                     <label class="block text-sm mb-2">Status</label>
-                    <select name="status" class="w-full bg-dark border border-gray-700 rounded px-4 py-2 focus:border-orange focus:ring-orange">
+                    <select name="status" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded px-4 py-2 focus:border-orange focus:ring-orange">
                         <option value="pending" {{ $booking->status === 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="approved" {{ $booking->status === 'approved' ? 'selected' : '' }}>Approved</option>
                         <option value="rejected" {{ $booking->status === 'rejected' ? 'selected' : '' }}>Rejected</option>

@@ -2,9 +2,9 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 class="text-4xl font-bold mb-8">Manage Orders</h1>
 
-        <div class="bg-dark-secondary rounded-lg overflow-hidden">
+        <div class="bg-white dark:bg-dark-secondary rounded-lg overflow-hidden">
             <table class="w-full">
-                <thead class="border-b border-gray-700">
+                <thead class="border-b border-gray-300 dark:border-gray-700">
                     <tr>
                         <th class="text-left p-4">Order ID</th>
                         <th class="text-left p-4">Customer</th>
@@ -16,7 +16,7 @@
                 </thead>
                 <tbody>
                     @forelse($orders as $order)
-                        <tr class="border-b border-gray-700 hover:bg-gray-800">
+                        <tr class="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800">
                             <td class="p-4 font-semibold">#{{ $order->id }}</td>
                             <td class="p-4">{{ $order->user->name }}</td>
                             <td class="p-4 text-orange font-semibold">${{ number_format($order->total_price, 2) }}</td>
@@ -30,7 +30,7 @@
                                     {{ ucfirst($order->status) }}
                                 </span>
                             </td>
-                            <td class="p-4 text-text-secondary">{{ $order->created_at->format('M d, Y') }}</td>
+                            <td class="p-4 text-gray-600 dark:text-text-secondary">{{ $order->created_at->format('M d, Y') }}</td>
                             <td class="p-4">
                                 <a href="{{ route('admin.orders.show', $order) }}" class="text-orange hover:text-orange-light">
                                     View Details
@@ -39,7 +39,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="p-8 text-center text-text-secondary">
+                            <td colspan="6" class="p-8 text-center text-gray-600 dark:text-text-secondary">
                                 No orders found.
                             </td>
                         </tr>

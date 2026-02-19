@@ -5,13 +5,13 @@
         @if($bookings->count() > 0)
             <div class="space-y-4">
                 @foreach($bookings as $booking)
-                    <div class="bg-dark-secondary rounded-lg p-6">
+                    <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
                         <div class="flex justify-between items-start mb-4">
                             <div>
                                 <h3 class="text-xl font-bold mb-2">{{ $booking->service->name }}</h3>
-                                <p class="text-text-secondary text-sm">Device: {{ $booking->device_model }}</p>
-                                <p class="text-text-secondary text-sm">Preferred Date: {{ $booking->preferred_date->format('M d, Y') }}</p>
-                                <p class="text-text-secondary text-sm">Booked: {{ $booking->created_at->format('M d, Y') }}</p>
+                                <p class="text-gray-600 dark:text-text-secondary text-sm">Device: {{ $booking->device_model }}</p>
+                                <p class="text-gray-600 dark:text-text-secondary text-sm">Preferred Date: {{ $booking->preferred_date->format('M d, Y') }}</p>
+                                <p class="text-gray-600 dark:text-text-secondary text-sm">Booked: {{ $booking->created_at->format('M d, Y') }}</p>
                             </div>
                             <span class="text-xs px-3 py-1 rounded-full
                                 @if($booking->status === 'pending') bg-yellow-500/20 text-yellow-500
@@ -24,8 +24,8 @@
                         </div>
 
                         @if($booking->notes)
-                            <div class="border-t border-gray-700 pt-4">
-                                <p class="text-text-secondary text-sm"><span class="font-semibold text-text-primary">Notes:</span> {{ $booking->notes }}</p>
+                            <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                                <p class="text-gray-600 dark:text-text-secondary text-sm"><span class="font-semibold text-text-primary">Notes:</span> {{ $booking->notes }}</p>
                             </div>
                         @endif
                     </div>
@@ -37,7 +37,7 @@
             </div>
         @else
             <div class="text-center py-12">
-                <p class="text-text-secondary text-xl mb-6">You haven't booked any services yet</p>
+                <p class="text-gray-600 dark:text-text-secondary text-xl mb-6">You haven't booked any services yet</p>
                 <a href="{{ route('services.index') }}" class="inline-block bg-orange hover:bg-orange-light text-white px-8 py-3 rounded-lg font-semibold transition">
                     View Services
                 </a>

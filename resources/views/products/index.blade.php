@@ -5,12 +5,12 @@
 
             <!-- Category Filter -->
             <div class="flex gap-4">
-                <a href="{{ route('products.index') }}" class="px-4 py-2 rounded {{ !request('category') ? 'bg-orange text-white' : 'bg-dark-secondary text-text-secondary' }}">
+                <a href="{{ route('products.index') }}" class="px-4 py-2 rounded {{ !request('category') ? 'bg-orange text-white' : 'bg-gray-100 dark:bg-dark-secondary text-gray-700 dark:text-text-secondary' }}">
                     All
                 </a>
                 @foreach($categories as $category)
                     <a href="{{ route('products.index', ['category' => $category->slug]) }}"
-                       class="px-4 py-2 rounded {{ request('category') == $category->slug ? 'bg-orange text-white' : 'bg-dark-secondary text-text-secondary' }}">
+                       class="px-4 py-2 rounded {{ request('category') == $category->slug ? 'bg-orange text-white' : 'bg-gray-100 dark:bg-dark-secondary text-gray-700 dark:text-text-secondary' }}">
                         {{ $category->name }}
                     </a>
                 @endforeach
@@ -19,27 +19,27 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @forelse($products as $product)
-                <a href="{{ route('products.show', $product) }}" class="bg-dark-secondary rounded-lg overflow-hidden hover:ring-2 hover:ring-orange transition">
+                <a href="{{ route('products.show', $product) }}" class="bg-white dark:bg-dark-secondary rounded-lg overflow-hidden hover:ring-2 hover:ring-orange transition border border-gray-200 dark:border-gray-800">
                     @if($product->image_path)
                         <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-full h-48 object-cover">
                     @else
-                        <div class="w-full h-48 bg-gray-800 flex items-center justify-center">
-                            <span class="text-text-secondary">No Image</span>
+                        <div class="w-full h-48 bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+                            <span class="text-gray-500 dark:text-text-secondary">No Image</span>
                         </div>
                     @endif
 
                     <div class="p-4">
                         <p class="text-orange text-sm mb-1">{{ $product->category->name }}</p>
                         <h3 class="text-lg font-semibold mb-2">{{ $product->name }}</h3>
-                        <p class="text-text-secondary text-sm mb-3 line-clamp-2">{{ Str::limit($product->description, 60) }}</p>
+                        <p class="text-gray-600 dark:text-text-secondary text-sm mb-3 line-clamp-2">{{ Str::limit($product->description, 60) }}</p>
                         <div class="flex justify-between items-center">
                             <p class="text-xl font-bold text-orange">${{ number_format($product->price, 2) }}</p>
-                            <span class="text-sm text-text-secondary">Stock: {{ $product->stock_quantity }}</span>
+                            <span class="text-sm text-gray-500 dark:text-text-secondary">Stock: {{ $product->stock_quantity }}</span>
                         </div>
                     </div>
                 </a>
             @empty
-                <div class="col-span-full text-center py-12 text-text-secondary">
+                <div class="col-span-full text-center py-12 text-gray-500 dark:text-text-secondary">
                     No products found.
                 </div>
             @endforelse

@@ -21,9 +21,9 @@
             </div>
         @endif
 
-        <div class="bg-dark-secondary rounded-lg overflow-hidden">
+        <div class="bg-white dark:bg-dark-secondary rounded-lg overflow-hidden">
             <table class="w-full">
-                <thead class="border-b border-gray-700">
+                <thead class="border-b border-gray-300 dark:border-gray-700">
                     <tr>
                         <th class="text-left p-4">ID</th>
                         <th class="text-left p-4">Name</th>
@@ -34,10 +34,10 @@
                 </thead>
                 <tbody>
                     @forelse($categories as $category)
-                        <tr class="border-b border-gray-700 hover:bg-gray-800">
+                        <tr class="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800">
                             <td class="p-4">{{ $category->id }}</td>
                             <td class="p-4 font-semibold">{{ $category->name }}</td>
-                            <td class="p-4 text-text-secondary">{{ $category->slug }}</td>
+                            <td class="p-4 text-gray-600 dark:text-text-secondary">{{ $category->slug }}</td>
                             <td class="p-4">
                                 <span class="text-orange">{{ $category->products_count }} products</span>
                             </td>
@@ -58,7 +58,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="p-8 text-center text-text-secondary">
+                            <td colspan="5" class="p-8 text-center text-gray-600 dark:text-text-secondary">
                                 No categories found.
                             </td>
                         </tr>

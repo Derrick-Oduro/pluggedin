@@ -9,6 +9,8 @@ export default {
         './resources/views/**/*.blade.php',
     ],
 
+    darkMode: 'class',
+
     theme: {
         extend: {
             fontFamily: {
@@ -18,6 +20,10 @@ export default {
                 'dark': {
                     DEFAULT: '#0F0F0F',
                     secondary: '#1A1A1A',
+                },
+                'light': {
+                    DEFAULT: '#FFFFFF',
+                    secondary: '#F5F5F5',
                 },
                 'orange': {
                     DEFAULT: '#FF8C00',

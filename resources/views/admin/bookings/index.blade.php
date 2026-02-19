@@ -2,9 +2,9 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 class="text-4xl font-bold mb-8">Manage Bookings</h1>
 
-        <div class="bg-dark-secondary rounded-lg overflow-hidden">
+        <div class="bg-white dark:bg-dark-secondary rounded-lg overflow-hidden">
             <table class="w-full">
-                <thead class="border-b border-gray-700">
+                <thead class="border-b border-gray-300 dark:border-gray-700">
                     <tr>
                         <th class="text-left p-4">ID</th>
                         <th class="text-left p-4">Customer</th>
@@ -17,12 +17,12 @@
                 </thead>
                 <tbody>
                     @forelse($bookings as $booking)
-                        <tr class="border-b border-gray-700 hover:bg-gray-800">
+                        <tr class="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800">
                             <td class="p-4 font-semibold">#{{ $booking->id }}</td>
                             <td class="p-4">{{ $booking->user->name }}</td>
                             <td class="p-4">{{ $booking->service->name }}</td>
-                            <td class="p-4 text-text-secondary">{{ $booking->device_model }}</td>
-                            <td class="p-4 text-text-secondary">{{ $booking->preferred_date->format('M d, Y') }}</td>
+                            <td class="p-4 text-gray-600 dark:text-text-secondary">{{ $booking->device_model }}</td>
+                            <td class="p-4 text-gray-600 dark:text-text-secondary">{{ $booking->preferred_date->format('M d, Y') }}</td>
                             <td class="p-4">
                                 <span class="text-xs px-3 py-1 rounded-full
                                     @if($booking->status === 'pending') bg-yellow-500/20 text-yellow-500
@@ -41,7 +41,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="p-8 text-center text-text-secondary">
+                            <td colspan="7" class="p-8 text-center text-gray-600 dark:text-text-secondary">
                                 No bookings found.
                             </td>
                         </tr>

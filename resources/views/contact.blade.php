@@ -3,7 +3,7 @@
         <h1 class="text-5xl font-bold mb-8 text-center">Contact Us</h1>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-dark-secondary rounded-lg p-8">
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-8">
                 <h2 class="text-2xl font-bold mb-6">Get in Touch</h2>
 
                 <div class="space-y-4">
@@ -23,7 +23,7 @@
 
                     <div>
                         <h3 class="font-semibold mb-2">⏰ Business Hours</h3>
-                        <p class="text-text-secondary">
+                        <p class="text-gray-600 dark:text-text-secondary">
                             Monday - Friday: 9:00 AM - 6:00 PM<br>
                             Saturday: 10:00 AM - 4:00 PM<br>
                             Sunday: Closed
@@ -32,23 +32,23 @@
                 </div>
             </div>
 
-            <div class="bg-dark-secondary rounded-lg p-8">
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-8">
                 <h2 class="text-2xl font-bold mb-6">Send a Message</h2>
 
                 <form class="space-y-4">
                     <div>
                         <label class="block text-sm mb-2">Name</label>
-                        <input type="text" class="w-full bg-dark border border-gray-700 rounded px-4 py-2 focus:border-orange focus:ring-orange">
+                        <input type="text" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded px-4 py-2 focus:border-orange focus:ring-orange">
                     </div>
 
                     <div>
                         <label class="block text-sm mb-2">Email</label>
-                        <input type="email" class="w-full bg-dark border border-gray-700 rounded px-4 py-2 focus:border-orange focus:ring-orange">
+                        <input type="email" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded px-4 py-2 focus:border-orange focus:ring-orange">
                     </div>
 
                     <div>
                         <label class="block text-sm mb-2">Message</label>
-                        <textarea rows="4" class="w-full bg-dark border border-gray-700 rounded px-4 py-2 focus:border-orange focus:ring-orange"></textarea>
+                        <textarea rows="4" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded px-4 py-2 focus:border-orange focus:ring-orange"></textarea>
                     </div>
 
                     <button type="submit" class="w-full bg-orange hover:bg-orange-light text-white px-6 py-3 rounded-lg font-semibold transition">

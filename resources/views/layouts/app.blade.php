@@ -11,11 +11,27 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- Theme Script (must load before body) -->
+        <script>
+            // Apply theme immediately to prevent flash
+            (function() {
+                const theme = localStorage.getItem('theme') || 'dark';
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else if (theme === 'system') {
+                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (systemPrefersDark) {
+                        document.documentElement.classList.add('dark');
+                    }
+                }
+            })();
+        </script>
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-dark text-text-primary">
-        <div class="min-h-screen">
+    <body class="font-sans antialiased bg-white dark:bg-dark text-gray-900 dark:text-text-primary">
+        <div class="min-h-screen bg-white dark:bg-dark">
             @include('layouts.navigation')
 
             <!-- Flash Messages -->
@@ -33,7 +49,7 @@
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="bg-dark-secondary shadow">
+                <header class="bg-white dark:bg-dark-secondary shadow border-b border-gray-200 dark:border-gray-800">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
@@ -46,9 +62,9 @@
             </main>
 
             <!-- Footer -->
-            <footer class="bg-dark-secondary border-t border-gray-800 mt-20">
+            <footer class="bg-gray-50 dark:bg-dark-secondary border-t border-gray-200 dark:border-gray-800 mt-20">
                 <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-                    <div class="text-center text-text-secondary">
+                    <div class="text-center text-gray-600 dark:text-text-secondary">
                         <p>&copy; {{ date('Y') }} PluggedIn. Upgrade. Don't Replace.</p>
                     </div>
                 </div>

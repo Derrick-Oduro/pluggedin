@@ -11,25 +11,25 @@
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-            <div class="bg-dark-secondary rounded-lg p-6">
-                <h3 class="text-text-secondary text-sm mb-2">Total Products</h3>
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
+                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Total Products</h3>
                 <p class="text-3xl font-bold text-orange">{{ $stats['total_products'] }}</p>
             </div>
 
-            <div class="bg-dark-secondary rounded-lg p-6">
-                <h3 class="text-text-secondary text-sm mb-2">Total Orders</h3>
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
+                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Total Orders</h3>
                 <p class="text-3xl font-bold text-orange">{{ $stats['total_orders'] }}</p>
-                <p class="text-sm text-text-secondary mt-1">{{ $stats['pending_orders'] }} pending</p>
+                <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">{{ $stats['pending_orders'] }} pending</p>
             </div>
 
-            <div class="bg-dark-secondary rounded-lg p-6">
-                <h3 class="text-text-secondary text-sm mb-2">Total Bookings</h3>
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
+                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Total Bookings</h3>
                 <p class="text-3xl font-bold text-orange">{{ $stats['total_bookings'] }}</p>
-                <p class="text-sm text-text-secondary mt-1">{{ $stats['pending_bookings'] }} pending</p>
+                <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">{{ $stats['pending_bookings'] }} pending</p>
             </div>
 
-            <div class="bg-dark-secondary rounded-lg p-6">
-                <h3 class="text-text-secondary text-sm mb-2">Total Revenue</h3>
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
+                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Total Revenue</h3>
                 <p class="text-3xl font-bold text-orange">${{ number_format($stats['total_revenue'], 2) }}</p>
             </div>
         </div>
@@ -40,26 +40,26 @@
                 + Add New Product
             </a>
 
-            <a href="{{ route('admin.products.index') }}" class="bg-dark-secondary hover:bg-gray-800 p-6 rounded-lg text-center font-semibold transition">
+            <a href="{{ route('admin.products.index') }}" class="bg-white dark:bg-dark-secondary hover:bg-gray-100 dark:hover:bg-gray-800 p-6 rounded-lg text-center font-semibold transition">
                 Manage Products
             </a>
 
-            <a href="{{ route('admin.orders.index') }}" class="bg-dark-secondary hover:bg-gray-800 p-6 rounded-lg text-center font-semibold transition">
+            <a href="{{ route('admin.orders.index') }}" class="bg-white dark:bg-dark-secondary hover:bg-gray-100 dark:hover:bg-gray-800 p-6 rounded-lg text-center font-semibold transition">
                 View All Orders
             </a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Recent Orders -->
-            <div class="bg-dark-secondary rounded-lg p-6">
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
                 <h2 class="text-2xl font-bold mb-4">Recent Orders</h2>
                 <div class="space-y-3">
                     @forelse($recentOrders as $order)
-                        <div class="border-b border-gray-700 pb-3">
+                        <div class="border-b border-gray-300 dark:border-gray-700 pb-3">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="font-semibold">Order #{{ $order->id }}</p>
-                                    <p class="text-sm text-text-secondary">{{ $order->user->name }}</p>
+                                    <p class="text-sm text-gray-600 dark:text-text-secondary">{{ $order->user->name }}</p>
                                 </div>
                                 <div class="text-right">
                                     <p class="font-bold text-orange">${{ number_format($order->total_price, 2) }}</p>
@@ -75,7 +75,7 @@
                             </div>
                         </div>
                     @empty
-                        <p class="text-text-secondary">No orders yet</p>
+                        <p class="text-gray-600 dark:text-text-secondary">No orders yet</p>
                     @endforelse
                 </div>
                 <a href="{{ route('admin.orders.index') }}" class="block text-center mt-4 text-orange hover:text-orange-light">
@@ -84,16 +84,16 @@
             </div>
 
             <!-- Recent Bookings -->
-            <div class="bg-dark-secondary rounded-lg p-6">
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
                 <h2 class="text-2xl font-bold mb-4">Recent Bookings</h2>
                 <div class="space-y-3">
                     @forelse($recentBookings as $booking)
-                        <div class="border-b border-gray-700 pb-3">
+                        <div class="border-b border-gray-300 dark:border-gray-700 pb-3">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="font-semibold">{{ $booking->service->name }}</p>
-                                    <p class="text-sm text-text-secondary">{{ $booking->user->name }}</p>
-                                    <p class="text-xs text-text-secondary">{{ $booking->preferred_date->format('M d, Y') }}</p>
+                                    <p class="text-sm text-gray-600 dark:text-text-secondary">{{ $booking->user->name }}</p>
+                                    <p class="text-xs text-gray-600 dark:text-text-secondary">{{ $booking->preferred_date->format('M d, Y') }}</p>
                                 </div>
                                 <span class="text-xs px-2 py-1 rounded
                                     @if($booking->status === 'pending') bg-yellow-500/20 text-yellow-500
@@ -106,7 +106,7 @@
                             </div>
                         </div>
                     @empty
-                        <p class="text-text-secondary">No bookings yet</p>
+                        <p class="text-gray-600 dark:text-text-secondary">No bookings yet</p>
                     @endforelse
                 </div>
                 <a href="{{ route('admin.bookings.index') }}" class="block text-center mt-4 text-orange hover:text-orange-light">

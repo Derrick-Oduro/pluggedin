@@ -11,13 +11,28 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- Theme Script -->
+        <script>
+            (function() {
+                const theme = localStorage.getItem('theme') || 'dark';
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else if (theme === 'system') {
+                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (systemPrefersDark) {
+                        document.documentElement.classList.add('dark');
+                    }
+                }
+            })();
+        </script>
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-dark text-text-primary">
-        <div class="min-h-screen flex">
+    <body class="font-sans antialiased bg-white dark:bg-dark text-gray-900 dark:text-text-primary">
+        <div class="min-h-screen flex bg-white dark:bg-dark">
             <!-- Sidebar -->
-            <aside class="w-64 bg-dark-secondary border-r border-gray-800 fixed h-full">
+            <aside class="w-64 bg-white dark:bg-dark-secondary border-r border-gray-200 dark:border-gray-800 fixed h-full">
                 <div class="p-6">
                     <a href="{{ route('superadmin.dashboard') }}" class="text-2xl font-bold">
                         <span class="text-red-500">Super</span><span class="text-orange">Admin</span>
@@ -93,7 +108,7 @@
             <!-- Main Content -->
             <div class="flex-1 ml-64">
                 <!-- Top Bar -->
-                <header class="bg-dark-secondary border-b border-gray-800 px-8 py-4">
+                <header class="bg-white dark:bg-dark-secondary border-b border-gray-200 dark:border-gray-800 px-8 py-4">
                     <div class="flex justify-between items-center">
                         <h1 class="text-xl font-bold">
                             @yield('page-title', 'Super Admin Dashboard')

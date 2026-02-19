@@ -4,7 +4,7 @@
     <div class="max-w-3xl">
         <h1 class="text-4xl font-bold mb-8">Create New Category</h1>
 
-        <form action="{{ route('superadmin.categories.store') }}" method="POST" class="bg-dark-secondary rounded-lg p-8">
+        <form action="{{ route('superadmin.categories.store') }}" method="POST" class="bg-white dark:bg-dark-secondary rounded-lg p-8">
             @csrf
 
             <div class="space-y-6">
@@ -12,11 +12,11 @@
                     <label class="block text-sm font-semibold mb-2">Category Name *</label>
                     <input type="text" name="name" value="{{ old('name') }}" required
                            placeholder="e.g., Storage, Memory, Accessories"
-                           class="w-full bg-dark border border-gray-700 rounded px-4 py-2 focus:border-orange focus:ring-orange">
+                           class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded px-4 py-2 focus:border-orange focus:ring-orange">
                     @error('name')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
-                    <p class="text-text-secondary text-sm mt-1">The slug will be automatically generated from the name</p>
+                    <p class="text-gray-600 dark:text-text-secondary text-sm mt-1">The slug will be automatically generated from the name</p>
                 </div>
 
                 <div class="flex gap-4">

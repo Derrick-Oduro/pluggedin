@@ -7,9 +7,9 @@
             </a>
         </div>
 
-        <div class="bg-dark-secondary rounded-lg overflow-hidden">
+        <div class="bg-white dark:bg-dark-secondary rounded-lg overflow-hidden">
             <table class="w-full">
-                <thead class="border-b border-gray-700">
+                <thead class="border-b border-gray-300 dark:border-gray-700">
                     <tr>
                         <th class="text-left p-4">ID</th>
                         <th class="text-left p-4">Name</th>
@@ -21,7 +21,7 @@
                 </thead>
                 <tbody>
                     @forelse($products as $product)
-                        <tr class="border-b border-gray-700 hover:bg-gray-800">
+                        <tr class="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800">
                             <td class="p-4">{{ $product->id }}</td>
                             <td class="p-4">{{ $product->name }}</td>
                             <td class="p-4">{{ $product->category->name }}</td>
@@ -44,7 +44,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="p-8 text-center text-text-secondary">
+                            <td colspan="6" class="p-8 text-center text-gray-600 dark:text-text-secondary">
                                 No products found.
                             </td>
                         </tr>

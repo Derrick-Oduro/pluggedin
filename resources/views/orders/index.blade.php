@@ -5,11 +5,11 @@
         @if($orders->count() > 0)
             <div class="space-y-4">
                 @foreach($orders as $order)
-                    <div class="bg-dark-secondary rounded-lg p-6">
+                    <div class="bg-white dark:bg-dark-secondary rounded-lg p-6 border border-gray-200 dark:border-gray-800">
                         <div class="flex justify-between items-start mb-4">
                             <div>
                                 <h3 class="text-xl font-bold mb-2">Order #{{ $order->id }}</h3>
-                                <p class="text-text-secondary text-sm">{{ $order->created_at->format('M d, Y H:i') }}</p>
+                                <p class="text-gray-600 dark:text-text-secondary text-sm">{{ $order->created_at->format('M d, Y H:i') }}</p>
                             </div>
                             <span class="text-xs px-3 py-1 rounded-full
                                 @if($order->status === 'pending') bg-yellow-500/20 text-yellow-500
@@ -21,7 +21,7 @@
                             </span>
                         </div>
 
-                        <div class="border-t border-gray-700 pt-4 mb-4">
+                        <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
                             @foreach($order->items as $item)
                                 <div class="flex justify-between py-2">
                                     <span>{{ $item->product->name }} x {{ $item->quantity }}</span>
@@ -45,7 +45,7 @@
             </div>
         @else
             <div class="text-center py-12">
-                <p class="text-text-secondary text-xl mb-6">You haven't placed any orders yet</p>
+                <p class="text-gray-600 dark:text-text-secondary text-xl mb-6">You haven't placed any orders yet</p>
                 <a href="{{ route('products.index') }}" class="inline-block bg-orange hover:bg-orange-light text-white px-8 py-3 rounded-lg font-semibold transition">
                     Start Shopping
                 </a>

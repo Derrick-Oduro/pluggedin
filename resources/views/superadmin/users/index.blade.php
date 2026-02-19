@@ -21,9 +21,9 @@
             </div>
         @endif
 
-        <div class="bg-dark-secondary rounded-lg overflow-hidden">
+        <div class="bg-white dark:bg-dark-secondary rounded-lg overflow-hidden">
             <table class="w-full">
-                <thead class="border-b border-gray-700">
+                <thead class="border-b border-gray-300 dark:border-gray-700">
                     <tr>
                         <th class="text-left p-4">ID</th>
                         <th class="text-left p-4">Name</th>
@@ -35,10 +35,10 @@
                 </thead>
                 <tbody>
                     @forelse($users as $user)
-                        <tr class="border-b border-gray-700 hover:bg-gray-800">
+                        <tr class="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800">
                             <td class="p-4">{{ $user->id }}</td>
                             <td class="p-4">{{ $user->name }}</td>
-                            <td class="p-4 text-text-secondary">{{ $user->email }}</td>
+                            <td class="p-4 text-gray-600 dark:text-text-secondary">{{ $user->email }}</td>
                             <td class="p-4">
                                 @if($user->hasRole('super-admin'))
                                     <span class="text-xs px-3 py-1 rounded-full bg-red-500/20 text-red-500">Super Admin</span>
@@ -48,7 +48,7 @@
                                     <span class="text-xs px-3 py-1 rounded-full bg-blue-500/20 text-blue-500">User</span>
                                 @endif
                             </td>
-                            <td class="p-4 text-text-secondary">{{ $user->created_at->format('M d, Y') }}</td>
+                            <td class="p-4 text-gray-600 dark:text-text-secondary">{{ $user->created_at->format('M d, Y') }}</td>
                             <td class="p-4">
                                 <div class="flex gap-2">
                                     <a href="{{ route('superadmin.users.edit', $user) }}" class="text-blue-500 hover:text-blue-400">
@@ -68,7 +68,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="p-8 text-center text-text-secondary">
+                            <td colspan="6" class="p-8 text-center text-gray-600 dark:text-text-secondary">
                                 No users found.
                             </td>
                         </tr>

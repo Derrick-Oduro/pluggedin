@@ -1,4 +1,9 @@
 <x-guest-layout>
+    <div class="mb-6">
+        <p class="text-xs uppercase tracking-[0.16em] text-orange font-semibold">Account Recovery</p>
+        <h1 class="text-3xl font-bold mt-1">Reset your password</h1>
+    </div>
+
     <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
         {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
     </div>

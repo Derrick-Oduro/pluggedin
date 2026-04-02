@@ -125,6 +125,16 @@
                         @if($review->comment)
                             <p class="text-gray-600 dark:text-text-secondary">{{ $review->comment }}</p>
                         @endif
+
+                        @auth
+                            @if((int) auth()->id() !== (int) $review->user_id)
+                                <form action="{{ route('reviews.report', $review) }}" method="POST" class="mt-3 flex flex-col sm:flex-row gap-2">
+                                    @csrf
+                                    <input type="text" name="reason" placeholder="Report reason (optional)" class="flex-1 bg-white dark:bg-dark-secondary border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-xs">
+                                    <button type="submit" class="text-xs px-3 py-2 rounded border border-red-400 text-red-500 hover:bg-red-500/10 transition">Report</button>
+                                </form>
+                            @endif
+                        @endauth
                     </div>
                 @empty
                     <p class="text-gray-600 dark:text-text-secondary">No reviews yet.</p>

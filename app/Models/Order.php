@@ -11,6 +11,10 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'total_price',
+        'subtotal_price',
+        'discount_amount',
+        'discount_campaign_id',
+        'applied_discount_code',
         'status',
         'delivery_address',
         'delivery_phone'
@@ -18,6 +22,8 @@ class Order extends Model
 
     protected $casts = [
         'total_price' => 'decimal:2',
+        'subtotal_price' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
     ];
 
     public function user(): BelongsTo
@@ -28,5 +34,10 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function discountCampaign(): BelongsTo
+    {
+        return $this->belongsTo(DiscountCampaign::class);
     }
 }

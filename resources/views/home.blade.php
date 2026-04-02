@@ -32,6 +32,16 @@
                     Upgrade. Don't Replace.
                 </h1>
 
+                @if($activeCampaign)
+                    <div class="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full bg-orange/85 text-white text-sm font-semibold shadow-lg">
+                        <span>{{ $activeCampaign->discount_percent }}% Off</span>
+                        <span class="opacity-90">{{ $activeCampaign->name }}</span>
+                        @if($activeCampaign->code)
+                            <span class="bg-white/20 rounded-full px-2 py-0.5 text-xs">Code: {{ $activeCampaign->code }}</span>
+                        @endif
+                    </div>
+                @endif
+
                 <p class="text-lg sm:text-xl md:text-2xl text-white/90 drop-shadow mb-9 max-w-2xl" x-text="slides[currentIndex].caption"></p>
 
                 <div class="flex flex-col sm:flex-row gap-4">
@@ -95,23 +105,7 @@
     <script>
         function heroCarousel() {
             return {
-                slides: [
-                    {
-                        src: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1600&h=900&fit=crop',
-                        alt: 'Laptop and tools on a service desk',
-                        caption: 'Extend your device life with precision upgrades and expert installation.'
-                    },
-                    {
-                        src: 'https://images.pexels.com/photos/6755074/pexels-photo-6755074.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&dpr=1',
-                        alt: 'Technician repairing electronics',
-                        caption: 'From diagnostics to full performance boosts, every service is done right.'
-                    },
-                    {
-                        src: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1600&h=900&fit=crop',
-                        alt: 'Computer parts and components',
-                        caption: 'Quality components, honest advice, and support built for the long run.'
-                    },
-                ],
+                slides: @json($heroSlides),
                 currentIndex: 0,
                 timer: null,
                 interval: 7000,

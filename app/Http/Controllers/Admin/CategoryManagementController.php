@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Support\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -36,10 +37,15 @@ class CategoryManagementController extends Controller
             'name' => 'required|string|max:255|unique:categories',
         ]);
 
-        Category::create([
+        $category = Category::create([
             'name' => $request->name,
             'slug' => Str::slug($request->name),
         ]);
+
+        AuditLogger::log('superadmin.category.created', Category::class, $category->id, [
+            'name' => $category->name,
+            'slug' => $category->slug,
+        ], $request);
 
         return redirect()->route('superadmin.categories.index')->with('success', 'Category created successfully!');
     }
@@ -66,6 +72,11 @@ class CategoryManagementController extends Controller
             'slug' => Str::slug($request->name),
         ]);
 
+        AuditLogger::log('superadmin.category.updated', Category::class, $category->id, [
+            'name' => $category->name,
+            'slug' => $category->slug,
+        ], $request);
+
         return redirect()->route('superadmin.categories.index')->with('success', 'Category updated successfully!');
     }
 
@@ -79,7 +90,14 @@ class CategoryManagementController extends Controller
             return back()->with('error', 'Cannot delete category with existing products!');
         }
 
+        $categoryId = $category->id;
+        $categoryName = $category->name;
+
         $category->delete();
+
+        AuditLogger::log('superadmin.category.deleted', Category::class, $categoryId, [
+            'name' => $categoryName,
+        ], $request);
 
         return redirect()->route('superadmin.categories.index')->with('success', 'Category deleted successfully!');
     }

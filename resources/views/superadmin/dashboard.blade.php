@@ -1,128 +1,88 @@
 @section('page-title', 'Super Admin Dashboard')
 
 <x-superadmin-layout>
-    <div class="space-y-8">
-        <!-- Header with Quick Actions -->
-        <div class="flex justify-between items-start mb-8">
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        <aside class="xl:col-span-3">
+            <div class="backend-sidebar sticky top-24">
+                <p class="text-xs uppercase tracking-[0.15em] text-gray-500 dark:text-text-secondary mb-3">Control Tabs</p>
+                <nav class="space-y-1">
+                    <a href="{{ route('superadmin.users.index') }}" class="backend-tab">User Management</a>
+                    <a href="{{ route('superadmin.categories.index') }}" class="backend-tab">Category Management</a>
+                    <a href="{{ route('superadmin.marketing.index') }}" class="backend-tab">Homepage and Promotions</a>
+                    <a href="{{ route('superadmin.audit-logs.index') }}" class="backend-tab">Audit Logs</a>
+                    <a href="{{ route('admin.products.pending') }}" class="backend-tab">Moderation Queue</a>
+                    <a href="{{ route('admin.dashboard') }}" class="backend-tab">Admin Dashboard</a>
+                </nav>
+
+                <div class="border-t border-gray-200 dark:border-gray-700 mt-4 pt-4">
+                    <p class="text-xs uppercase tracking-[0.15em] text-gray-500 dark:text-text-secondary mb-3">Key Metrics</p>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center justify-between"><span class="text-gray-600 dark:text-text-secondary">Pending uploads</span><span class="font-semibold">{{ $stats['pending_user_uploads'] }}</span></div>
+                        <div class="flex items-center justify-between"><span class="text-gray-600 dark:text-text-secondary">Active discounts</span><span class="font-semibold">{{ $stats['active_discount_campaigns'] }}</span></div>
+                        <div class="flex items-center justify-between"><span class="text-gray-600 dark:text-text-secondary">Carousel slides</span><span class="font-semibold">{{ $stats['carousel_slides'] }}</span></div>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-200 dark:border-gray-700 mt-4 pt-4">
+                    <p class="text-xs uppercase tracking-[0.15em] text-gray-500 dark:text-text-secondary mb-3">Recent Audits</p>
+                    <div class="space-y-2">
+                        @forelse(($recent_audit_logs ?? collect())->take(4) as $audit)
+                            <div class="text-xs">
+                                <p class="font-semibold">{{ str_replace('.', ' • ', $audit->action) }}</p>
+                                <p class="text-gray-500 dark:text-text-secondary">{{ $audit->created_at->format('M d, H:i') }} · {{ $audit->user?->name ?? 'System' }}</p>
+                            </div>
+                        @empty
+                            <p class="text-xs text-gray-500 dark:text-text-secondary">No audit activity yet.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="xl:col-span-9 space-y-5">
             <div>
-                <h1 class="text-4xl font-bold mb-2">Super Admin Control Panel</h1>
-                <p class="text-gray-600 dark:text-text-secondary">Complete system administration and management</p>
+                <h1 class="text-2xl font-bold">Super Admin Control Panel</h1>
+                <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">Compact overview of system health and latest operations.</p>
             </div>
-        </div>
 
-        <!-- Primary Quick Actions - Highlighted -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <a href="{{ route('superadmin.users.index') }}" class="bg-gradient-to-br from-red-500/20 to-red-600/10 border-2 border-red-500/30 hover:border-red-500 rounded-lg p-8 transition group">
-                <div class="flex items-center gap-4 mb-3">
-                    <div class="text-5xl">👥</div>
-                    <h3 class="text-2xl font-bold group-hover:text-red-400">User Management</h3>
-                </div>
-                <p class="text-gray-600 dark:text-text-secondary">Create, edit, and manage all user accounts and permissions</p>
-                <div class="mt-4 text-red-500 font-semibold">→ Manage Users</div>
-            </a>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Users</p><p class="text-xl font-semibold">{{ $stats['total_users'] }}</p></div>
+                <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Admins</p><p class="text-xl font-semibold">{{ $stats['total_admins'] }}</p></div>
+                <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Products</p><p class="text-xl font-semibold">{{ $stats['total_products'] }}</p></div>
+                <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Orders</p><p class="text-xl font-semibold">{{ $stats['total_orders'] }}</p></div>
+                <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Bookings</p><p class="text-xl font-semibold">{{ $stats['total_bookings'] }}</p></div>
+                <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Revenue</p><p class="text-xl font-semibold">${{ number_format($stats['total_revenue'], 2) }}</p></div>
+                <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Pending uploads</p><p class="text-xl font-semibold">{{ $stats['pending_user_uploads'] }}</p></div>
+                <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Active discounts</p><p class="text-xl font-semibold">{{ $stats['active_discount_campaigns'] }}</p></div>
+            </div>
 
-            <a href="{{ route('superadmin.categories.index') }}" class="bg-gradient-to-br from-orange/20 to-orange/10 border-2 border-orange/30 hover:border-orange rounded-lg p-8 transition group">
-                <div class="flex items-center gap-4 mb-3">
-                    <div class="text-5xl">🏷️</div>
-                    <h3 class="text-2xl font-bold group-hover:text-orange-light">Category Management</h3>
-                </div>
-                <p class="text-gray-600 dark:text-text-secondary">Create and organize product categories across the platform</p>
-                <div class="mt-4 text-orange font-semibold">→ Manage Categories</div>
-            </a>
-        </div>
-
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 dark:text-text-secondary text-sm mb-1">Total Users</p>
-                        <p class="text-3xl font-bold">{{ $stats['total_users'] }}</p>
+            <div class="backend-card p-5">
+                <h2 class="text-lg font-semibold mb-3">Recent Pending Uploads</h2>
+            <div class="space-y-3">
+                @forelse($recent_pending_uploads as $upload)
+                    <div class="flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2">
+                        <div>
+                            <p class="font-semibold">{{ $upload->name }}</p>
+                            <p class="text-xs text-gray-600 dark:text-text-secondary">By {{ $upload->uploader?->name ?? 'N/A' }}</p>
+                        </div>
+                        <a href="{{ route('admin.products.pending') }}" class="text-orange hover:text-orange-light text-xs font-semibold">Review</a>
                     </div>
-                    <div class="text-4xl">👥</div>
-                </div>
+                @empty
+                    <p class="text-sm text-gray-600 dark:text-text-secondary">No pending uploads right now.</p>
+                @endforelse
+            </div>
             </div>
 
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 dark:text-text-secondary text-sm mb-1">Total Admins</p>
-                        <p class="text-3xl font-bold text-orange">{{ $stats['total_admins'] }}</p>
-                    </div>
-                    <div class="text-4xl">🛡️</div>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 dark:text-text-secondary text-sm mb-1">Total Products</p>
-                        <p class="text-3xl font-bold text-blue-500">{{ $stats['total_products'] }}</p>
-                    </div>
-                    <div class="text-4xl">📦</div>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 dark:text-text-secondary text-sm mb-1">Total Orders</p>
-                        <p class="text-3xl font-bold text-green-500">{{ $stats['total_orders'] }}</p>
-                    </div>
-                    <div class="text-4xl">🛒</div>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 dark:text-text-secondary text-sm mb-1">Total Bookings</p>
-                        <p class="text-3xl font-bold text-purple-500">{{ $stats['total_bookings'] }}</p>
-                    </div>
-                    <div class="text-4xl">📅</div>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 dark:text-text-secondary text-sm mb-1">Total Revenue</p>
-                        <p class="text-3xl font-bold text-orange">${{ number_format($stats['total_revenue'], 2) }}</p>
-                    </div>
-                    <div class="text-4xl">💰</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Secondary Actions -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <a href="{{ route('admin.dashboard') }}" class="bg-white dark:bg-dark-secondary hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-6 transition flex items-center gap-4">
-                <div class="text-3xl">📊</div>
-                <div>
-                    <h3 class="text-lg font-bold">Admin Dashboard</h3>
-                    <p class="text-sm text-gray-600 dark:text-text-secondary">Product, order & booking management</p>
-                </div>
-            </a>
-
-            <a href="{{ route('admin.products.index') }}" class="bg-white dark:bg-dark-secondary hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-6 transition flex items-center gap-4">
-                <div class="text-3xl">📦</div>
-                <div>
-                    <h3 class="text-lg font-bold">Product Management</h3>
-                    <p class="text-sm text-gray-600 dark:text-text-secondary">View and manage inventory</p>
-                </div>
-            </a>
-        </div>
-
-        <!-- Recent Users -->
-        <div class="bg-white dark:bg-dark-secondary rounded-lg p-6 mb-6">
-            <h2 class="text-2xl font-bold mb-4">Recent Users</h2>
-            <table class="w-full">
+            <div class="backend-card p-5">
+                <h2 class="text-lg font-semibold mb-3">Recent Users</h2>
+                <div class="overflow-x-auto">
+            <table class="w-full text-sm">
                 <thead class="border-b border-gray-300 dark:border-gray-700">
                     <tr>
-                        <th class="text-left p-2">Name</th>
-                        <th class="text-left p-2">Email</th>
-                        <th class="text-left p-2">Role</th>
-                        <th class="text-left p-2">Joined</th>
+                        <th class="text-left p-2 font-semibold">Name</th>
+                        <th class="text-left p-2 font-semibold">Email</th>
+                        <th class="text-left p-2 font-semibold">Role</th>
+                        <th class="text-left p-2 font-semibold">Joined</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -144,19 +104,20 @@
                     @endforeach
                 </tbody>
             </table>
+                </div>
         </div>
 
-        <!-- Recent Orders -->
-        <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-            <h2 class="text-2xl font-bold mb-4">Recent Orders</h2>
-            <table class="w-full">
+            <div class="backend-card p-5">
+                <h2 class="text-lg font-semibold mb-3">Recent Orders</h2>
+                <div class="overflow-x-auto">
+            <table class="w-full text-sm">
                 <thead class="border-b border-gray-300 dark:border-gray-700">
                     <tr>
-                        <th class="text-left p-2">Order #</th>
-                        <th class="text-left p-2">Customer</th>
-                        <th class="text-left p-2">Total</th>
-                        <th class="text-left p-2">Status</th>
-                        <th class="text-left p-2">Date</th>
+                        <th class="text-left p-2 font-semibold">Order #</th>
+                        <th class="text-left p-2 font-semibold">Customer</th>
+                        <th class="text-left p-2 font-semibold">Total</th>
+                        <th class="text-left p-2 font-semibold">Status</th>
+                        <th class="text-left p-2 font-semibold">Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -180,6 +141,8 @@
                     @endforeach
                 </tbody>
             </table>
+                </div>
+            </div>
         </div>
     </div>
 </x-superadmin-layout>

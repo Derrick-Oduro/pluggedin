@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,19 +23,39 @@ class AdminProductController extends Controller
 
     public function pending()
     {
+        $status = request('status', 'pending');
+
         $products = Product::with(['category', 'uploader'])
-            ->where('status', 'pending')
+            ->where('is_user_uploaded', true)
+            ->when($status !== 'all', function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->when(request()->filled('category_id'), function ($query) {
+                $query->where('category_id', request('category_id'));
+            })
+            ->when(request()->filled('uploader_id'), function ($query) {
+                $query->where('uploaded_by', request('uploader_id'));
+            })
+            ->when(request()->filled('search'), function ($query) {
+                $query->where('name', 'like', '%'.request('search').'%');
+            })
             ->latest()
             ->paginate(15);
 
-        return view('admin.products.pending', compact('products'));
+        $categories = Category::orderBy('name')->get(['id', 'name']);
+        $uploaders = User::query()
+            ->whereHas('uploadedProducts')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return view('admin.products.pending', compact('products', 'categories', 'uploaders', 'status'));
     }
 
     public function review(Request $request, Product $product)
     {
         $request->validate([
             'status' => 'required|in:approved,rejected',
-            'admin_review_comment' => 'nullable|string|max:2000',
+            'admin_review_comment' => 'nullable|string|max:2000|required_if:status,rejected',
         ]);
 
         $product->update([
@@ -45,6 +66,28 @@ class AdminProductController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Product review status updated.');
+    }
+
+    public function bulkReview(Request $request)
+    {
+        $data = $request->validate([
+            'product_ids' => 'required|array|min:1',
+            'product_ids.*' => 'integer|exists:products,id',
+            'status' => 'required|in:approved,rejected',
+            'admin_review_comment' => 'nullable|string|max:2000|required_if:status,rejected',
+        ]);
+
+        Product::query()
+            ->whereIn('id', $data['product_ids'])
+            ->where('is_user_uploaded', true)
+            ->update([
+                'status' => $data['status'],
+                'admin_review_comment' => $data['admin_review_comment'] ?? null,
+                'reviewed_by' => auth()->id(),
+                'reviewed_at' => now(),
+            ]);
+
+        return redirect()->back()->with('success', 'Bulk moderation update completed.');
     }
 
     /**

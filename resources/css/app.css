@@ -1,3 +1,87 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	body {
+		@apply bg-white text-gray-900 antialiased dark:bg-dark dark:text-text-primary;
+		background-image: radial-gradient(circle at 15% 8%, rgba(255, 140, 0, 0.08), transparent 34%),
+			radial-gradient(circle at 85% 90%, rgba(255, 140, 0, 0.06), transparent 30%);
+		background-attachment: fixed;
+	}
+}
+
+@layer components {
+	.page-shell {
+		@apply relative overflow-hidden py-10 sm:py-14;
+	}
+
+	.page-shell::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: radial-gradient(circle at 80% 5%, rgba(255, 140, 0, 0.1), transparent 30%),
+			radial-gradient(circle at 10% 90%, rgba(255, 140, 0, 0.08), transparent 35%);
+	}
+
+	.glass-panel {
+		@apply rounded-2xl border border-gray-200/70 bg-white/90 shadow-sm backdrop-blur dark:border-gray-800 dark:bg-dark-secondary/90;
+	}
+
+	.btn-primary {
+		@apply inline-flex items-center justify-center rounded-lg bg-orange px-5 py-2.5 font-semibold text-white shadow-lg shadow-orange/20 transition hover:bg-orange-light focus:outline-none focus:ring-2 focus:ring-orange focus:ring-offset-2 dark:focus:ring-offset-dark;
+	}
+
+	.btn-secondary {
+		@apply inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 font-semibold text-gray-700 transition hover:border-orange hover:text-orange focus:outline-none focus:ring-2 focus:ring-orange focus:ring-offset-2 dark:border-gray-700 dark:bg-dark dark:text-text-secondary dark:hover:border-orange dark:hover:text-orange dark:focus:ring-offset-dark;
+	}
+
+	.backend-sidebar {
+		@apply rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-dark-secondary;
+	}
+
+	.backend-tab {
+		@apply block rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:text-text-secondary dark:hover:bg-gray-800 dark:hover:text-text-primary;
+	}
+
+	.backend-tab-active {
+		@apply bg-orange/15 text-orange hover:bg-orange/20 hover:text-orange dark:bg-orange/20;
+	}
+
+	.backend-card {
+		@apply rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-dark-secondary;
+	}
+
+	.backend-table-wrap {
+		@apply overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-dark-secondary;
+	}
+
+	.backend-table {
+		@apply w-full text-sm;
+	}
+
+	.backend-th {
+		@apply p-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-text-secondary;
+	}
+
+	.backend-td {
+		@apply p-2 align-top;
+	}
+
+	.backend-row {
+		@apply border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800;
+	}
+
+	.backend-field {
+		@apply w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-orange focus:outline-none focus:ring-2 focus:ring-orange/40 dark:border-gray-700 dark:bg-dark;
+	}
+
+	.backend-btn-primary {
+		@apply inline-flex items-center justify-center rounded-lg bg-orange px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-light;
+	}
+
+	.backend-btn-muted {
+		@apply inline-flex items-center justify-center rounded-lg bg-gray-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-600;
+	}
+}

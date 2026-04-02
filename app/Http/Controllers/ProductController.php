@@ -35,10 +35,7 @@ class ProductController extends Controller
             }
         }
 
-        $product->load([
-            'category',
-            'reviews.user',
-        ]);
+        $product->load('category');
 
         $relatedProducts = Product::approved()->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
@@ -68,7 +65,11 @@ class ProductController extends Controller
                 ->first();
         }
 
-        $reviews = $product->reviews()->with('user')->latest()->get();
+        $reviews = $product->reviews()
+            ->approved()
+            ->with('user')
+            ->latest()
+            ->get();
 
         return view('products.show', compact('product', 'relatedProducts', 'canReview', 'userReview', 'reviews', 'referralLink'));
     }

@@ -23,6 +23,7 @@ class RedeemableThresholdReachedNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
+            'type' => 'points_threshold',
             'title' => 'Redeemable threshold reached',
             'message' => "Your points balance is now {$this->currentBalance}, which reached the redeemable threshold of {$this->threshold}.",
             'threshold' => $this->threshold,

@@ -23,6 +23,7 @@ class PointsEarnedNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
+            'type' => 'points',
             'title' => 'Points earned',
             'message' => "You earned {$this->points} points. {$this->reason}",
             'points' => $this->points,

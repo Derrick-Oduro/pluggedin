@@ -1,36 +1,62 @@
 <x-app-layout>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <section class="page-shell">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between mb-8">
             <div>
                 <h1 class="text-4xl font-bold">My Dashboard</h1>
                 <p class="text-gray-600 dark:text-text-secondary mt-1">Track uploads, purchases, points, and referrals.</p>
             </div>
-            <a href="{{ route('products.upload.create') }}" class="bg-orange hover:bg-orange-light text-white px-6 py-3 rounded-lg font-semibold transition">
-                Upload Product
-            </a>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ route('products.upload.create') }}" class="bg-orange hover:bg-orange-light text-white px-6 py-3 rounded-lg font-semibold transition">
+                    Upload Product
+                </a>
+                <a href="{{ route('products.upload.index') }}" class="btn-secondary px-6 py-3">
+                    Manage Uploads
+                </a>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-            <div class="bg-white dark:bg-dark-secondary rounded-xl p-5 border border-gray-200 dark:border-gray-800">
+            <div class="glass-panel rounded-xl p-5">
                 <p class="text-sm text-gray-600 dark:text-text-secondary mb-2">Upload Limit</p>
                 <p class="text-2xl font-bold">{{ $uploadsUsed ?? 0 }}/{{ $uploadLimit ?? 0 }}</p>
             </div>
-            <div class="bg-white dark:bg-dark-secondary rounded-xl p-5 border border-gray-200 dark:border-gray-800">
+            <div class="glass-panel rounded-xl p-5">
                 <p class="text-sm text-gray-600 dark:text-text-secondary mb-2">Uploads Remaining</p>
                 <p class="text-2xl font-bold text-orange">{{ $uploadsRemaining ?? 0 }}</p>
             </div>
-            <div class="bg-white dark:bg-dark-secondary rounded-xl p-5 border border-gray-200 dark:border-gray-800">
+            <div class="glass-panel rounded-xl p-5">
                 <p class="text-sm text-gray-600 dark:text-text-secondary mb-2">Points Balance</p>
                 <p class="text-2xl font-bold text-orange">{{ number_format($pointsBalance ?? 0) }}</p>
             </div>
-            <div class="bg-white dark:bg-dark-secondary rounded-xl p-5 border border-gray-200 dark:border-gray-800">
+            <div class="glass-panel rounded-xl p-5">
                 <p class="text-sm text-gray-600 dark:text-text-secondary mb-2">Total Reviews</p>
                 <p class="text-2xl font-bold">{{ ($reviews ?? collect())->count() }}</p>
             </div>
         </div>
 
+        <div class="glass-panel rounded-xl p-6 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold">Reviews To Write</h2>
+                <a href="{{ route('reviews.index') }}" class="text-orange hover:text-orange-light font-semibold">Open Review Center</a>
+            </div>
+            <div class="space-y-3">
+                @forelse(($pendingReviewItems ?? collect()) as $item)
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+                        <div>
+                            <p class="font-semibold">{{ $item->product->name }}</p>
+                            <p class="text-sm text-gray-600 dark:text-text-secondary">Order #{{ $item->order->id }} completed</p>
+                        </div>
+                        <a href="{{ route('orders.show', $item->order) }}#review-product-{{ $item->product->id }}" class="inline-flex items-center justify-center bg-orange hover:bg-orange-light text-white px-4 py-2 rounded-lg font-semibold transition">Write Review</a>
+                    </div>
+                @empty
+                    <p class="text-gray-600 dark:text-text-secondary">No pending reviews. Thanks for sharing feedback.</p>
+                @endforelse
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <div class="bg-white dark:bg-dark-secondary rounded-xl p-6 border border-gray-200 dark:border-gray-800">
+            <div class="glass-panel rounded-xl p-6">
                 <h2 class="text-2xl font-bold mb-4">My Uploaded Products</h2>
                 <div class="space-y-3">
                     @forelse(($uploadedProducts ?? collect()) as $product)
@@ -50,7 +76,7 @@
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-dark-secondary rounded-xl p-6 border border-gray-200 dark:border-gray-800">
+            <div class="glass-panel rounded-xl p-6">
                 <h2 class="text-2xl font-bold mb-4">Recent Purchases</h2>
                 <div class="space-y-3">
                     @forelse(($orders ?? collect()) as $order)
@@ -66,7 +92,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="bg-white dark:bg-dark-secondary rounded-xl p-6 border border-gray-200 dark:border-gray-800">
+            <div class="glass-panel rounded-xl p-6">
                 <h2 class="text-2xl font-bold mb-4">Referral Performance</h2>
                 <div class="space-y-3">
                     @forelse(($referralLinks ?? collect()) as $link)
@@ -80,7 +106,7 @@
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-dark-secondary rounded-xl p-6 border border-gray-200 dark:border-gray-800">
+            <div class="glass-panel rounded-xl p-6">
                 <h2 class="text-2xl font-bold mb-4">Recent Points Activity</h2>
                 <div class="space-y-3">
                     @forelse(($pointsTransactions ?? collect()) as $txn)
@@ -98,4 +124,5 @@
             </div>
         </div>
     </div>
+    </section>
 </x-app-layout>

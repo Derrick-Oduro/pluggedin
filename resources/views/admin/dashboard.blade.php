@@ -1,84 +1,59 @@
 <x-app-layout>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-4xl font-bold">Admin Dashboard</h1>
-            @if(auth()->user()->hasRole('super-admin'))
-                <a href="{{ route('superadmin.dashboard') }}" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold transition">
-                    Super Admin Panel
-                </a>
-            @endif
-        </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+            <aside class="xl:col-span-3">
+                <div class="backend-sidebar sticky top-24">
+                    <p class="text-xs uppercase tracking-[0.15em] text-gray-500 dark:text-text-secondary mb-3">Admin Tabs</p>
+                    <nav class="space-y-1">
+                        <a href="{{ route('admin.products.pending') }}" class="backend-tab">Moderation Queue</a>
+                        <a href="{{ route('admin.reviews.index') }}" class="backend-tab">Review Moderation</a>
+                        <a href="{{ route('admin.products.index') }}" class="backend-tab">Products</a>
+                        <a href="{{ route('admin.orders.index') }}" class="backend-tab">Orders</a>
+                        <a href="{{ route('admin.bookings.index') }}" class="backend-tab">Bookings</a>
+                        <a href="{{ route('admin.referrals.index') }}" class="backend-tab">Referral Analytics</a>
+                        @if(auth()->user()->hasRole('super-admin'))
+                            <a href="{{ route('superadmin.dashboard') }}" class="backend-tab text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10">Super Admin Panel</a>
+                        @endif
+                    </nav>
+                </div>
+            </aside>
 
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Total Products</h3>
-                <p class="text-3xl font-bold text-orange">{{ $stats['total_products'] }}</p>
-            </div>
+            <div class="xl:col-span-9 space-y-5">
+                <div>
+                    <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+                    <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">Compact operations panel for day-to-day management.</p>
+                </div>
 
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Pending Products</h3>
-                <p class="text-3xl font-bold text-yellow-500">{{ $stats['pending_products'] }}</p>
-            </div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Products</p><p class="text-xl font-semibold">{{ $stats['total_products'] }}</p></div>
+                    <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Pending Products</p><p class="text-xl font-semibold">{{ $stats['pending_products'] }}</p></div>
+                    <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Orders</p><p class="text-xl font-semibold">{{ $stats['total_orders'] }}</p></div>
+                    <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Pending Orders</p><p class="text-xl font-semibold">{{ $stats['pending_orders'] }}</p></div>
+                    <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Bookings</p><p class="text-xl font-semibold">{{ $stats['total_bookings'] }}</p></div>
+                    <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Pending Bookings</p><p class="text-xl font-semibold">{{ $stats['pending_bookings'] }}</p></div>
+                    <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Revenue</p><p class="text-xl font-semibold">${{ number_format($stats['total_revenue'], 2) }}</p></div>
+                    <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Referral Conversions</p><p class="text-xl font-semibold">{{ $stats['total_referral_conversions'] }}</p></div>
+                    <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Pending Reviews</p><p class="text-xl font-semibold">{{ $stats['pending_reviews'] }}</p></div>
+                    <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Reported Reviews</p><p class="text-xl font-semibold">{{ $stats['reported_reviews'] }}</p></div>
+                </div>
 
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Total Orders</h3>
-                <p class="text-3xl font-bold text-orange">{{ $stats['total_orders'] }}</p>
-                <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">{{ $stats['pending_orders'] }} pending</p>
-            </div>
+                <div class="flex flex-wrap gap-2">
+                    <a href="{{ route('admin.products.create') }}" class="bg-orange hover:bg-orange-light text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Add Product</a>
+                    <a href="{{ route('admin.products.pending') }}" class="bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Review Uploads</a>
+                    <a href="{{ route('admin.reviews.index') }}" class="bg-white dark:bg-dark-secondary border border-gray-300 dark:border-gray-700 hover:border-orange px-4 py-2 rounded-lg text-sm font-semibold transition">Moderate Reviews</a>
+                    <a href="{{ route('admin.referrals.index') }}" class="bg-white dark:bg-dark-secondary border border-gray-300 dark:border-gray-700 hover:border-orange px-4 py-2 rounded-lg text-sm font-semibold transition">Referrals</a>
+                </div>
 
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Total Bookings</h3>
-                <p class="text-3xl font-bold text-orange">{{ $stats['total_bookings'] }}</p>
-                <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">{{ $stats['pending_bookings'] }} pending</p>
-            </div>
-
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Total Revenue</h3>
-                <p class="text-3xl font-bold text-orange">${{ number_format($stats['total_revenue'], 2) }}</p>
-            </div>
-
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Referral Links</h3>
-                <p class="text-3xl font-bold text-orange">{{ $stats['total_referral_links'] }}</p>
-            </div>
-
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Referral Conversions</h3>
-                <p class="text-3xl font-bold text-orange">{{ $stats['total_referral_conversions'] }}</p>
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-            <a href="{{ route('admin.products.create') }}" class="bg-orange hover:bg-orange-light text-white p-6 rounded-lg text-center font-semibold transition">
-                + Add New Product
-            </a>
-
-            <a href="{{ route('admin.products.pending') }}" class="bg-yellow-600 hover:bg-yellow-500 text-white p-6 rounded-lg text-center font-semibold transition">
-                Review Pending Uploads
-            </a>
-
-            <a href="{{ route('admin.products.index') }}" class="bg-white dark:bg-dark-secondary hover:bg-gray-100 dark:hover:bg-gray-800 p-6 rounded-lg text-center font-semibold transition">
-                Manage Products
-            </a>
-
-            <a href="{{ route('admin.orders.index') }}" class="bg-white dark:bg-dark-secondary hover:bg-gray-100 dark:hover:bg-gray-800 p-6 rounded-lg text-center font-semibold transition">
-                View All Orders
-            </a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Recent Orders -->
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <h2 class="text-2xl font-bold mb-4">Recent Orders</h2>
-                <div class="space-y-3">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="backend-card p-5">
+                <h2 class="text-lg font-semibold mb-3">Recent Orders</h2>
+                <div class="space-y-2">
                     @forelse($recentOrders as $order)
-                        <div class="border-b border-gray-300 dark:border-gray-700 pb-3">
+                        <div class="border-b border-gray-300 dark:border-gray-700 pb-2">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="font-semibold">Order #{{ $order->id }}</p>
-                                    <p class="text-sm text-gray-600 dark:text-text-secondary">{{ $order->user->name }}</p>
+                                    <p class="text-xs text-gray-600 dark:text-text-secondary">{{ $order->user->name }}</p>
                                 </div>
                                 <div class="text-right">
                                     <p class="font-bold text-orange">${{ number_format($order->total_price, 2) }}</p>
@@ -97,21 +72,20 @@
                         <p class="text-gray-600 dark:text-text-secondary">No orders yet</p>
                     @endforelse
                 </div>
-                <a href="{{ route('admin.orders.index') }}" class="block text-center mt-4 text-orange hover:text-orange-light">
-                    View All Orders →
+                <a href="{{ route('admin.orders.index') }}" class="block text-center mt-3 text-sm text-orange hover:text-orange-light">
+                    View all orders
                 </a>
             </div>
 
-            <!-- Recent Bookings -->
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
-                <h2 class="text-2xl font-bold mb-4">Recent Bookings</h2>
-                <div class="space-y-3">
+            <div class="backend-card p-5">
+                <h2 class="text-lg font-semibold mb-3">Recent Bookings</h2>
+                <div class="space-y-2">
                     @forelse($recentBookings as $booking)
-                        <div class="border-b border-gray-300 dark:border-gray-700 pb-3">
+                        <div class="border-b border-gray-300 dark:border-gray-700 pb-2">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="font-semibold">{{ $booking->service->name }}</p>
-                                    <p class="text-sm text-gray-600 dark:text-text-secondary">{{ $booking->user->name }}</p>
+                                    <p class="text-xs text-gray-600 dark:text-text-secondary">{{ $booking->user->name }}</p>
                                     <p class="text-xs text-gray-600 dark:text-text-secondary">{{ $booking->preferred_date->format('M d, Y') }}</p>
                                 </div>
                                 <span class="text-xs px-2 py-1 rounded
@@ -128,9 +102,11 @@
                         <p class="text-gray-600 dark:text-text-secondary">No bookings yet</p>
                     @endforelse
                 </div>
-                <a href="{{ route('admin.bookings.index') }}" class="block text-center mt-4 text-orange hover:text-orange-light">
-                    View All Bookings →
+                <a href="{{ route('admin.bookings.index') }}" class="block text-center mt-3 text-sm text-orange hover:text-orange-light">
+                    View all bookings
                 </a>
+            </div>
+                </div>
             </div>
         </div>
     </div>

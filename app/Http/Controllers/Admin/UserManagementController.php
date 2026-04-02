@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -48,6 +49,11 @@ class UserManagementController extends Controller
 
         $user->assignRole($request->role);
 
+        AuditLogger::log('superadmin.user.created', User::class, $user->id, [
+            'email' => $user->email,
+            'role' => $request->role,
+        ], $request);
+
         return redirect()->route('superadmin.users.index')->with('success', 'User created successfully!');
     }
 
@@ -83,20 +89,32 @@ class UserManagementController extends Controller
         $user->update($data);
         $user->syncRoles([$request->role]);
 
+        AuditLogger::log('superadmin.user.updated', User::class, $user->id, [
+            'email' => $user->email,
+            'role' => $request->role,
+        ], $request);
+
         return redirect()->route('superadmin.users.index')->with('success', 'User updated successfully!');
     }
 
     /**
      * Remove the specified user from storage.
      */
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
         // Prevent deleting yourself
         if ($user->id === auth()->id()) {
             return back()->with('error', 'You cannot delete your own account!');
         }
 
+        $userId = $user->id;
+        $userEmail = $user->email;
+
         $user->delete();
+
+        AuditLogger::log('superadmin.user.deleted', User::class, $userId, [
+            'email' => $userEmail,
+        ], $request);
 
         return redirect()->route('superadmin.users.index')->with('success', 'User deleted successfully!');
     }

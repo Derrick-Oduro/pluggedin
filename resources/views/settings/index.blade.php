@@ -1,10 +1,20 @@
 <x-app-layout>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 class="text-4xl font-bold mb-8">⚙️ Settings</h1>
+    <section class="relative overflow-hidden py-20 bg-gradient-to-b from-white via-orange-50/45 to-white dark:from-dark dark:via-dark-secondary dark:to-dark">
+        <div class="absolute inset-0 pointer-events-none opacity-70">
+            <div class="absolute -top-20 left-1/4 h-64 w-64 rounded-full bg-orange/20 blur-3xl"></div>
+            <div class="absolute -bottom-16 right-1/4 h-64 w-64 rounded-full bg-orange/15 blur-3xl"></div>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-10">
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange mb-3">Preferences</p>
+                <h1 class="text-5xl sm:text-6xl font-bold">Settings</h1>
+                <p class="text-gray-600 dark:text-text-secondary mt-3 max-w-2xl">Customize your app experience, account options, and notification preferences.</p>
+            </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Settings Navigation -->
-            <div class="space-y-2">
+            <div class="space-y-2 bg-white/95 dark:bg-dark-secondary rounded-2xl p-4 border border-gray-200/70 dark:border-gray-800 h-fit">
                 <a href="#appearance"
                    onclick="showSection('appearance')"
                    id="nav-appearance"
@@ -45,7 +55,7 @@
             </div>
 
             <!-- Settings Content -->
-            <div class="md:col-span-2">
+            <div class="md:col-span-2 space-y-6">
                 @if(session('success'))
                     <div class="bg-green-500/20 border border-green-500 text-green-500 rounded-lg p-4 mb-6">
                         {{ session('success') }}
@@ -54,7 +64,7 @@
 
                 <!-- Appearance Section -->
                 <div id="section-appearance" class="settings-section">
-                    <div class="bg-white dark:bg-dark-secondary rounded-lg p-8 border border-gray-200 dark:border-gray-800">
+                    <div class="bg-white dark:bg-dark-secondary rounded-2xl p-8 border border-gray-200/70 dark:border-gray-800 shadow-sm">
                         <h2 class="text-2xl font-bold mb-6">Appearance</h2>
 
                         <div class="space-y-6">
@@ -66,7 +76,11 @@
                                     <button onclick="setTheme('light')"
                                             id="theme-light"
                                             class="theme-option border-2 rounded-lg p-6 transition hover:border-orange">
-                                        <div class="text-4xl mb-3">☀️</div>
+                                        <div class="mb-3 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-orange/10 text-orange">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1.5m0 15V21m6.364-14.364-1.06 1.06M6.696 17.304l-1.06 1.06M21 12h-1.5m-15 0H3m15.364 5.304-1.06-1.06M6.696 6.696l-1.06-1.06M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                                            </svg>
+                                        </div>
                                         <h4 class="font-bold text-lg mb-2">Light Mode</h4>
                                         <p class="text-sm text-gray-500 dark:text-text-secondary">Bright and clean</p>
                                     </button>
@@ -75,7 +89,11 @@
                                     <button onclick="setTheme('dark')"
                                             id="theme-dark"
                                             class="theme-option border-2 rounded-lg p-6 transition hover:border-orange">
-                                        <div class="text-4xl mb-3">🌙</div>
+                                        <div class="mb-3 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-orange/10 text-orange">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0 1 18 15.75 9.75 9.75 0 0 1 8.25 6c0-1.33.266-2.598.748-3.752A9.75 9.75 0 1 0 21.752 15.002Z" />
+                                            </svg>
+                                        </div>
                                         <h4 class="font-bold text-lg mb-2">Dark Mode</h4>
                                         <p class="text-sm text-gray-500 dark:text-text-secondary">Easy on the eyes</p>
                                     </button>
@@ -84,7 +102,11 @@
                                     <button onclick="setTheme('system')"
                                             id="theme-system"
                                             class="theme-option border-2 rounded-lg p-6 transition hover:border-orange">
-                                        <div class="text-4xl mb-3">💻</div>
+                                        <div class="mb-3 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-orange/10 text-orange">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.25h16.5A2.25 2.25 0 0 1 22.5 7.5v9a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 16.5v-9a2.25 2.25 0 0 1 2.25-2.25Zm0 13.5h16.5" />
+                                            </svg>
+                                        </div>
                                         <h4 class="font-bold text-lg mb-2">System</h4>
                                         <p class="text-sm text-gray-500 dark:text-text-secondary">Match system</p>
                                     </button>
@@ -120,7 +142,7 @@
 
                 <!-- Account Section -->
                 <div id="section-account" class="settings-section hidden">
-                    <div class="bg-white dark:bg-dark-secondary rounded-lg p-8 border border-gray-200 dark:border-gray-800">
+                    <div class="bg-white dark:bg-dark-secondary rounded-2xl p-8 border border-gray-200/70 dark:border-gray-800 shadow-sm">
                         <h2 class="text-2xl font-bold mb-6">Account Settings</h2>
                         <p class="text-gray-600 dark:text-text-secondary mb-4">Manage your account information and preferences.</p>
                         <a href="{{ route('profile.edit') }}" class="text-orange hover:text-orange-light font-semibold">
@@ -131,7 +153,7 @@
 
                 <!-- Notifications Section -->
                 <div id="section-notifications" class="settings-section hidden">
-                    <div class="bg-white dark:bg-dark-secondary rounded-lg p-8 border border-gray-200 dark:border-gray-800">
+                    <div class="bg-white dark:bg-dark-secondary rounded-2xl p-8 border border-gray-200/70 dark:border-gray-800 shadow-sm">
                         <h2 class="text-2xl font-bold mb-6">Notification Preferences</h2>
                         <p class="text-gray-600 dark:text-text-secondary">Configure how you receive notifications about orders, bookings, and updates.</p>
                         <p class="text-sm text-gray-500 dark:text-text-secondary mt-4">(Coming soon)</p>
@@ -139,7 +161,8 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
+    </section>
 
     <script>
         // Get theme from localStorage or default to dark

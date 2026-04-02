@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BookingStatusHistory;
 use App\Models\Order;
+use App\Models\OrderStatusHistory;
 use App\Models\PointsTransaction;
 use App\Models\Product;
 use App\Models\ProductReview;
@@ -33,8 +35,10 @@ class DashboardController extends Controller
 
         $recentOrders = Order::with('user')->latest()->take(5)->get();
         $recentBookings = Booking::with(['user', 'service'])->latest()->take(5)->get();
+        $recentOrderStatusUpdates = OrderStatusHistory::with(['order.user', 'actor'])->latest()->take(6)->get();
+        $recentBookingStatusUpdates = BookingStatusHistory::with(['booking.user', 'actor'])->latest()->take(6)->get();
 
-        return view('admin.dashboard', compact('stats', 'recentOrders', 'recentBookings'));
+        return view('admin.dashboard', compact('stats', 'recentOrders', 'recentBookings', 'recentOrderStatusUpdates', 'recentBookingStatusUpdates'));
     }
 
     public function referrals()

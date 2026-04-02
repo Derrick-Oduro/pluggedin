@@ -50,6 +50,19 @@
                             <p class="font-semibold mb-1">{{ $notification->data['title'] ?? 'Notification' }}</p>
                             <p class="text-gray-600 dark:text-text-secondary">{{ $notification->data['message'] ?? 'You have a new notification.' }}</p>
                             <p class="text-xs text-gray-500 dark:text-text-secondary mt-2">{{ $notification->created_at->format('M d, Y H:i') }}</p>
+                            @if(!empty($notification->data['order_id']))
+                                <a href="{{ route('orders.show', $notification->data['order_id']) }}" class="inline-flex mt-2 text-xs font-semibold text-orange hover:text-orange-light">
+                                    View Order #{{ $notification->data['order_id'] }}
+                                </a>
+                            @elseif(!empty($notification->data['booking_id']))
+                                <a href="{{ route('bookings.show', $notification->data['booking_id']) }}" class="inline-flex mt-2 text-xs font-semibold text-orange hover:text-orange-light">
+                                    View Booking #{{ $notification->data['booking_id'] }}
+                                </a>
+                            @elseif(!empty($notification->data['product_id']))
+                                <a href="{{ route('products.upload.index') }}" class="inline-flex mt-2 text-xs font-semibold text-orange hover:text-orange-light">
+                                    View My Uploads
+                                </a>
+                            @endif
                         </div>
                         @if(! $notification->read_at)
                             <form action="{{ route('notifications.read', $notification->id) }}" method="POST">

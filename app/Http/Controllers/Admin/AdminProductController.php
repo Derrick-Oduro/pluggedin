@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
+use App\Notifications\ProductModerationUpdatedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -58,12 +59,25 @@ class AdminProductController extends Controller
             'admin_review_comment' => 'nullable|string|max:2000|required_if:status,rejected',
         ]);
 
+        $previousStatus = $product->status;
+        $newStatus = $request->status;
+
         $product->update([
-            'status' => $request->status,
+            'status' => $newStatus,
             'admin_review_comment' => $request->admin_review_comment,
             'reviewed_by' => auth()->id(),
             'reviewed_at' => now(),
         ]);
+
+        if ($product->is_user_uploaded && $previousStatus !== $newStatus) {
+            $product->loadMissing('uploader');
+            $product->uploader?->notify(new ProductModerationUpdatedNotification(
+                $product->id,
+                $product->name,
+                $newStatus,
+                $product->admin_review_comment
+            ));
+        }
 
         return redirect()->back()->with('success', 'Product review status updated.');
     }
@@ -77,15 +91,34 @@ class AdminProductController extends Controller
             'admin_review_comment' => 'nullable|string|max:2000|required_if:status,rejected',
         ]);
 
-        Product::query()
+        $products = Product::query()
             ->whereIn('id', $data['product_ids'])
             ->where('is_user_uploaded', true)
-            ->update([
-                'status' => $data['status'],
-                'admin_review_comment' => $data['admin_review_comment'] ?? null,
+            ->with('uploader')
+            ->get();
+
+        $newStatus = $data['status'];
+        $adminComment = $data['admin_review_comment'] ?? null;
+
+        foreach ($products as $product) {
+            $previousStatus = $product->status;
+
+            $product->update([
+                'status' => $newStatus,
+                'admin_review_comment' => $adminComment,
                 'reviewed_by' => auth()->id(),
                 'reviewed_at' => now(),
             ]);
+
+            if ($previousStatus !== $newStatus) {
+                $product->uploader?->notify(new ProductModerationUpdatedNotification(
+                    $product->id,
+                    $product->name,
+                    $newStatus,
+                    $adminComment
+                ));
+            }
+        }
 
         return redirect()->back()->with('success', 'Bulk moderation update completed.');
     }

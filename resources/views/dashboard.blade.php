@@ -35,6 +35,66 @@
             </div>
         </div>
 
+        <div class="glass-panel rounded-xl p-5 mb-10">
+            <h2 class="text-xl font-bold mb-3">Quick Actions</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <a href="{{ route('products.upload.index', ['status' => 'pending']) }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
+                    <p class="text-xs text-gray-600 dark:text-text-secondary">Uploads</p>
+                    <p class="font-semibold mt-1">{{ $pendingUploadsCount ?? 0 }} pending uploads</p>
+                </a>
+                <a href="{{ route('orders.index') }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
+                    <p class="text-xs text-gray-600 dark:text-text-secondary">Orders</p>
+                    <p class="font-semibold mt-1">Track Purchases</p>
+                </a>
+                <a href="{{ route('bookings.index') }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
+                    <p class="text-xs text-gray-600 dark:text-text-secondary">Bookings</p>
+                    <p class="font-semibold mt-1">View Service Bookings</p>
+                </a>
+                <a href="{{ route('notifications.index', ['scope' => 'unread']) }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
+                    <p class="text-xs text-gray-600 dark:text-text-secondary">Notifications</p>
+                    <p class="font-semibold mt-1">{{ auth()->user()->unreadNotifications()->count() }} unread</p>
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="glass-panel rounded-xl p-6">
+                <h2 class="text-2xl font-bold mb-4">Order Tracking Updates</h2>
+                <div class="space-y-3">
+                    @forelse(($recentOrderStatusUpdates ?? collect()) as $update)
+                        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+                            <div class="flex items-center justify-between gap-2">
+                                <p class="font-semibold">Order #{{ $update->order_id }}: {{ ucfirst($update->to_status) }}</p>
+                                <span class="text-xs text-gray-500 dark:text-text-secondary">{{ $update->created_at->format('M d, H:i') }}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">Updated by {{ $update->actor?->name ?? 'System' }}</p>
+                            <a href="{{ route('orders.show', $update->order_id) }}" class="inline-flex mt-2 text-sm font-semibold text-orange hover:text-orange-light">View Order</a>
+                        </div>
+                    @empty
+                        <p class="text-gray-600 dark:text-text-secondary">No order tracking updates yet.</p>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-xl p-6">
+                <h2 class="text-2xl font-bold mb-4">Booking Tracking Updates</h2>
+                <div class="space-y-3">
+                    @forelse(($recentBookingStatusUpdates ?? collect()) as $update)
+                        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+                            <div class="flex items-center justify-between gap-2">
+                                <p class="font-semibold">Booking #{{ $update->booking_id }}: {{ ucfirst($update->to_status) }}</p>
+                                <span class="text-xs text-gray-500 dark:text-text-secondary">{{ $update->created_at->format('M d, H:i') }}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">Updated by {{ $update->actor?->name ?? 'System' }}</p>
+                            <a href="{{ route('bookings.show', $update->booking_id) }}" class="inline-flex mt-2 text-sm font-semibold text-orange hover:text-orange-light">View Booking</a>
+                        </div>
+                    @empty
+                        <p class="text-gray-600 dark:text-text-secondary">No booking tracking updates yet.</p>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
         <div class="glass-panel rounded-xl p-6 mb-8">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-2xl font-bold">Reviews To Write</h2>

@@ -11,12 +11,29 @@ use Illuminate\Http\Request;
 
 class SuperAdminMarketingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $slides = HeroSlide::query()->orderBy('sort_order')->orderBy('id')->get();
-        $campaigns = DiscountCampaign::query()->latest()->get();
+        $scope = $request->string('scope')->toString();
 
-        return view('superadmin.marketing.index', compact('slides', 'campaigns'));
+        $slides = HeroSlide::query()
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        $campaigns = DiscountCampaign::query()
+            ->when($scope === 'live', fn ($query) => $query->active())
+            ->latest()
+            ->get();
+
+        $archivedSlides = HeroSlide::onlyTrashed()
+            ->latest('deleted_at')
+            ->get();
+
+        $archivedCampaigns = DiscountCampaign::onlyTrashed()
+            ->latest('deleted_at')
+            ->get();
+
+        return view('superadmin.marketing.index', compact('slides', 'campaigns', 'archivedSlides', 'archivedCampaigns', 'scope'));
     }
 
     public function storeSlide(Request $request)
@@ -78,6 +95,18 @@ class SuperAdminMarketingController extends Controller
         ], request());
 
         return redirect()->route('superadmin.marketing.index')->with('success', 'Carousel slide removed.');
+    }
+
+    public function restoreSlide(int $id)
+    {
+        $slide = HeroSlide::onlyTrashed()->findOrFail($id);
+        $slide->restore();
+
+        AuditLogger::log('superadmin.slide.restored', HeroSlide::class, $slide->id, [
+            'title' => $slide->title,
+        ], request());
+
+        return redirect()->route('superadmin.marketing.index')->with('success', 'Carousel slide restored.');
     }
 
     public function storeCampaign(Request $request)
@@ -186,6 +215,19 @@ class SuperAdminMarketingController extends Controller
         AuditLogger::log('superadmin.campaign.deleted', DiscountCampaign::class, $campaignId, $campaignMeta, request());
 
         return redirect()->route('superadmin.marketing.index')->with('success', 'Discount campaign removed.');
+    }
+
+    public function restoreCampaign(int $id)
+    {
+        $campaign = DiscountCampaign::onlyTrashed()->findOrFail($id);
+        $campaign->restore();
+
+        AuditLogger::log('superadmin.campaign.restored', DiscountCampaign::class, $campaign->id, [
+            'name' => $campaign->name,
+            'code' => $campaign->code,
+        ], request());
+
+        return redirect()->route('superadmin.marketing.index')->with('success', 'Discount campaign restored.');
     }
 
     private function combineDateAndTime(?string $date, ?string $time): ?string

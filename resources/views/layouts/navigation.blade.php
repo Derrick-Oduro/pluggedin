@@ -36,6 +36,7 @@
                 @auth
                     @php($unreadNotificationsCount = auth()->user()->unreadNotifications()->count())
                     @php($cartItemsCount = auth()->user()->cartItems()->count())
+                    @php($wishlistItemsCount = auth()->user()->wishlistItems()->count())
 
                     @if(auth()->user()->hasRole('super-admin'))
                         <a href="{{ route('superadmin.dashboard') }}" class="px-3 py-1.5 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500/20 text-sm font-semibold transition">
@@ -73,6 +74,15 @@
                         @endif
                     </a>
 
+                    <a href="{{ route('wishlist.index') }}" class="relative text-gray-900 dark:text-text-primary hover:text-orange" title="Saved Items" aria-label="Saved Items">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 8.25c0-2.485-2.239-4.5-5-4.5-1.885 0-3.526.94-4.375 2.33a5.007 5.007 0 0 0-4.375-2.33c-2.761 0-5 2.015-5 4.5 0 7.22 9.375 12 9.375 12S21 15.47 21 8.25Z" />
+                        </svg>
+                        @if($wishlistItemsCount > 0)
+                            <span class="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-orange"></span>
+                        @endif
+                    </a>
+
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="inline-flex items-center px-3 py-2 border border-gray-200 dark:border-gray-700 text-sm leading-4 font-medium rounded-lg text-gray-900 dark:text-text-primary hover:border-orange/40 hover:text-orange transition">
@@ -86,14 +96,27 @@
                         </x-slot>
 
                         <x-slot name="content">
+                            @if(auth()->user()->hasRole('super-admin'))
+                                <x-dropdown-link :href="route('superadmin.dashboard')">
+                                    {{ __('Super Admin Dashboard') }}
+                                </x-dropdown-link>
+                            @elseif(auth()->user()->hasRole('admin'))
+                                <x-dropdown-link :href="route('admin.dashboard')">
+                                    {{ __('Admin Dashboard') }}
+                                </x-dropdown-link>
+                            @else
+                                <x-dropdown-link :href="route('dashboard')">
+                                    {{ __('Dashboard') }}
+                                </x-dropdown-link>
+                            @endif
                             <x-dropdown-link :href="route('orders.index')">
                                 {{ __('My Orders') }}
                             </x-dropdown-link>
+                            <x-dropdown-link :href="route('wishlist.index')">
+                                {{ __('Saved Items') }}
+                            </x-dropdown-link>
                             <x-dropdown-link :href="route('reviews.index')">
                                 {{ __('My Reviews') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="route('user.dashboard')">
-                                {{ __('Dashboard') }}
                             </x-dropdown-link>
                             <x-dropdown-link :href="route('products.upload.index')">
                                 {{ __('My Uploads') }}
@@ -168,11 +191,24 @@
                 </div>
 
                 <div class="mt-3 space-y-1">
+                    @if(auth()->user()->hasRole('super-admin'))
+                        <x-responsive-nav-link :href="route('superadmin.dashboard')">
+                            {{ __('Super Admin Dashboard') }}
+                        </x-responsive-nav-link>
+                    @elseif(auth()->user()->hasRole('admin'))
+                        <x-responsive-nav-link :href="route('admin.dashboard')">
+                            {{ __('Admin Dashboard') }}
+                        </x-responsive-nav-link>
+                    @else
+                        <x-responsive-nav-link :href="route('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-responsive-nav-link>
+                    @endif
                     <x-responsive-nav-link :href="route('cart.index')">
                         {{ __('Cart') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('user.dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-responsive-nav-link :href="route('wishlist.index')">
+                        {{ __('Saved Items') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('products.upload.index')">
                         {{ __('My Uploads') }}

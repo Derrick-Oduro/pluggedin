@@ -21,19 +21,20 @@
             </div>
         @endif
 
-        <div class="backend-table-wrap rounded-xl">
-            <table class="backend-table">
-                <thead class="border-b border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-dark">
-                    <tr>
-                        <th class="backend-th">ID</th>
-                        <th class="backend-th">Name</th>
-                        <th class="backend-th">Slug</th>
-                        <th class="backend-th">Products</th>
-                        <th class="backend-th">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($categories as $category)
+        @if($categories->count())
+            <div class="backend-table-wrap rounded-xl">
+                <table class="backend-table">
+                    <thead class="border-b border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-dark">
+                        <tr>
+                            <th class="backend-th">ID</th>
+                            <th class="backend-th">Name</th>
+                            <th class="backend-th">Slug</th>
+                            <th class="backend-th">Products</th>
+                            <th class="backend-th">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($categories as $category)
                         <tr class="backend-row">
                             <td class="backend-td">{{ $category->id }}</td>
                             <td class="backend-td font-medium">{{ $category->name }}</td>
@@ -56,16 +57,18 @@
                                 </div>
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="p-6 text-center text-sm text-gray-600 dark:text-text-secondary">
-                                No categories found.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <x-empty-state
+                title="No categories found"
+                message="Add categories to organize products for better browsing and filtering."
+                action-label="Add New Category"
+                :action-href="route('superadmin.categories.create')"
+            />
+        @endif
 
         <div class="pt-1">
             {{ $categories->links() }}

@@ -2,27 +2,38 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
             <aside class="xl:col-span-3">
-                <div class="bg-white dark:bg-dark-secondary border border-gray-200 dark:border-gray-800 rounded-xl p-4 sticky top-4">
+                <div class="backend-sidebar sticky top-24">
                     <p class="text-xs uppercase tracking-[0.15em] text-gray-500 dark:text-text-secondary mb-3">Admin Tabs</p>
                     <nav class="space-y-1">
-                        <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Dashboard</a>
-                        <a href="{{ route('admin.orders.index') }}" class="block px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Orders</a>
-                        <a href="{{ route('admin.reviews.index') }}" class="block px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Review Moderation</a>
-                        <a href="{{ route('admin.bookings.index') }}" class="block px-3 py-2 rounded-lg text-sm bg-orange/15 text-orange">Bookings</a>
-                        <a href="{{ route('admin.products.index') }}" class="block px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Products</a>
+                        <a href="{{ route('admin.dashboard') }}" class="backend-tab">Dashboard</a>
+                        <a href="{{ route('admin.products.pending') }}" class="backend-tab">Moderation Queue</a>
+                        <a href="{{ route('admin.reviews.index') }}" class="backend-tab">Review Moderation</a>
+                        <a href="{{ route('admin.products.index') }}" class="backend-tab">Products</a>
+                        <a href="{{ route('admin.orders.index') }}" class="backend-tab">Orders</a>
+                        <a href="{{ route('admin.bookings.index') }}" class="backend-tab backend-tab-active">Bookings</a>
+                        <a href="{{ route('admin.referrals.index') }}" class="backend-tab">Referrals</a>
                     </nav>
                 </div>
             </aside>
 
             <div class="xl:col-span-9 space-y-4">
-        <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Booking #{{ $booking->id }}</h1>
-            <a href="{{ route('admin.bookings.index') }}" class="text-sm text-orange hover:text-orange-light">Back to Bookings</a>
-        </div>
+        <x-page-header
+            title="Booking #{{ $booking->id }}"
+            subtitle="Review customer details and update booking status."
+            :breadcrumbs="[
+                ['label' => 'Admin Dashboard', 'href' => route('admin.dashboard')],
+                ['label' => 'Bookings', 'href' => route('admin.bookings.index')],
+                ['label' => 'Booking #'.$booking->id],
+            ]"
+        >
+            <x-slot name="actions">
+                <a href="{{ route('admin.bookings.index') }}" class="backend-btn-muted">Back to Bookings</a>
+            </x-slot>
+        </x-page-header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Customer Info -->
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-4 border border-gray-200 dark:border-gray-800">
+            <div class="backend-card rounded-xl">
                 <h2 class="text-lg font-semibold mb-3">Customer Information</h2>
                 <div class="space-y-2 text-gray-600 dark:text-text-secondary">
                     <p><span class="font-semibold text-text-primary">Name:</span> {{ $booking->user->name }}</p>
@@ -31,7 +42,7 @@
             </div>
 
             <!-- Service Info -->
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-4 border border-gray-200 dark:border-gray-800">
+            <div class="backend-card rounded-xl">
                 <h2 class="text-lg font-semibold mb-3">Service Details</h2>
                 <div class="space-y-2 text-gray-600 dark:text-text-secondary">
                     <p><span class="font-semibold text-text-primary">Service:</span> {{ $booking->service->name }}</p>
@@ -42,24 +53,46 @@
             </div>
         </div>
 
+        <div class="backend-card rounded-xl">
+            <h2 class="text-lg font-semibold mb-3">Booking Tracking</h2>
+            <div class="space-y-2">
+                @forelse($booking->statusHistories as $history)
+                    <div class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <p class="text-sm font-semibold">
+                                {{ ucfirst($history->to_status) }}
+                                @if($history->from_status)
+                                    <span class="text-gray-500 dark:text-text-secondary font-normal">from {{ ucfirst($history->from_status) }}</span>
+                                @endif
+                            </p>
+                            <span class="text-xs text-gray-500 dark:text-text-secondary">{{ $history->created_at->format('M d, Y H:i') }}</span>
+                        </div>
+                        <p class="text-xs text-gray-600 dark:text-text-secondary mt-1">Updated by {{ $history->actor?->name ?? 'System' }}</p>
+                    </div>
+                @empty
+                    <p class="text-sm text-gray-600 dark:text-text-secondary">No tracking updates yet.</p>
+                @endforelse
+            </div>
+        </div>
+
         <!-- Notes -->
         @if($booking->notes)
-            <div class="bg-white dark:bg-dark-secondary rounded-lg p-4 border border-gray-200 dark:border-gray-800">
+            <div class="backend-card rounded-xl">
                 <h2 class="text-lg font-semibold mb-3">Customer Notes</h2>
                 <p class="text-gray-600 dark:text-text-secondary">{{ $booking->notes }}</p>
             </div>
         @endif
 
         <!-- Update Status -->
-        <div class="bg-white dark:bg-dark-secondary rounded-lg p-4 border border-gray-200 dark:border-gray-800">
+        <div class="backend-card rounded-xl">
             <h2 class="text-lg font-semibold mb-3">Update Booking Status</h2>
-            <form action="{{ route('admin.bookings.updateStatus', $booking) }}" method="POST" class="flex gap-4 items-end">
+            <form action="{{ route('admin.bookings.updateStatus', $booking) }}" method="POST" class="flex flex-col sm:flex-row sm:items-end gap-3">
                 @csrf
                 @method('PATCH')
 
                 <div class="flex-1">
-                    <label class="block text-sm mb-2">Status</label>
-                    <select name="status" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded px-4 py-2 focus:border-orange focus:ring-orange">
+                    <label class="block text-sm font-medium mb-1.5">Status</label>
+                    <select name="status" class="backend-field">
                         <option value="pending" {{ $booking->status === 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="approved" {{ $booking->status === 'approved' ? 'selected' : '' }}>Approved</option>
                         <option value="rejected" {{ $booking->status === 'rejected' ? 'selected' : '' }}>Rejected</option>
@@ -67,7 +100,7 @@
                     </select>
                 </div>
 
-                <button type="submit" class="bg-orange hover:bg-orange-light text-white px-6 py-2 rounded-lg font-semibold transition">
+                <button type="submit" class="backend-btn-primary">
                     Update Status
                 </button>
             </form>

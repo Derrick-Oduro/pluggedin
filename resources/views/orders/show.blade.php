@@ -1,4 +1,6 @@
 <x-app-layout>
+    @php($isCancelled = $order->status === 'cancelled')
+
     <section class="relative overflow-hidden py-20 bg-gradient-to-b from-white via-orange-50/40 to-white dark:from-dark dark:via-dark-secondary dark:to-dark">
         <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-8">
@@ -19,6 +21,39 @@
                     </span>
                 </div>
                 <p class="text-gray-600 dark:text-text-secondary">Order Date: {{ $order->created_at->format('M d, Y H:i') }}</p>
+            </div>
+
+            <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 mb-6 border border-gray-200 dark:border-gray-800">
+                <h2 class="text-xl font-bold mb-4">Order Tracking</h2>
+                @if($isCancelled)
+                    <div class="mb-4 rounded-lg border border-red-500/50 bg-red-500/10 px-3 py-2 text-sm text-red-500">
+                        This order was cancelled before completion.
+                    </div>
+                @endif
+                @php
+                    $statusLabels = [
+                        'pending' => 'Pending',
+                        'confirmed' => 'Confirmed',
+                        'completed' => 'Completed',
+                        'cancelled' => 'Cancelled',
+                    ];
+                    $statusTimes = $order->statusHistories
+                        ->groupBy('to_status')
+                        ->map(fn ($events) => $events->first()->created_at);
+                @endphp
+                <div class="space-y-3">
+                    @foreach($statusLabels as $statusKey => $statusLabel)
+                        @php($timestamp = $statusTimes->get($statusKey))
+                        <div class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <p class="text-sm font-semibold">{{ $statusLabel }}</p>
+                                <span class="text-xs text-gray-500 dark:text-text-secondary">
+                                    {{ $timestamp ? $timestamp->format('M d, Y H:i') : 'Not reached yet' }}
+                                </span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
 
             <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 mb-6 border border-gray-200 dark:border-gray-800">

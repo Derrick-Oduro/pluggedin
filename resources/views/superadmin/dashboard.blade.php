@@ -1,48 +1,35 @@
 @section('page-title', 'Super Admin Dashboard')
 
 <x-superadmin-layout>
-    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        <aside class="xl:col-span-3">
-            <div class="backend-sidebar sticky top-24">
-                <p class="text-xs uppercase tracking-[0.15em] text-gray-500 dark:text-text-secondary mb-3">Control Tabs</p>
-                <nav class="space-y-1">
-                    <a href="{{ route('superadmin.users.index') }}" class="backend-tab">User Management</a>
-                    <a href="{{ route('superadmin.categories.index') }}" class="backend-tab">Category Management</a>
-                    <a href="{{ route('superadmin.marketing.index') }}" class="backend-tab">Homepage and Promotions</a>
-                    <a href="{{ route('superadmin.audit-logs.index') }}" class="backend-tab">Audit Logs</a>
-                    <a href="{{ route('admin.products.pending') }}" class="backend-tab">Moderation Queue</a>
-                    <a href="{{ route('admin.dashboard') }}" class="backend-tab">Admin Dashboard</a>
-                </nav>
+    <div class="space-y-5">
+            <x-page-header
+                title="Super Admin Control Panel"
+                subtitle="Compact overview of system health and latest operations."
+                :breadcrumbs="[
+                    ['label' => 'Dashboard'],
+                ]"
+            />
 
-                <div class="border-t border-gray-200 dark:border-gray-700 mt-4 pt-4">
-                    <p class="text-xs uppercase tracking-[0.15em] text-gray-500 dark:text-text-secondary mb-3">Key Metrics</p>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex items-center justify-between"><span class="text-gray-600 dark:text-text-secondary">Pending uploads</span><span class="font-semibold">{{ $stats['pending_user_uploads'] }}</span></div>
-                        <div class="flex items-center justify-between"><span class="text-gray-600 dark:text-text-secondary">Active discounts</span><span class="font-semibold">{{ $stats['active_discount_campaigns'] }}</span></div>
-                        <div class="flex items-center justify-between"><span class="text-gray-600 dark:text-text-secondary">Carousel slides</span><span class="font-semibold">{{ $stats['carousel_slides'] }}</span></div>
-                    </div>
+            <div class="backend-card p-4">
+                <h2 class="text-lg font-semibold mb-3">Quick Actions</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+                    <a href="{{ route('superadmin.users.index') }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
+                        <p class="text-xs text-gray-500 dark:text-text-secondary">User Management</p>
+                        <p class="text-base font-semibold mt-1">{{ $stats['total_users'] }} accounts</p>
+                    </a>
+                    <a href="{{ route('admin.products.pending') }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
+                        <p class="text-xs text-gray-500 dark:text-text-secondary">Moderation Queue</p>
+                        <p class="text-base font-semibold mt-1">{{ $stats['pending_user_uploads'] }} pending uploads</p>
+                    </a>
+                    <a href="{{ route('superadmin.marketing.index', ['scope' => 'live']) }}#campaigns-manage" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
+                        <p class="text-xs text-gray-500 dark:text-text-secondary">Marketing</p>
+                        <p class="text-base font-semibold mt-1">{{ $stats['active_discount_campaigns'] }} live campaigns</p>
+                    </a>
+                    <a href="{{ route('notifications.index', ['scope' => 'unread']) }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
+                        <p class="text-xs text-gray-500 dark:text-text-secondary">Notifications</p>
+                        <p class="text-base font-semibold mt-1">{{ auth()->user()->unreadNotifications()->count() }} unread</p>
+                    </a>
                 </div>
-
-                <div class="border-t border-gray-200 dark:border-gray-700 mt-4 pt-4">
-                    <p class="text-xs uppercase tracking-[0.15em] text-gray-500 dark:text-text-secondary mb-3">Recent Audits</p>
-                    <div class="space-y-2">
-                        @forelse(($recent_audit_logs ?? collect())->take(4) as $audit)
-                            <div class="text-xs">
-                                <p class="font-semibold">{{ str_replace('.', ' • ', $audit->action) }}</p>
-                                <p class="text-gray-500 dark:text-text-secondary">{{ $audit->created_at->format('M d, H:i') }} · {{ $audit->user?->name ?? 'System' }}</p>
-                            </div>
-                        @empty
-                            <p class="text-xs text-gray-500 dark:text-text-secondary">No audit activity yet.</p>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <div class="xl:col-span-9 space-y-5">
-            <div>
-                <h1 class="text-2xl font-bold">Super Admin Control Panel</h1>
-                <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">Compact overview of system health and latest operations.</p>
             </div>
 
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -54,6 +41,48 @@
                 <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Revenue</p><p class="text-xl font-semibold">${{ number_format($stats['total_revenue'], 2) }}</p></div>
                 <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Pending uploads</p><p class="text-xl font-semibold">{{ $stats['pending_user_uploads'] }}</p></div>
                 <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Active discounts</p><p class="text-xl font-semibold">{{ $stats['active_discount_campaigns'] }}</p></div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+                <div class="xl:col-span-8 backend-card p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-lg font-semibold">Orders and Revenue Trend</h2>
+                        <span class="text-xs text-gray-500 dark:text-text-secondary">Last 6 months</span>
+                    </div>
+                    <div class="h-72">
+                        <canvas id="superadminTrendChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="xl:col-span-4 backend-card p-5">
+                    <h2 class="text-lg font-semibold mb-3">Order Status Distribution</h2>
+                    <div class="h-72">
+                        <canvas id="superadminStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+                <div class="xl:col-span-5 backend-card p-5">
+                    <h2 class="text-lg font-semibold mb-3">User Role Split</h2>
+                    <div class="h-64">
+                        <canvas id="superadminRoleChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="xl:col-span-7 backend-card p-5">
+                    <h2 class="text-lg font-semibold mb-3">Recent Audits</h2>
+                    <div class="space-y-2">
+                        @forelse(($recent_audit_logs ?? collect())->take(6) as $audit)
+                            <div class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-xs">
+                                <p class="font-semibold">{{ str_replace('.', ' • ', $audit->action) }}</p>
+                                <p class="text-gray-500 dark:text-text-secondary">{{ $audit->created_at->format('M d, H:i') }} · {{ $audit->user?->name ?? 'System' }}</p>
+                            </div>
+                        @empty
+                            <p class="text-sm text-gray-500 dark:text-text-secondary">No audit activity yet.</p>
+                        @endforelse
+                    </div>
+                </div>
             </div>
 
             <div class="backend-card p-5">
@@ -143,6 +172,107 @@
             </table>
                 </div>
             </div>
-        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const chartData = @json($chartData ?? []);
+
+        const sharedGrid = {
+            color: 'rgba(148, 163, 184, 0.25)',
+            drawBorder: false,
+        };
+
+        const trendCtx = document.getElementById('superadminTrendChart');
+        if (trendCtx && chartData.labels) {
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [
+                        {
+                            label: 'Orders',
+                            data: chartData.monthly_orders,
+                            borderColor: '#f97316',
+                            backgroundColor: 'rgba(249, 115, 22, 0.16)',
+                            tension: 0.35,
+                            yAxisID: 'y',
+                        },
+                        {
+                            label: 'Revenue',
+                            data: chartData.monthly_revenue,
+                            borderColor: '#0ea5e9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.14)',
+                            tension: 0.35,
+                            yAxisID: 'y1',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: {
+                        y: { beginAtZero: true, grid: sharedGrid },
+                        y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false } },
+                        x: { grid: sharedGrid }
+                    }
+                }
+            });
+        }
+
+        const statusCtx = document.getElementById('superadminStatusChart');
+        if (statusCtx && chartData.order_status) {
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'Confirmed', 'Completed', 'Cancelled'],
+                    datasets: [{
+                        data: [
+                            chartData.order_status.pending || 0,
+                            chartData.order_status.confirmed || 0,
+                            chartData.order_status.completed || 0,
+                            chartData.order_status.cancelled || 0,
+                        ],
+                        backgroundColor: ['#facc15', '#38bdf8', '#22c55e', '#ef4444'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        const roleCtx = document.getElementById('superadminRoleChart');
+        if (roleCtx && chartData.user_roles) {
+            new Chart(roleCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Users', 'Admins', 'Super Admins'],
+                    datasets: [{
+                        label: 'Accounts',
+                        data: [
+                            chartData.user_roles.users || 0,
+                            chartData.user_roles.admins || 0,
+                            chartData.user_roles.super_admins || 0,
+                        ],
+                        backgroundColor: ['#fb923c', '#0ea5e9', '#ef4444'],
+                        borderRadius: 8,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: sharedGrid },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+    </script>
 </x-superadmin-layout>

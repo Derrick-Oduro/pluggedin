@@ -59,6 +59,25 @@
                 @endauth
 
                 @auth
+                    <div class="mb-4">
+                        @if($isWishlisted && $wishlistItemId)
+                            <form action="{{ route('wishlist.destroy', $wishlistItemId) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="w-full border border-red-500/50 text-red-500 hover:bg-red-500/10 px-6 py-3 rounded-lg font-semibold transition">
+                                    Remove from Saved Items
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('wishlist.store', $product) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full border border-orange text-orange hover:bg-orange hover:text-white px-6 py-3 rounded-lg font-semibold transition">
+                                    Save for Later
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+
                     <form action="{{ route('cart.add', $product) }}" method="POST" class="space-y-4">
                         @csrf
                         <div>

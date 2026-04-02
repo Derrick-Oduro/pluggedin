@@ -40,4 +40,9 @@ class Order extends Model
     {
         return $this->belongsTo(DiscountCampaign::class);
     }
+
+    public function statusHistories(): HasMany
+    {
+        return $this->hasMany(OrderStatusHistory::class)->latest();
+    }
 }

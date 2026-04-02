@@ -10,6 +10,7 @@ use App\Models\HeroSlide;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use Carbon\Carbon;
 
 class SuperAdminDashboardController extends Controller
 {
@@ -37,7 +38,51 @@ class SuperAdminDashboardController extends Controller
             ->get();
         $recent_audit_logs = AuditLog::with('user')->latest()->take(8)->get();
 
-        return view('superadmin.dashboard', compact('stats', 'recent_users', 'recent_orders', 'recent_pending_uploads', 'recent_audit_logs'));
+        $months = collect(range(5, 0))->reverse()->map(function ($offset) {
+            $date = now()->subMonths($offset);
+            return [
+                'key' => $date->format('Y-m'),
+                'label' => $date->format('M Y'),
+            ];
+        })->values();
+
+        $periodStart = Carbon::parse($months->first()['key'].'-01')->startOfMonth();
+
+        $ordersInPeriod = Order::query()
+            ->where('created_at', '>=', $periodStart)
+            ->get(['id', 'status', 'total_price', 'created_at']);
+
+        $ordersByMonth = $ordersInPeriod->groupBy(fn ($order) => $order->created_at->format('Y-m'));
+
+        $monthlyOrderCounts = $months->map(fn ($month) => ($ordersByMonth->get($month['key']) ?? collect())->count())->values();
+        $monthlyRevenue = $months->map(function ($month) use ($ordersByMonth) {
+            return ($ordersByMonth->get($month['key']) ?? collect())
+                ->where('status', 'completed')
+                ->sum('total_price');
+        })->values();
+
+        $statusCounts = [
+            'pending' => Order::where('status', 'pending')->count(),
+            'confirmed' => Order::where('status', 'confirmed')->count(),
+            'completed' => Order::where('status', 'completed')->count(),
+            'cancelled' => Order::where('status', 'cancelled')->count(),
+        ];
+
+        $userRoleCounts = [
+            'users' => User::role('user')->count(),
+            'admins' => User::role('admin')->count(),
+            'super_admins' => User::role('super-admin')->count(),
+        ];
+
+        $chartData = [
+            'labels' => $months->pluck('label')->values(),
+            'monthly_orders' => $monthlyOrderCounts,
+            'monthly_revenue' => $monthlyRevenue,
+            'order_status' => $statusCounts,
+            'user_roles' => $userRoleCounts,
+        ];
+
+        return view('superadmin.dashboard', compact('stats', 'recent_users', 'recent_orders', 'recent_pending_uploads', 'recent_audit_logs', 'chartData'));
     }
 
     public function auditLogs()

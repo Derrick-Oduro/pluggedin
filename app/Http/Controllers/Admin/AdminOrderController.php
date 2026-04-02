@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderStatusHistory;
 use App\Models\ProductReview;
+use App\Notifications\OrderStatusUpdatedNotification;
 use App\Notifications\ReviewReminderNotification;
 use Illuminate\Http\Request;
 
@@ -19,7 +21,7 @@ class AdminOrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load(['user', 'items.product']);
+        $order->load(['user', 'items.product', 'statusHistories.actor']);
 
         return view('admin.orders.show', compact('order'));
     }
@@ -30,8 +32,22 @@ class AdminOrderController extends Controller
             'status' => 'required|in:pending,confirmed,completed,cancelled'
         ]);
 
-        $wasCompleted = $order->status === 'completed';
-        $order->update(['status' => $request->status]);
+        $previousStatus = $order->status;
+        $newStatus = $request->status;
+
+        $wasCompleted = $previousStatus === 'completed';
+        $order->update(['status' => $newStatus]);
+
+        if ($previousStatus !== $newStatus) {
+            $order->loadMissing('user');
+            OrderStatusHistory::create([
+                'order_id' => $order->id,
+                'changed_by' => auth()->id(),
+                'from_status' => $previousStatus,
+                'to_status' => $newStatus,
+            ]);
+            $order->user?->notify(new OrderStatusUpdatedNotification($order->id, $previousStatus, $newStatus));
+        }
 
         if (! $wasCompleted && $order->status === 'completed') {
             $order->loadMissing('items.product', 'user');

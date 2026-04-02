@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\BookingStatusHistory;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -29,13 +30,20 @@ class BookingController extends Controller
             'notes' => 'nullable|string'
         ]);
 
-        Booking::create([
+        $booking = Booking::create([
             'user_id' => auth()->id(),
             'service_id' => $request->service_id,
             'device_model' => $request->device_model,
             'preferred_date' => $request->preferred_date,
             'status' => 'pending',
             'notes' => $request->notes
+        ]);
+
+        BookingStatusHistory::create([
+            'booking_id' => $booking->id,
+            'changed_by' => auth()->id(),
+            'from_status' => null,
+            'to_status' => 'pending',
         ]);
 
         return redirect()->route('bookings.index')->with('success', 'Booking request submitted successfully!');
@@ -47,7 +55,7 @@ class BookingController extends Controller
             abort(403);
         }
 
-        $booking->load('service');
+        $booking->load(['service', 'statusHistories.actor']);
 
         return view('bookings.show', compact('booking'));
     }

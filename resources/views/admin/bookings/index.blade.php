@@ -18,21 +18,22 @@
             <div class="xl:col-span-9 space-y-4">
                 <h1 class="text-2xl font-bold">Manage Bookings</h1>
 
-                <div class="backend-table-wrap">
-            <table class="backend-table">
-                <thead class="border-b border-gray-200 dark:border-gray-700">
-                    <tr>
-                        <th class="backend-th">ID</th>
-                        <th class="backend-th">Customer</th>
-                        <th class="backend-th">Service</th>
-                        <th class="backend-th">Device</th>
-                        <th class="backend-th">Preferred Date</th>
-                        <th class="backend-th">Status</th>
-                        <th class="backend-th">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($bookings as $booking)
+                @if($bookings->count())
+                    <div class="backend-table-wrap">
+                        <table class="backend-table">
+                            <thead class="border-b border-gray-200 dark:border-gray-700">
+                                <tr>
+                                    <th class="backend-th">ID</th>
+                                    <th class="backend-th">Customer</th>
+                                    <th class="backend-th">Service</th>
+                                    <th class="backend-th">Device</th>
+                                    <th class="backend-th">Preferred Date</th>
+                                    <th class="backend-th">Status</th>
+                                    <th class="backend-th">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($bookings as $booking)
                         <tr class="backend-row">
                             <td class="backend-td font-semibold">#{{ $booking->id }}</td>
                             <td class="backend-td">{{ $booking->user->name }}</td>
@@ -55,16 +56,16 @@
                                 </a>
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="p-4 text-center text-gray-600 dark:text-text-secondary">
-                                No bookings found.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <x-empty-state
+                        title="No bookings found"
+                        message="Service booking requests will appear here after customers submit them."
+                    />
+                @endif
 
                 <div class="mt-4">
                     {{ $bookings->links() }}

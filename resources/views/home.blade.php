@@ -32,17 +32,7 @@
                     Upgrade. Don't Replace.
                 </h1>
 
-                @if($activeCampaign)
-                    <div class="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full bg-orange/85 text-white text-sm font-semibold shadow-lg">
-                        <span>{{ $activeCampaign->discount_percent }}% Off</span>
-                        <span class="opacity-90">{{ $activeCampaign->name }}</span>
-                        @if($activeCampaign->code)
-                            <span class="bg-white/20 rounded-full px-2 py-0.5 text-xs">Code: {{ $activeCampaign->code }}</span>
-                        @endif
-                    </div>
-                @endif
-
-                <p class="text-lg sm:text-xl md:text-2xl text-white/90 drop-shadow mb-9 max-w-2xl" x-text="slides[currentIndex].caption"></p>
+                <p class="text-lg sm:text-xl md:text-2xl text-white/90 drop-shadow mb-9 max-w-2xl" x-text="slides.length ? slides[currentIndex].caption : 'No carousel slides are active right now. Add one from Marketing to feature your latest campaign.'"></p>
 
                 <div class="flex flex-col sm:flex-row gap-4">
                     <a href="{{ route('products.index') }}" class="inline-flex items-center justify-center bg-orange hover:bg-orange-light text-white px-8 py-4 rounded-lg font-semibold shadow-xl shadow-black/20 transition">
@@ -59,23 +49,35 @@
                     <div class="rounded-lg bg-white/10 border border-white/20 backdrop-blur px-4 py-3">Warranty-backed service</div>
                 </div>
             </div>
+
+            @if($activeCampaign)
+                <div class="absolute right-0 top-0 hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange/85 text-white text-sm font-semibold shadow-lg">
+                    <span>{{ $activeCampaign->discount_percent }}% Off</span>
+                    <span class="opacity-90">{{ $activeCampaign->name }}</span>
+                    @if($activeCampaign->code)
+                        <span class="bg-white/20 rounded-full px-2 py-0.5 text-xs">Code: {{ $activeCampaign->code }}</span>
+                    @endif
+                </div>
+            @endif
         </div>
 
         <!-- Controls -->
         <button type="button"
+                x-show="slides.length > 1"
                 @click="prev()"
                 class="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 h-11 w-11 rounded-full bg-black/35 hover:bg-black/55 text-white backdrop-blur transition"
                 aria-label="Previous slide">
             &#10094;
         </button>
         <button type="button"
+                x-show="slides.length > 1"
                 @click="next()"
                 class="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 h-11 w-11 rounded-full bg-black/35 hover:bg-black/55 text-white backdrop-blur transition"
                 aria-label="Next slide">
             &#10095;
         </button>
 
-        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+        <div x-show="slides.length > 1" class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
             <template x-for="(slide, index) in slides" :key="slide.alt">
                 <button type="button"
                         class="h-2.5 rounded-full transition-all"
@@ -110,6 +112,9 @@
                 timer: null,
                 interval: 7000,
                 init() {
+                    if (!this.slides.length) {
+                        return;
+                    }
                     this.resume();
                 },
                 pause() {
@@ -123,12 +128,21 @@
                     this.timer = setInterval(() => this.next(), this.interval);
                 },
                 next() {
+                    if (!this.slides.length) {
+                        return;
+                    }
                     this.currentIndex = (this.currentIndex + 1) % this.slides.length;
                 },
                 prev() {
+                    if (!this.slides.length) {
+                        return;
+                    }
                     this.currentIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
                 },
                 goTo(index) {
+                    if (!this.slides.length) {
+                        return;
+                    }
                     this.currentIndex = index;
                     this.resume();
                 }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BookingStatusHistory;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\OrderStatusHistory;
 
 class UserDashboardController extends Controller
 {
@@ -12,6 +14,7 @@ class UserDashboardController extends Controller
         $user = auth()->user();
 
         $uploadedProducts = $user->uploadedProducts()->latest()->take(6)->get();
+        $pendingUploadsCount = $user->uploadedProducts()->where('status', 'pending')->count();
         $orders = Order::with('items.product')->where('user_id', $user->id)->latest()->take(5)->get();
         $reviews = $user->reviews()->with('product')->latest()->take(5)->get();
         $reviewedProductIds = $user->reviews()->pluck('product_id');
@@ -31,18 +34,33 @@ class UserDashboardController extends Controller
             ->values();
         $pointsTransactions = $user->pointsTransactions()->latest()->take(8)->get();
         $referralLinks = $user->referralLinks()->with('product')->latest()->get();
+        $recentOrderStatusUpdates = OrderStatusHistory::query()
+            ->with(['order', 'actor'])
+            ->whereHas('order', fn ($query) => $query->where('user_id', $user->id))
+            ->latest()
+            ->take(6)
+            ->get();
+        $recentBookingStatusUpdates = BookingStatusHistory::query()
+            ->with(['booking', 'actor'])
+            ->whereHas('booking', fn ($query) => $query->where('user_id', $user->id))
+            ->latest()
+            ->take(6)
+            ->get();
 
         return view('dashboard', [
             'uploadLimit' => $user->monthlyUploadLimit(),
             'uploadsUsed' => $user->monthlyProductUploadCount(),
             'uploadsRemaining' => $user->remainingMonthlyUploads(),
             'uploadedProducts' => $uploadedProducts,
+            'pendingUploadsCount' => $pendingUploadsCount,
             'orders' => $orders,
             'reviews' => $reviews,
             'pendingReviewItems' => $pendingReviewItems,
             'pointsBalance' => $user->points_balance,
             'pointsTransactions' => $pointsTransactions,
             'referralLinks' => $referralLinks,
+            'recentOrderStatusUpdates' => $recentOrderStatusUpdates,
+            'recentBookingStatusUpdates' => $recentBookingStatusUpdates,
         ]);
     }
 }

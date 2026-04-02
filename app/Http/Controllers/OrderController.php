@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DiscountCampaign;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\OrderStatusHistory;
 use App\Models\PointsTransaction;
 use App\Models\ProductReview;
 use App\Models\ReferralLink;
@@ -29,7 +30,7 @@ class OrderController extends Controller
             abort(403);
         }
 
-        $order->load('items.product');
+        $order->load(['items.product', 'statusHistories.actor']);
         $userReviews = ProductReview::query()
             ->where('user_id', auth()->id())
             ->whereIn('product_id', $order->items->pluck('product_id'))
@@ -134,6 +135,13 @@ class OrderController extends Controller
                 'status' => 'pending',
                 'delivery_address' => $request->delivery_address,
                 'delivery_phone' => $request->delivery_phone
+            ]);
+
+            OrderStatusHistory::create([
+                'order_id' => $order->id,
+                'changed_by' => auth()->id(),
+                'from_status' => null,
+                'to_status' => 'pending',
             ]);
 
             if ($campaign) {

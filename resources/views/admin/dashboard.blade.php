@@ -24,6 +24,28 @@
                     <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">Compact operations panel for day-to-day management.</p>
                 </div>
 
+                <div class="backend-card p-4">
+                    <h2 class="text-lg font-semibold mb-3">Quick Actions</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+                        <a href="{{ route('admin.products.pending') }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
+                            <p class="text-xs text-gray-500 dark:text-text-secondary">Moderation Queue</p>
+                            <p class="text-base font-semibold mt-1">{{ $stats['pending_products'] }} pending uploads</p>
+                        </a>
+                        <a href="{{ route('admin.orders.index') }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
+                            <p class="text-xs text-gray-500 dark:text-text-secondary">Orders</p>
+                            <p class="text-base font-semibold mt-1">{{ $stats['pending_orders'] }} pending orders</p>
+                        </a>
+                        <a href="{{ route('admin.bookings.index') }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
+                            <p class="text-xs text-gray-500 dark:text-text-secondary">Bookings</p>
+                            <p class="text-base font-semibold mt-1">{{ $stats['pending_bookings'] }} pending bookings</p>
+                        </a>
+                        <a href="{{ route('notifications.index', ['scope' => 'unread']) }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
+                            <p class="text-xs text-gray-500 dark:text-text-secondary">Notifications</p>
+                            <p class="text-base font-semibold mt-1">{{ auth()->user()->unreadNotifications()->count() }} unread</p>
+                        </a>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
                     <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Products</p><p class="text-xl font-semibold">{{ $stats['total_products'] }}</p></div>
                     <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Pending Products</p><p class="text-xl font-semibold">{{ $stats['pending_products'] }}</p></div>
@@ -35,6 +57,44 @@
                     <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Referral Conversions</p><p class="text-xl font-semibold">{{ $stats['total_referral_conversions'] }}</p></div>
                     <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Pending Reviews</p><p class="text-xl font-semibold">{{ $stats['pending_reviews'] }}</p></div>
                     <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Reported Reviews</p><p class="text-xl font-semibold">{{ $stats['reported_reviews'] }}</p></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="backend-card p-5">
+                        <h2 class="text-lg font-semibold mb-3">Order Tracking Updates</h2>
+                        <div class="space-y-2">
+                            @forelse(($recentOrderStatusUpdates ?? collect()) as $update)
+                                <div class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <p class="text-sm font-semibold">Order #{{ $update->order_id }}: {{ ucfirst($update->to_status) }}</p>
+                                        <span class="text-xs text-gray-500 dark:text-text-secondary">{{ $update->created_at->format('M d, H:i') }}</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 dark:text-text-secondary">{{ $update->actor?->name ?? 'System' }} · {{ $update->order?->user?->name ?? 'Unknown customer' }}</p>
+                                    <a href="{{ route('admin.orders.show', $update->order_id) }}" class="text-xs text-orange hover:text-orange-light font-semibold">View Order</a>
+                                </div>
+                            @empty
+                                <p class="text-sm text-gray-600 dark:text-text-secondary">No order status updates yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <div class="backend-card p-5">
+                        <h2 class="text-lg font-semibold mb-3">Booking Tracking Updates</h2>
+                        <div class="space-y-2">
+                            @forelse(($recentBookingStatusUpdates ?? collect()) as $update)
+                                <div class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <p class="text-sm font-semibold">Booking #{{ $update->booking_id }}: {{ ucfirst($update->to_status) }}</p>
+                                        <span class="text-xs text-gray-500 dark:text-text-secondary">{{ $update->created_at->format('M d, H:i') }}</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 dark:text-text-secondary">{{ $update->actor?->name ?? 'System' }} · {{ $update->booking?->user?->name ?? 'Unknown customer' }}</p>
+                                    <a href="{{ route('admin.bookings.show', $update->booking_id) }}" class="text-xs text-orange hover:text-orange-light font-semibold">View Booking</a>
+                                </div>
+                            @empty
+                                <p class="text-sm text-gray-600 dark:text-text-secondary">No booking status updates yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
                 </div>
 
                 <div class="flex flex-wrap gap-2">

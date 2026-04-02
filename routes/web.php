@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\SuperAdminDashboardController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserProductController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 // Home
@@ -39,6 +41,7 @@ Route::get('/services/{service}', [ServiceController::class, 'show'])->name('ser
 // About & Contact (static pages for now)
 Route::view('/about', 'about')->name('about');
 Route::view('/contact', 'contact')->name('contact');
+Route::get('/search', [GlobalSearchController::class, 'index'])->name('search.global');
 
 // Authenticated User Routes
 Route::middleware('auth')->group(function () {
@@ -52,6 +55,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/{product}', [CartController::class, 'add'])->name('cart.add');
     Route::patch('/cart/{cartItem}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
+
+    // Wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/{product}', [WishlistController::class, 'store'])->name('wishlist.store');
+    Route::delete('/wishlist/{wishlistItem}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+    Route::post('/wishlist/{wishlistItem}/move-to-cart', [WishlistController::class, 'moveToCart'])->name('wishlist.move-to-cart');
 
     // Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
@@ -149,10 +158,12 @@ Route::prefix('superadmin')->middleware(['auth', 'superadmin'])->name('superadmi
     Route::post('/marketing/slides', [SuperAdminMarketingController::class, 'storeSlide'])->name('marketing.slides.store');
     Route::patch('/marketing/slides/{slide}', [SuperAdminMarketingController::class, 'updateSlide'])->name('marketing.slides.update');
     Route::delete('/marketing/slides/{slide}', [SuperAdminMarketingController::class, 'destroySlide'])->name('marketing.slides.destroy');
+    Route::post('/marketing/slides/{id}/restore', [SuperAdminMarketingController::class, 'restoreSlide'])->name('marketing.slides.restore');
 
     Route::post('/marketing/campaigns', [SuperAdminMarketingController::class, 'storeCampaign'])->name('marketing.campaigns.store');
     Route::patch('/marketing/campaigns/{campaign}', [SuperAdminMarketingController::class, 'updateCampaign'])->name('marketing.campaigns.update');
     Route::delete('/marketing/campaigns/{campaign}', [SuperAdminMarketingController::class, 'destroyCampaign'])->name('marketing.campaigns.destroy');
+    Route::post('/marketing/campaigns/{id}/restore', [SuperAdminMarketingController::class, 'restoreCampaign'])->name('marketing.campaigns.restore');
 });
 
 require __DIR__.'/auth.php';

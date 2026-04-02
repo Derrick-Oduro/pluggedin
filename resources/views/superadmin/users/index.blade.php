@@ -21,20 +21,21 @@
             </div>
         @endif
 
-        <div class="backend-table-wrap rounded-xl">
-            <table class="backend-table">
-                <thead class="border-b border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-dark">
-                    <tr>
-                        <th class="backend-th">ID</th>
-                        <th class="backend-th">Name</th>
-                        <th class="backend-th">Email</th>
-                        <th class="backend-th">Role</th>
-                        <th class="backend-th">Joined</th>
-                        <th class="backend-th">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($users as $user)
+        @if($users->count())
+            <div class="backend-table-wrap rounded-xl">
+                <table class="backend-table">
+                    <thead class="border-b border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-dark">
+                        <tr>
+                            <th class="backend-th">ID</th>
+                            <th class="backend-th">Name</th>
+                            <th class="backend-th">Email</th>
+                            <th class="backend-th">Role</th>
+                            <th class="backend-th">Joined</th>
+                            <th class="backend-th">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($users as $user)
                         <tr class="backend-row">
                             <td class="backend-td">{{ $user->id }}</td>
                             <td class="backend-td font-medium">{{ $user->name }}</td>
@@ -66,16 +67,18 @@
                                 </div>
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="p-6 text-center text-sm text-gray-600 dark:text-text-secondary">
-                                No users found.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <x-empty-state
+                title="No users found"
+                message="Create an account to get started with platform access control."
+                action-label="Add New User"
+                :action-href="route('superadmin.users.create')"
+            />
+        @endif
 
         <div class="pt-1">
             {{ $users->links() }}

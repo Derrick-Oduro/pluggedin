@@ -32,6 +32,12 @@
                                     <p class="text-gray-600 dark:text-text-secondary text-sm"><span class="font-semibold text-text-primary">Notes:</span> {{ $booking->notes }}</p>
                                 </div>
                             @endif
+
+                            <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                                <a href="{{ route('bookings.show', $booking) }}" class="text-orange hover:text-orange-light text-sm font-semibold">
+                                    View Details
+                                </a>
+                            </div>
                         </div>
                     @endforeach
                 </div>

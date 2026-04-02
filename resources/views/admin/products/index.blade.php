@@ -24,21 +24,22 @@
                     </div>
                 </div>
 
-                <div class="backend-table-wrap">
-            <table class="backend-table">
-                <thead class="border-b border-gray-200 dark:border-gray-700">
-                    <tr>
-                        <th class="backend-th">ID</th>
-                        <th class="backend-th">Name</th>
-                        <th class="backend-th">Category</th>
-                        <th class="backend-th">Status</th>
-                        <th class="backend-th">Price</th>
-                        <th class="backend-th">Stock</th>
-                        <th class="backend-th">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($products as $product)
+                @if($products->count())
+                    <div class="backend-table-wrap">
+                        <table class="backend-table">
+                            <thead class="border-b border-gray-200 dark:border-gray-700">
+                                <tr>
+                                    <th class="backend-th">ID</th>
+                                    <th class="backend-th">Name</th>
+                                    <th class="backend-th">Category</th>
+                                    <th class="backend-th">Status</th>
+                                    <th class="backend-th">Price</th>
+                                    <th class="backend-th">Stock</th>
+                                    <th class="backend-th">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($products as $product)
                         <tr class="backend-row">
                             <td class="backend-td">{{ $product->id }}</td>
                             <td class="backend-td">{{ $product->name }}</td>
@@ -69,16 +70,18 @@
                                 </div>
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="p-4 text-center text-gray-600 dark:text-text-secondary">
-                                No products found.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <x-empty-state
+                        title="No products found"
+                        message="Create your first product to start selling in the catalog."
+                        action-label="Add Product"
+                        :action-href="route('admin.products.create')"
+                    />
+                @endif
 
                 <div class="mt-4">
                     {{ $products->links() }}

@@ -21,20 +21,21 @@
                     <h1 class="text-2xl font-bold">Manage Orders</h1>
                 </div>
 
-                <div class="backend-table-wrap">
-            <table class="backend-table">
-                <thead class="border-b border-gray-200 dark:border-gray-700">
-                    <tr>
-                        <th class="backend-th">Order ID</th>
-                        <th class="backend-th">Customer</th>
-                        <th class="backend-th">Total</th>
-                        <th class="backend-th">Status</th>
-                        <th class="backend-th">Date</th>
-                        <th class="backend-th">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($orders as $order)
+                @if($orders->count())
+                    <div class="backend-table-wrap">
+                        <table class="backend-table">
+                            <thead class="border-b border-gray-200 dark:border-gray-700">
+                                <tr>
+                                    <th class="backend-th">Order ID</th>
+                                    <th class="backend-th">Customer</th>
+                                    <th class="backend-th">Total</th>
+                                    <th class="backend-th">Status</th>
+                                    <th class="backend-th">Date</th>
+                                    <th class="backend-th">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($orders as $order)
                         <tr class="backend-row">
                             <td class="backend-td font-semibold">#{{ $order->id }}</td>
                             <td class="backend-td">{{ $order->user->name }}</td>
@@ -56,16 +57,16 @@
                                 </a>
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="p-4 text-center text-gray-600 dark:text-text-secondary">
-                                No orders found.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <x-empty-state
+                        title="No orders found"
+                        message="New customer purchases will appear here once checkout is completed."
+                    />
+                @endif
 
                 <div class="mt-4">
                     {{ $orders->links() }}

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -25,6 +26,7 @@ class User extends Authenticatable
         'password',
         'role',
         'is_super_admin',
+        'points_balance',
     ];
 
     /**
@@ -63,6 +65,45 @@ class User extends Authenticatable
     public function cartItems(): HasMany
     {
         return $this->hasMany(CartItem::class);
+    }
+
+    public function uploadedProducts(): HasMany
+    {
+        return $this->hasMany(Product::class, 'uploaded_by');
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function referralLinks(): HasMany
+    {
+        return $this->hasMany(ReferralLink::class);
+    }
+
+    public function pointsTransactions(): HasMany
+    {
+        return $this->hasMany(PointsTransaction::class);
+    }
+
+    public function monthlyUploadLimit(): int
+    {
+        return (int) config('marketplace.upload_limit_per_month', 5);
+    }
+
+    public function monthlyProductUploadCount(?Carbon $now = null): int
+    {
+        $now = $now ?: now();
+
+        return $this->uploadedProducts()
+            ->whereBetween('created_at', [$now->copy()->startOfMonth(), $now->copy()->endOfMonth()])
+            ->count();
+    }
+
+    public function remainingMonthlyUploads(?Carbon $now = null): int
+    {
+        return max(0, $this->monthlyUploadLimit() - $this->monthlyProductUploadCount($now));
     }
 
     public function isAdmin(): bool

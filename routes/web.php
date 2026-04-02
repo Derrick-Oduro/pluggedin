@@ -11,10 +11,14 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\UserProductController;
 use Illuminate\Support\Facades\Route;
 
 // Home
@@ -22,7 +26,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Products
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products/{product}/r/{code}', [ReferralController::class, 'track'])->whereNumber('product')->name('products.referrals.track');
+Route::get('/products/{product}', [ProductController::class, 'show'])->whereNumber('product')->name('products.show');
 
 // Services
 Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
@@ -57,6 +62,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
 
+    // User Product Uploads
+    Route::get('/products/upload', [UserProductController::class, 'create'])->name('products.upload.create');
+    Route::post('/products/upload', [UserProductController::class, 'store'])->name('products.upload.store');
+
+    // Product Reviews and Referrals
+    Route::post('/products/{product}/reviews', [ProductReviewController::class, 'store'])->name('products.reviews.store');
+    Route::post('/products/{product}/referral-links', [ReferralController::class, 'store'])->name('products.referrals.store');
+
+    // User Dashboard
+    Route::get('/user/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
+
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::get('/settings/appearance', [SettingsController::class, 'appearance'])->name('settings.appearance');
@@ -70,7 +86,7 @@ Route::middleware('auth')->group(function () {
         if (auth()->user()->hasRole('admin')) {
             return redirect()->route('admin.dashboard');
         }
-        return view('dashboard');
+        return redirect()->route('user.dashboard');
     })->name('dashboard');
 });
 
@@ -79,6 +95,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
 
     // Products Management
+    Route::get('/products/pending', [AdminProductController::class, 'pending'])->name('products.pending');
+    Route::patch('/products/{product}/review', [AdminProductController::class, 'review'])->name('products.review');
     Route::resource('products', AdminProductController::class);
 
     // Orders Management

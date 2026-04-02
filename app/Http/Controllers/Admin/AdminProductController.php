@@ -15,9 +15,36 @@ class AdminProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category')->paginate(15);
+        $products = Product::with(['category', 'uploader'])->latest()->paginate(15);
 
         return view('admin.products.index', compact('products'));
+    }
+
+    public function pending()
+    {
+        $products = Product::with(['category', 'uploader'])
+            ->where('status', 'pending')
+            ->latest()
+            ->paginate(15);
+
+        return view('admin.products.pending', compact('products'));
+    }
+
+    public function review(Request $request, Product $product)
+    {
+        $request->validate([
+            'status' => 'required|in:approved,rejected',
+            'admin_review_comment' => 'nullable|string|max:2000',
+        ]);
+
+        $product->update([
+            'status' => $request->status,
+            'admin_review_comment' => $request->admin_review_comment,
+            'reviewed_by' => auth()->id(),
+            'reviewed_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Product review status updated.');
     }
 
     /**
@@ -49,6 +76,10 @@ class AdminProductController extends Controller
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('products', 'public');
         }
+
+        $data['status'] = 'approved';
+        $data['reviewed_by'] = auth()->id();
+        $data['reviewed_at'] = now();
 
         Product::create($data);
 

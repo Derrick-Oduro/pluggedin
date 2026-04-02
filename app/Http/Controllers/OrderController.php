@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\PointsTransaction;
+use App\Models\ReferralLink;
+use App\Notifications\PointsEarnedNotification;
+use App\Notifications\RedeemableThresholdReachedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -78,10 +82,58 @@ class OrderController extends Controller
 
                 // Decrease stock
                 $cartItem->product->decrement('stock_quantity', $cartItem->quantity);
+
+                $referrals = session('referrals', []);
+                $referralLinkId = $referrals[$cartItem->product_id] ?? null;
+
+                if (! $referralLinkId) {
+                    continue;
+                }
+
+                $referralLink = ReferralLink::where('id', $referralLinkId)
+                    ->where('product_id', $cartItem->product_id)
+                    ->first();
+
+                if (! $referralLink || $referralLink->user_id === auth()->id()) {
+                    continue;
+                }
+
+                $points = (int) config('marketplace.referral_points_per_purchase', 10);
+                $threshold = (int) config('marketplace.redeemable_points_threshold', 100);
+
+                $referrer = $referralLink->user;
+                $previousBalance = (int) $referrer->points_balance;
+                $newBalance = $previousBalance + $points;
+
+                $referrer->update(['points_balance' => $newBalance]);
+
+                PointsTransaction::create([
+                    'user_id' => $referrer->id,
+                    'points' => $points,
+                    'type' => 'referral_purchase',
+                    'description' => 'Referral conversion from a product purchase.',
+                    'meta' => [
+                        'order_id' => $order->id,
+                        'product_id' => $cartItem->product_id,
+                        'referral_link_id' => $referralLink->id,
+                        'buyer_user_id' => auth()->id(),
+                    ],
+                ]);
+
+                $referralLink->increment('conversions');
+
+                $referrer->notify(new PointsEarnedNotification($points, 'A purchase was completed via your referral link.'));
+
+                if ($previousBalance < $threshold && $newBalance >= $threshold) {
+                    $referrer->notify(new RedeemableThresholdReachedNotification($threshold, $newBalance));
+                }
             }
 
             // Clear cart
             auth()->user()->cartItems()->delete();
+
+            // Clear tracked referrals once checkout is complete.
+            session()->forget('referrals');
         });
 
         return redirect()->route('orders.index')->with('success', 'Order placed successfully!');

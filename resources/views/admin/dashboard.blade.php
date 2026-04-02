@@ -4,16 +4,21 @@
             <h1 class="text-4xl font-bold">Admin Dashboard</h1>
             @if(auth()->user()->hasRole('super-admin'))
                 <a href="{{ route('superadmin.dashboard') }}" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold transition">
-                    🔐 Super Admin Panel
+                    Super Admin Panel
                 </a>
             @endif
         </div>
 
         <!-- Stats Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
             <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
                 <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Total Products</h3>
                 <p class="text-3xl font-bold text-orange">{{ $stats['total_products'] }}</p>
+            </div>
+
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
+                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Pending Products</h3>
+                <p class="text-3xl font-bold text-yellow-500">{{ $stats['pending_products'] }}</p>
             </div>
 
             <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
@@ -32,12 +37,26 @@
                 <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Total Revenue</h3>
                 <p class="text-3xl font-bold text-orange">${{ number_format($stats['total_revenue'], 2) }}</p>
             </div>
+
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
+                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Referral Links</h3>
+                <p class="text-3xl font-bold text-orange">{{ $stats['total_referral_links'] }}</p>
+            </div>
+
+            <div class="bg-white dark:bg-dark-secondary rounded-lg p-6">
+                <h3 class="text-gray-600 dark:text-text-secondary text-sm mb-2">Referral Conversions</h3>
+                <p class="text-3xl font-bold text-orange">{{ $stats['total_referral_conversions'] }}</p>
+            </div>
         </div>
 
         <!-- Quick Actions -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
             <a href="{{ route('admin.products.create') }}" class="bg-orange hover:bg-orange-light text-white p-6 rounded-lg text-center font-semibold transition">
                 + Add New Product
+            </a>
+
+            <a href="{{ route('admin.products.pending') }}" class="bg-yellow-600 hover:bg-yellow-500 text-white p-6 rounded-lg text-center font-semibold transition">
+                Review Pending Uploads
             </a>
 
             <a href="{{ route('admin.products.index') }}" class="bg-white dark:bg-dark-secondary hover:bg-gray-100 dark:hover:bg-gray-800 p-6 rounded-lg text-center font-semibold transition">

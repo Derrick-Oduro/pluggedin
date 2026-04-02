@@ -2,9 +2,14 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-4xl font-bold">Manage Products</h1>
-            <a href="{{ route('admin.products.create') }}" class="bg-orange hover:bg-orange-light text-white px-6 py-3 rounded-lg font-semibold transition">
-                + Add New Product
-            </a>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('admin.products.pending') }}" class="bg-yellow-600 hover:bg-yellow-500 text-white px-6 py-3 rounded-lg font-semibold transition">
+                    Pending Reviews
+                </a>
+                <a href="{{ route('admin.products.create') }}" class="bg-orange hover:bg-orange-light text-white px-6 py-3 rounded-lg font-semibold transition">
+                    + Add New Product
+                </a>
+            </div>
         </div>
 
         <div class="bg-white dark:bg-dark-secondary rounded-lg overflow-hidden">
@@ -14,6 +19,7 @@
                         <th class="text-left p-4">ID</th>
                         <th class="text-left p-4">Name</th>
                         <th class="text-left p-4">Category</th>
+                        <th class="text-left p-4">Status</th>
                         <th class="text-left p-4">Price</th>
                         <th class="text-left p-4">Stock</th>
                         <th class="text-left p-4">Actions</th>
@@ -25,6 +31,15 @@
                             <td class="p-4">{{ $product->id }}</td>
                             <td class="p-4">{{ $product->name }}</td>
                             <td class="p-4">{{ $product->category->name }}</td>
+                            <td class="p-4">
+                                <span class="text-xs px-3 py-1 rounded-full
+                                    @if($product->status === 'approved') bg-green-500/20 text-green-500
+                                    @elseif($product->status === 'pending') bg-yellow-500/20 text-yellow-500
+                                    @else bg-red-500/20 text-red-500
+                                    @endif">
+                                    {{ ucfirst($product->status) }}
+                                </span>
+                            </td>
                             <td class="p-4 text-orange font-semibold">${{ number_format($product->price, 2) }}</td>
                             <td class="p-4">{{ $product->stock_quantity }}</td>
                             <td class="p-4">
@@ -44,7 +59,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="p-8 text-center text-gray-600 dark:text-text-secondary">
+                            <td colspan="7" class="p-8 text-center text-gray-600 dark:text-text-secondary">
                                 No products found.
                             </td>
                         </tr>

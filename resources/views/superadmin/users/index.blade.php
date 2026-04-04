@@ -22,7 +22,7 @@
         @endif
 
         @if($users->count())
-            <div class="backend-table-wrap rounded-xl">
+            <x-table-shell>
                 <table class="backend-table">
                     <thead class="border-b border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-dark">
                         <tr>
@@ -70,7 +70,7 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
+            </x-table-shell>
         @else
             <x-empty-state
                 title="No users found"

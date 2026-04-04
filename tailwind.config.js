@@ -26,8 +26,9 @@ export default {
                     secondary: '#F5F5F5',
                 },
                 'orange': {
-                    DEFAULT: '#FF8C00',
-                    light: '#FFA726',
+                    DEFAULT: '#B02F00',
+                    dark: '#8F2500',
+                    light: '#FF5722',
                 },
                 'text': {
                     primary: '#FFFFFF',

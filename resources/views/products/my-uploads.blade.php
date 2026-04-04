@@ -16,19 +16,19 @@
                 </div>
             @endif
 
-            <form method="GET" class="bg-white dark:bg-dark-secondary border border-gray-200 dark:border-gray-800 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row sm:items-end gap-4">
-                <div>
-                    <label class="text-sm font-semibold mb-2 block">Status</label>
-                    <select name="status" class="bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2">
-                        @php($status = request('status', 'all'))
-                        <option value="all" {{ $status === 'all' ? 'selected' : '' }}>All</option>
-                        <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="approved" {{ $status === 'approved' ? 'selected' : '' }}>Approved</option>
-                        <option value="rejected" {{ $status === 'rejected' ? 'selected' : '' }}>Rejected</option>
-                    </select>
+            <x-filter-bar :action="route('products.upload.index')" title="Filter Uploads" formClass="grid grid-cols-1 md:grid-cols-3 gap-2">
+                @php($status = request('status', 'all'))
+                <select name="status" class="backend-field h-10 text-sm">
+                    <option value="all" {{ $status === 'all' ? 'selected' : '' }}>All</option>
+                    <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="approved" {{ $status === 'approved' ? 'selected' : '' }}>Approved</option>
+                    <option value="rejected" {{ $status === 'rejected' ? 'selected' : '' }}>Rejected</option>
+                </select>
+                <div class="flex gap-2">
+                    <button class="h-10 bg-orange hover:bg-orange-light text-white px-5 rounded-lg text-sm font-semibold transition">Filter</button>
+                    <a href="{{ route('products.upload.index') }}" class="h-10 inline-flex items-center backend-btn-muted text-sm">Reset</a>
                 </div>
-                <button class="bg-orange hover:bg-orange-light text-white px-5 py-2.5 rounded-lg font-semibold transition">Filter</button>
-            </form>
+            </x-filter-bar>
 
             <div class="space-y-4">
                 @forelse($products as $product)

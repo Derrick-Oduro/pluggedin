@@ -5,63 +5,113 @@
             <div class="absolute -bottom-16 right-1/4 h-64 w-64 rounded-full bg-orange/15 blur-3xl"></div>
         </div>
 
-        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-10">
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
                 <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange mb-3">Cart</p>
-                <h1 class="text-5xl sm:text-6xl font-bold">Shopping Cart</h1>
+                <h1 class="text-4xl sm:text-5xl font-bold">Shopping Cart</h1>
+                <p class="text-gray-600 dark:text-text-secondary mt-2">Quickly adjust quantities, remove items, and checkout.</p>
             </div>
 
-            @if($cartItems->count() > 0)
-                <div class="space-y-4 mb-8">
-                    @foreach($cartItems as $item)
-                        <div class="bg-white dark:bg-dark-secondary rounded-2xl p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center gap-5 border border-gray-200 dark:border-gray-800">
-                            <div class="flex items-center gap-5 flex-1">
-                                @if($item->product->image_path)
-                                    <img src="{{ asset('storage/' . $item->product->image_path) }}" alt="{{ $item->product->name }}" class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg">
-                                @else
-                                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gray-200 dark:bg-gray-800 rounded-lg"></div>
-                                @endif
+            @if(session('success'))
+                <div class="mb-4 rounded-lg border border-green-500/50 bg-green-500/10 px-4 py-3 text-sm text-green-600 dark:text-green-400">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-                                <div>
-                                    <h3 class="text-xl font-semibold mb-1">{{ $item->product->name }}</h3>
-                                    <p class="text-orange font-bold">${{ number_format($item->product->price, 2) }}</p>
+            @if(session('error'))
+                <div class="mb-4 rounded-lg border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            @if($cartItems->count() > 0)
+                @php
+                    $lineItems = $cartItems->sum('quantity');
+                    $avgLine = $cartItems->count() ? $total / $cartItems->count() : 0;
+                @endphp
+
+                <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+                    <div class="xl:col-span-8 space-y-3">
+                        @foreach($cartItems as $item)
+                            <div class="bg-white dark:bg-dark-secondary rounded-xl p-4 border border-gray-200 dark:border-gray-800">
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                                        @if($item->product->image_path)
+                                            <img src="{{ asset('storage/' . $item->product->image_path) }}" alt="{{ $item->product->name }}" class="w-16 h-16 object-cover rounded-lg shrink-0">
+                                        @else
+                                            <div class="w-16 h-16 bg-gray-200 dark:bg-gray-800 rounded-lg shrink-0"></div>
+                                        @endif
+
+                                        <div class="min-w-0">
+                                            <h3 class="text-base font-semibold truncate">{{ $item->product->name }}</h3>
+                                            <p class="text-sm text-gray-600 dark:text-text-secondary">${{ number_format($item->product->price, 2) }} each</p>
+                                            <p class="text-xs text-gray-500 dark:text-text-secondary">Stock: {{ $item->product->stock_quantity }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-2 sm:justify-end">
+                                        <form action="{{ route('cart.update', $item) }}" method="POST" class="flex items-center gap-2">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input
+                                                type="number"
+                                                name="quantity"
+                                                value="{{ $item->quantity }}"
+                                                min="1"
+                                                max="{{ $item->product->stock_quantity }}"
+                                                class="w-16 h-9 bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded px-2 text-center text-sm"
+                                            >
+                                            <button type="submit" class="h-9 px-3 rounded-lg bg-orange hover:bg-orange-light text-white text-xs font-semibold transition">Update</button>
+                                        </form>
+
+                                        <form action="{{ route('cart.remove', $item) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="h-9 px-3 rounded-lg border border-red-500/40 text-red-500 hover:bg-red-500/10 text-xs font-semibold transition">Remove</button>
+                                        </form>
+                                    </div>
+
+                                    <div class="sm:text-right">
+                                        <p class="text-xs text-gray-500 dark:text-text-secondary">Line total</p>
+                                        <p class="text-lg font-bold text-orange">${{ number_format($item->product->price * $item->quantity, 2) }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="xl:col-span-4">
+                        <div class="bg-white dark:bg-dark-secondary rounded-xl border border-gray-200 dark:border-gray-800 p-5 xl:sticky xl:top-24">
+                            <h2 class="text-lg font-semibold mb-4">Order Summary</h2>
+
+                            <div class="space-y-2 text-sm mb-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600 dark:text-text-secondary">Unique items</span>
+                                    <span class="font-semibold">{{ $cartItems->count() }}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600 dark:text-text-secondary">Total quantity</span>
+                                    <span class="font-semibold">{{ $lineItems }}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600 dark:text-text-secondary">Average line</span>
+                                    <span class="font-semibold">${{ number_format($avgLine, 2) }}</span>
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-3">
-                                <form action="{{ route('cart.update', $item) }}" method="POST" class="flex items-center gap-2">
-                                    @csrf
-                                    @method('PATCH')
-                                    <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" max="{{ $item->product->stock_quantity }}"
-                                           class="w-20 bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded px-2 py-1.5 text-center">
-                                    <button type="submit" class="bg-orange hover:bg-orange-light text-white px-4 py-1.5 rounded text-sm font-semibold transition">
-                                        Update
-                                    </button>
-                                </form>
-
-                                <form action="{{ route('cart.remove', $item) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-500 hover:text-red-400 text-sm font-semibold">
-                                        Remove
-                                    </button>
-                                </form>
+                            <div class="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
+                                <span class="text-base font-semibold">Total</span>
+                                <span class="text-2xl font-bold text-orange">${{ number_format($total, 2) }}</span>
                             </div>
 
-                            <p class="text-xl font-bold text-orange">${{ number_format($item->product->price * $item->quantity, 2) }}</p>
+                            <a href="{{ route('checkout') }}" class="h-11 w-full inline-flex items-center justify-center bg-orange hover:bg-orange-light text-white rounded-lg font-semibold transition">
+                                Proceed to Checkout
+                            </a>
+                            <a href="{{ route('products.index') }}" class="h-10 mt-2 w-full inline-flex items-center justify-center backend-btn-muted text-sm">
+                                Continue Shopping
+                            </a>
                         </div>
-                    @endforeach
-                </div>
-
-                <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
-                    <div class="flex justify-between items-center mb-6">
-                        <span class="text-2xl font-bold">Total:</span>
-                        <span class="text-3xl font-bold text-orange">${{ number_format($total, 2) }}</span>
                     </div>
-
-                    <a href="{{ route('checkout') }}" class="block text-center bg-orange hover:bg-orange-light text-white px-8 py-4 rounded-lg font-semibold transition">
-                        Proceed to Checkout
-                    </a>
                 </div>
             @else
                 <div class="bg-white dark:bg-dark-secondary rounded-2xl border border-gray-200 dark:border-gray-800 text-center py-14 px-6">

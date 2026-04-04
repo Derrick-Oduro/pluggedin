@@ -22,7 +22,7 @@
                 </div>
 
                 @if($orders->count())
-                    <div class="backend-table-wrap">
+                    <x-table-shell>
                         <table class="backend-table">
                             <thead class="border-b border-gray-200 dark:border-gray-700">
                                 <tr>
@@ -60,7 +60,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
+                    </x-table-shell>
                 @else
                     <x-empty-state
                         title="No orders found"

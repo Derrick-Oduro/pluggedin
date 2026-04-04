@@ -1,7 +1,7 @@
 <nav x-data="{ open: false }" class="sticky top-0 z-40 border-b border-gray-200/70 bg-white/85 backdrop-blur-xl dark:border-gray-800 dark:bg-dark-secondary/85">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+        <div class="flex justify-between h-14">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
@@ -12,7 +12,7 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-6 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-5 sm:-my-px sm:ms-8 sm:flex">
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>

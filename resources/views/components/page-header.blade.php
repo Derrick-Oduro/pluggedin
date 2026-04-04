@@ -8,10 +8,10 @@
     <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
             @if(count($breadcrumbs) > 0)
-                <nav class="mb-2 flex flex-wrap items-center gap-1 text-xs text-gray-500 dark:text-text-secondary" aria-label="Breadcrumb">
+                <nav class="mb-1.5 flex flex-wrap items-center gap-1 text-[11px] text-gray-500 dark:text-text-secondary" aria-label="Breadcrumb">
                     @foreach($breadcrumbs as $crumb)
                         @if(!$loop->first)
-                            <span>/</span>
+                            <span class="opacity-60">/</span>
                         @endif
 
                         @if(!empty($crumb['href']))
@@ -23,9 +23,9 @@
                 </nav>
             @endif
 
-            <h1 class="text-2xl font-bold">{{ $title }}</h1>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight">{{ $title }}</h1>
             @if($subtitle)
-                <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">{{ $subtitle }}</p>
+                <p class="text-sm text-gray-600 dark:text-text-secondary mt-1 max-w-3xl">{{ $subtitle }}</p>
             @endif
         </div>
 

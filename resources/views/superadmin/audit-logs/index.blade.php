@@ -7,8 +7,7 @@
             <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">Track super-admin changes across users, categories, campaigns, and homepage content.</p>
         </div>
 
-        <div class="backend-table-wrap rounded-xl">
-            <div class="overflow-x-auto">
+        <x-table-shell>
                 <table class="backend-table">
                     <thead class="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-dark">
                         <tr>
@@ -41,8 +40,7 @@
                         @endforelse
                     </tbody>
                 </table>
-            </div>
-        </div>
+        </x-table-shell>
 
         <div>{{ $logs->links() }}</div>
     </div>

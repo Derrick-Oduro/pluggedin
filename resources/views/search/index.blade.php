@@ -9,8 +9,8 @@
             <form method="GET" action="{{ route('search.global') }}" class="glass-panel rounded-xl p-4 mb-6">
                 <label for="q" class="block text-sm font-medium mb-2">Search term</label>
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2">
-                    <input id="q" name="q" value="{{ $term }}" placeholder="Try: gpu, cleaning service, pending, john@example.com" class="backend-field flex-1" />
-                    <select name="type" class="backend-field lg:max-w-[220px]">
+                    <input id="q" name="q" value="{{ $term }}" placeholder="Try: gpu, cleaning service, pending, john@example.com" class="backend-field h-10 text-sm" />
+                    <select name="type" class="backend-field h-10 text-sm">
                         <option value="all" {{ ($type ?? 'all') === 'all' ? 'selected' : '' }}>All types</option>
                         <option value="products" {{ ($type ?? 'all') === 'products' ? 'selected' : '' }}>Products</option>
                         <option value="services" {{ ($type ?? 'all') === 'services' ? 'selected' : '' }}>Services</option>
@@ -21,27 +21,27 @@
                             <option value="users" {{ ($type ?? 'all') === 'users' ? 'selected' : '' }}>Users</option>
                         @endif
                     </select>
-                    <select name="product_category" class="backend-field lg:max-w-[220px]">
+                    <select name="product_category" class="backend-field h-10 text-sm">
                         <option value="">All product categories</option>
                         @foreach(($categories ?? collect()) as $category)
                             <option value="{{ $category->slug }}" {{ ($productCategory ?? '') === $category->slug ? 'selected' : '' }}>{{ $category->name }}</option>
                         @endforeach
                     </select>
-                    <input type="number" step="0.01" min="0" name="min_price" value="{{ $minPrice }}" placeholder="Min price" class="backend-field">
-                    <input type="number" step="0.01" min="0" name="max_price" value="{{ $maxPrice }}" placeholder="Max price" class="backend-field">
-                    <select name="availability" class="backend-field lg:max-w-[220px]">
+                    <input type="number" step="0.01" min="0" name="min_price" value="{{ $minPrice }}" placeholder="Min price" class="backend-field h-10 text-sm">
+                    <input type="number" step="0.01" min="0" name="max_price" value="{{ $maxPrice }}" placeholder="Max price" class="backend-field h-10 text-sm">
+                    <select name="availability" class="backend-field h-10 text-sm">
                         <option value="all" {{ ($availability ?? 'all') === 'all' ? 'selected' : '' }}>All availability</option>
                         <option value="in_stock" {{ ($availability ?? 'all') === 'in_stock' ? 'selected' : '' }}>In stock only</option>
                         <option value="out_of_stock" {{ ($availability ?? 'all') === 'out_of_stock' ? 'selected' : '' }}>Out of stock only</option>
                     </select>
-                    <select name="sort" class="backend-field lg:max-w-[220px]">
+                    <select name="sort" class="backend-field h-10 text-sm">
                         <option value="latest" {{ ($sort ?? 'latest') === 'latest' ? 'selected' : '' }}>Latest</option>
                         <option value="price_asc" {{ ($sort ?? 'latest') === 'price_asc' ? 'selected' : '' }}>Price low to high</option>
                         <option value="price_desc" {{ ($sort ?? 'latest') === 'price_desc' ? 'selected' : '' }}>Price high to low</option>
                         <option value="name_asc" {{ ($sort ?? 'latest') === 'name_asc' ? 'selected' : '' }}>Name A-Z</option>
                     </select>
                     @if(($canSearchOrders ?? false))
-                        <select name="order_status" class="backend-field lg:max-w-[220px]">
+                        <select name="order_status" class="backend-field h-10 text-sm">
                             <option value="">All order statuses</option>
                             @foreach(($orderStatuses ?? collect()) as $status)
                                 <option value="{{ $status }}" {{ ($orderStatus ?? '') === $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
@@ -49,8 +49,8 @@
                         </select>
                     @endif
                     <div class="flex gap-2">
-                        <button class="backend-btn-primary">Search</button>
-                        <a href="{{ route('search.global') }}" class="backend-btn-muted">Reset</a>
+                        <button class="h-10 bg-orange hover:bg-orange-light text-white px-5 rounded-lg text-sm font-semibold transition">Search</button>
+                        <a href="{{ route('search.global') }}" class="h-10 inline-flex items-center backend-btn-muted text-sm">Reset</a>
                     </div>
                 </div>
             </form>

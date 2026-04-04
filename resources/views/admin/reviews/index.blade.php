@@ -31,22 +31,22 @@
                     <div class="backend-card p-3"><p class="text-xs text-gray-500 dark:text-text-secondary">Reported</p><p class="text-lg font-semibold">{{ $stats['reported'] }}</p></div>
                 </div>
 
-                <form method="GET" class="backend-card p-3 flex flex-col sm:flex-row sm:items-end gap-3">
-                    <div>
-                        <label class="text-xs mb-1 block">Status</label>
-                        <select name="status" class="bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-sm">
-                            <option value="pending" {{ request('status', 'pending') === 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved</option>
-                            <option value="hidden" {{ request('status') === 'hidden' ? 'selected' : '' }}>Hidden</option>
-                            <option value="all" {{ request('status') === 'all' ? 'selected' : '' }}>All</option>
-                        </select>
-                    </div>
-                    <label class="inline-flex items-center gap-2 text-sm">
+                <x-filter-bar :action="route('admin.reviews.index')" title="Filter Reviews" formClass="grid grid-cols-1 md:grid-cols-3 gap-2">
+                    <select name="status" class="backend-field h-10 text-sm">
+                        <option value="pending" {{ request('status', 'pending') === 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved</option>
+                        <option value="hidden" {{ request('status') === 'hidden' ? 'selected' : '' }}>Hidden</option>
+                        <option value="all" {{ request('status') === 'all' ? 'selected' : '' }}>All</option>
+                    </select>
+                    <label class="inline-flex items-center gap-2 text-sm h-10 px-3 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-dark">
                         <input type="checkbox" name="reported_only" value="1" {{ request()->boolean('reported_only') ? 'checked' : '' }}>
                         Reported only
                     </label>
-                    <button class="bg-orange hover:bg-orange-light text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Filter</button>
-                </form>
+                    <div class="flex gap-2">
+                        <button class="h-10 bg-orange hover:bg-orange-light text-white px-4 rounded-lg text-sm font-semibold transition">Filter</button>
+                        <a href="{{ route('admin.reviews.index') }}" class="h-10 inline-flex items-center backend-btn-muted text-sm">Reset</a>
+                    </div>
+                </x-filter-bar>
 
                 <div class="space-y-3">
                     @forelse($reviews as $review)

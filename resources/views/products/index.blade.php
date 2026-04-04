@@ -29,51 +29,32 @@
                 </form>
             </div>
 
-            <div class="bg-white/95 dark:bg-dark-secondary border border-gray-200/70 dark:border-gray-800 rounded-2xl p-4 sm:p-5 mb-10 shadow-sm">
-                <div class="flex items-center justify-between gap-4 mb-3">
-                    <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-600 dark:text-text-secondary">Filter Products</h2>
-                    <p class="text-sm text-gray-500 dark:text-text-secondary">{{ $products->total() }} items</p>
-                </div>
-
-                <form method="GET" action="{{ route('products.index') }}" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2 mb-4">
-                    <input type="search" name="q" value="{{ request('q') }}" placeholder="Search products" class="backend-field">
-                    <select name="category" class="backend-field">
-                        <option value="">All categories</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->slug }}" {{ request('category') == $category->slug ? 'selected' : '' }}>{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-                    <input type="number" step="0.01" min="0" name="min_price" value="{{ request('min_price') }}" placeholder="Min price" class="backend-field">
-                    <input type="number" step="0.01" min="0" name="max_price" value="{{ request('max_price') }}" placeholder="Max price" class="backend-field">
-                    <select name="availability" class="backend-field">
-                        <option value="all" {{ request('availability', 'all') === 'all' ? 'selected' : '' }}>All availability</option>
-                        <option value="in_stock" {{ request('availability') === 'in_stock' ? 'selected' : '' }}>In stock only</option>
-                        <option value="out_of_stock" {{ request('availability') === 'out_of_stock' ? 'selected' : '' }}>Out of stock only</option>
-                    </select>
-                    <select name="sort" class="backend-field">
-                        <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>Latest</option>
-                        <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>Price low to high</option>
-                        <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Price high to low</option>
-                        <option value="name_asc" {{ request('sort') === 'name_asc' ? 'selected' : '' }}>Name A-Z</option>
-                    </select>
-                    <div class="flex gap-2">
-                        <button class="bg-orange hover:bg-orange-light text-white px-5 py-2 rounded-lg font-semibold transition">Apply</button>
-                        <a href="{{ route('products.index') }}" class="backend-btn-muted">Reset</a>
-                    </div>
-                </form>
-
-                <div class="flex flex-wrap gap-3">
-                    <a href="{{ route('products.index', request()->except(['page', 'category'])) }}" class="px-4 py-2 rounded-lg border text-sm font-medium transition {{ !request('category') ? 'bg-orange border-orange text-white shadow-lg shadow-orange/20' : 'bg-gray-100 border-gray-200 dark:bg-dark dark:border-gray-700 text-gray-700 dark:text-text-secondary hover:border-orange/40' }}">
-                        All
-                    </a>
+            <x-filter-bar :action="route('products.index')" title="Filter Products" :count="$products->total()" formClass="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2">
+                <input type="search" name="q" value="{{ request('q') }}" placeholder="Search products" class="backend-field h-10 text-sm">
+                <select name="category" class="backend-field h-10 text-sm">
+                    <option value="">All categories</option>
                     @foreach($categories as $category)
-                        <a href="{{ route('products.index', array_merge(request()->except(['page', 'category']), ['category' => $category->slug])) }}"
-                           class="px-4 py-2 rounded-lg border text-sm font-medium transition {{ request('category') == $category->slug ? 'bg-orange border-orange text-white shadow-lg shadow-orange/20' : 'bg-gray-100 border-gray-200 dark:bg-dark dark:border-gray-700 text-gray-700 dark:text-text-secondary hover:border-orange/40' }}">
-                            {{ $category->name }}
-                        </a>
+                        <option value="{{ $category->slug }}" {{ request('category') == $category->slug ? 'selected' : '' }}>{{ $category->name }}</option>
                     @endforeach
+                </select>
+                <input type="number" step="0.01" min="0" name="min_price" value="{{ request('min_price') }}" placeholder="Min price" class="backend-field h-10 text-sm">
+                <input type="number" step="0.01" min="0" name="max_price" value="{{ request('max_price') }}" placeholder="Max price" class="backend-field h-10 text-sm">
+                <select name="availability" class="backend-field h-10 text-sm">
+                    <option value="all" {{ request('availability', 'all') === 'all' ? 'selected' : '' }}>All availability</option>
+                    <option value="in_stock" {{ request('availability') === 'in_stock' ? 'selected' : '' }}>In stock only</option>
+                    <option value="out_of_stock" {{ request('availability') === 'out_of_stock' ? 'selected' : '' }}>Out of stock only</option>
+                </select>
+                <select name="sort" class="backend-field h-10 text-sm">
+                    <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>Latest</option>
+                    <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>Price low to high</option>
+                    <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Price high to low</option>
+                    <option value="name_asc" {{ request('sort') === 'name_asc' ? 'selected' : '' }}>Name A-Z</option>
+                </select>
+                <div class="flex gap-2">
+                    <button class="h-10 bg-orange hover:bg-orange-light text-white px-5 rounded-lg text-sm font-semibold transition">Apply</button>
+                    <a href="{{ route('products.index') }}" class="h-10 inline-flex items-center backend-btn-muted text-sm">Reset</a>
                 </div>
-            </div>
+            </x-filter-bar>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
                 @forelse($products as $product)

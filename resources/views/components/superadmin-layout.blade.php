@@ -32,15 +32,15 @@
     <body class="font-sans antialiased bg-white dark:bg-dark text-gray-900 dark:text-text-primary">
         <div class="min-h-screen flex bg-gray-50 dark:bg-dark">
             <!-- Sidebar -->
-            <aside class="w-64 bg-white dark:bg-dark-secondary border-r border-gray-200 dark:border-gray-800 fixed h-full">
-                <div class="p-4 border-b border-gray-200 dark:border-gray-800">
+            <aside class="w-60 bg-white dark:bg-dark-secondary border-r border-gray-200 dark:border-gray-800 fixed h-full">
+                <div class="p-3 border-b border-gray-200 dark:border-gray-800">
                     <a href="{{ route('superadmin.dashboard') }}" class="text-xl font-bold">
                         <span class="text-red-500">Super</span><span class="text-orange">Admin</span>
                     </a>
                     <p class="text-xs uppercase tracking-[0.12em] text-text-secondary mt-1">PluggedIn Control Panel</p>
                 </div>
 
-                <nav class="px-2.5 py-3 space-y-1">
+                <nav class="px-2 py-2.5 space-y-1">
                     <!-- Dashboard -->
                           <a href="{{ route('superadmin.dashboard') }}"
                               class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('superadmin.dashboard') ? 'bg-red-500/20 text-red-500' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-primary' }}">
@@ -108,7 +108,7 @@
                     <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
 
                     <!-- User Info -->
-                    <div class="px-3 py-2.5">
+                    <div class="px-3 py-2">
                         <p class="text-sm font-semibold">{{ Auth::user()->name }}</p>
                         <p class="text-xs text-text-secondary">{{ Auth::user()->email }}</p>
                         <form method="POST" action="{{ route('logout') }}" class="mt-2">
@@ -122,9 +122,9 @@
             </aside>
 
             <!-- Main Content -->
-            <div class="flex-1 ml-64">
+            <div class="flex-1 ml-60">
                 <!-- Top Bar -->
-                <header class="bg-white dark:bg-dark-secondary border-b border-gray-200 dark:border-gray-800 px-5 py-2.5">
+                <header class="bg-white dark:bg-dark-secondary border-b border-gray-200 dark:border-gray-800 px-4 py-2">
                     <div class="flex justify-between items-center">
                         <h1 class="text-base font-semibold">
                             @yield('page-title', 'Super Admin Dashboard')
@@ -137,19 +137,19 @@
 
                 <!-- Flash Messages -->
                 @if (session('success'))
-                    <div class="bg-green-500/20 border border-green-500 text-green-500 mx-5 mt-3 px-3 py-2 rounded-lg text-sm">
+                    <div class="bg-green-500/20 border border-green-500 text-green-500 mx-4 mt-2 px-3 py-2 rounded-lg text-sm">
                         {{ session('success') }}
                     </div>
                 @endif
 
                 @if (session('error'))
-                    <div class="bg-red-500/20 border border-red-500 text-red-500 mx-5 mt-3 px-3 py-2 rounded-lg text-sm">
+                    <div class="bg-red-500/20 border border-red-500 text-red-500 mx-4 mt-2 px-3 py-2 rounded-lg text-sm">
                         {{ session('error') }}
                     </div>
                 @endif
 
                 <!-- Page Content -->
-                <main class="p-5">
+                <main class="p-4">
                     {{ $slot }}
                 </main>
             </div>

@@ -8,6 +8,7 @@ use App\Models\HeroSlide;
 use App\Support\AuditLogger;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SuperAdminMarketingController extends Controller
 {
@@ -41,11 +42,17 @@ class SuperAdminMarketingController extends Controller
         $data = $request->validate([
             'title' => 'nullable|string|max:255',
             'caption' => 'nullable|string|max:1000',
-            'image_url' => 'required|url|max:2000',
+            'image_url' => 'required_without:image_file|nullable|url|max:2000',
+            'image_file' => 'nullable|image|max:5120',
             'alt_text' => 'nullable|string|max:255',
             'sort_order' => 'nullable|integer|min:0|max:9999',
             'is_active' => 'nullable|boolean',
         ]);
+
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->store('hero-slides', 'public');
+            $data['image_url'] = Storage::disk('public')->url($path);
+        }
 
         $data['is_active'] = (bool) ($data['is_active'] ?? true);
         $data['sort_order'] = (int) ($data['sort_order'] ?? 0);
@@ -64,11 +71,17 @@ class SuperAdminMarketingController extends Controller
         $data = $request->validate([
             'title' => 'nullable|string|max:255',
             'caption' => 'nullable|string|max:1000',
-            'image_url' => 'required|url|max:2000',
+            'image_url' => 'required_without:image_file|nullable|url|max:2000',
+            'image_file' => 'nullable|image|max:5120',
             'alt_text' => 'nullable|string|max:255',
             'sort_order' => 'nullable|integer|min:0|max:9999',
             'is_active' => 'nullable|boolean',
         ]);
+
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->store('hero-slides', 'public');
+            $data['image_url'] = Storage::disk('public')->url($path);
+        }
 
         $data['is_active'] = (bool) ($data['is_active'] ?? false);
         $data['sort_order'] = (int) ($data['sort_order'] ?? 0);

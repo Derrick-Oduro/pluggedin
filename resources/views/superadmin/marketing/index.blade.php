@@ -15,11 +15,12 @@
                 <div id="slides-create" class="backend-card p-4 rounded-xl">
                     <h2 class="text-lg font-semibold">Create Carousel Slide</h2>
                     <p class="text-xs text-gray-500 dark:text-text-secondary mt-1 mb-3">Use short captions and keep sort order low for priority.</p>
-                    <form action="{{ route('superadmin.marketing.slides.store') }}" method="POST" class="space-y-3">
+                    <form action="{{ route('superadmin.marketing.slides.store') }}" method="POST" enctype="multipart/form-data" class="space-y-3">
                         @csrf
                         <input name="title" placeholder="Slide title (optional)" class="backend-field">
                         <textarea name="caption" rows="2" placeholder="Caption" class="backend-field"></textarea>
-                        <input name="image_url" required placeholder="Image URL" class="backend-field">
+                        <input name="image_url" placeholder="Image URL (optional if uploading a file)" class="backend-field">
+                        <input type="file" name="image_file" accept="image/*" class="backend-field">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <input name="alt_text" placeholder="Alt text" class="backend-field">
                             <input type="number" name="sort_order" min="0" value="0" placeholder="Sort order" class="backend-field">
@@ -91,12 +92,16 @@
                             </summary>
 
                             <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
-                                <form action="{{ route('superadmin.marketing.slides.update', $slide) }}" method="POST" class="space-y-3">
+                                <div class="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                                    <img src="{{ $slide->image_url }}" alt="{{ $slide->alt_text ?: $slide->title ?: 'Carousel slide preview' }}" class="h-40 w-full object-cover">
+                                </div>
+                                <form action="{{ route('superadmin.marketing.slides.update', $slide) }}" method="POST" enctype="multipart/form-data" class="space-y-3">
                                     @csrf
                                     @method('PATCH')
                                     <input name="title" value="{{ $slide->title }}" placeholder="Title" class="backend-field">
                                     <textarea name="caption" rows="2" class="backend-field">{{ $slide->caption }}</textarea>
                                     <input name="image_url" value="{{ $slide->image_url }}" class="backend-field">
+                                    <input type="file" name="image_file" accept="image/*" class="backend-field">
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         <input name="alt_text" value="{{ $slide->alt_text }}" placeholder="Alt text" class="backend-field">
                                         <input type="number" name="sort_order" min="0" value="{{ $slide->sort_order }}" class="backend-field">

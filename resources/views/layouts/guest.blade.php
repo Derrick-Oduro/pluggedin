@@ -14,19 +14,21 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="relative min-h-screen flex items-center justify-center px-4 py-10 sm:px-6 lg:px-8 overflow-hidden">
+    <body class="font-sans antialiased bg-[#f5f7fb] text-slate-900">
+        <div class="relative min-h-screen overflow-hidden px-4 py-10 sm:px-6 lg:px-8">
             <div class="pointer-events-none absolute -top-24 -left-20 h-80 w-80 rounded-full bg-orange/20 blur-3xl"></div>
             <div class="pointer-events-none absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-orange/15 blur-3xl"></div>
+            <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,.12),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,.08),transparent_40%)]"></div>
 
-            <div class="relative w-full max-w-md">
-                <a href="{{ route('home') }}" class="flex items-center justify-center gap-2 text-3xl font-bold mb-6">
-                    <span class="text-orange">Plugged</span><span>In</span>
-                    <img src="{{ asset('images/icons8-plug-64.png') }}" alt="PluggedIn Logo" class="h-8 w-8 object-contain">
-                </a>
+            <div class="relative flex min-h-[calc(100vh-5rem)] items-center justify-center">
+                <div class="w-full max-w-md">
+                    <a href="{{ route('home') }}" class="mb-6 inline-flex items-center gap-2 text-2xl font-bold">
+                        <span class="text-orange">Plugged</span><span>In</span>
+                    </a>
 
-                <div class="glass-panel px-6 py-6 sm:px-8 sm:py-8 shadow-xl shadow-black/5">
-                    {{ $slot }}
+                    <div class="rounded-[2rem] border border-white/70 bg-white/90 p-6 shadow-[0_20px_70px_rgba(15,23,42,0.12)] backdrop-blur-xl sm:p-8">
+                        {{ $slot }}
+                    </div>
                 </div>
             </div>
         </div>

@@ -19,32 +19,17 @@
             </aside>
 
             <div class="xl:col-span-9 space-y-5">
-                <div>
-                    <h1 class="text-2xl font-bold">Admin Dashboard</h1>
-                    <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">Compact operations panel for day-to-day management.</p>
-                </div>
-
-                <div class="backend-card p-4">
-                    <h2 class="text-lg font-semibold mb-3">Quick Actions</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
-                        <a href="{{ route('admin.products.pending') }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
-                            <p class="text-xs text-gray-500 dark:text-text-secondary">Moderation Queue</p>
-                            <p class="text-base font-semibold mt-1">{{ $stats['pending_products'] }} pending uploads</p>
-                        </a>
-                        <a href="{{ route('admin.orders.index') }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
-                            <p class="text-xs text-gray-500 dark:text-text-secondary">Orders</p>
-                            <p class="text-base font-semibold mt-1">{{ $stats['pending_orders'] }} pending orders</p>
-                        </a>
-                        <a href="{{ route('admin.bookings.index') }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
-                            <p class="text-xs text-gray-500 dark:text-text-secondary">Bookings</p>
-                            <p class="text-base font-semibold mt-1">{{ $stats['pending_bookings'] }} pending bookings</p>
-                        </a>
-                        <a href="{{ route('notifications.index', ['scope' => 'unread']) }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
-                            <p class="text-xs text-gray-500 dark:text-text-secondary">Notifications</p>
-                            <p class="text-base font-semibold mt-1">{{ auth()->user()->unreadNotifications()->count() }} unread</p>
-                        </a>
-                    </div>
-                </div>
+                <x-page-header
+                    title="Admin Dashboard"
+                    subtitle="Compact operations panel for day-to-day management."
+                >
+                    <x-slot name="actions">
+                        <a href="{{ route('admin.products.create') }}" class="backend-btn-primary">Add Product</a>
+                        <a href="{{ route('admin.products.pending') }}" class="btn-secondary">Review Uploads</a>
+                        <a href="{{ route('admin.reviews.index') }}" class="btn-secondary">Moderate Reviews</a>
+                        <a href="{{ route('admin.referrals.index') }}" class="btn-secondary">Referrals</a>
+                    </x-slot>
+                </x-page-header>
 
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
                     <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Products</p><p class="text-xl font-semibold">{{ $stats['total_products'] }}</p></div>
@@ -95,13 +80,6 @@
                             @endforelse
                         </div>
                     </div>
-                </div>
-
-                <div class="flex flex-wrap gap-2">
-                    <a href="{{ route('admin.products.create') }}" class="bg-orange hover:bg-orange-light text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Add Product</a>
-                    <a href="{{ route('admin.products.pending') }}" class="bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Review Uploads</a>
-                    <a href="{{ route('admin.reviews.index') }}" class="bg-white dark:bg-dark-secondary border border-gray-300 dark:border-gray-700 hover:border-orange px-4 py-2 rounded-lg text-sm font-semibold transition">Moderate Reviews</a>
-                    <a href="{{ route('admin.referrals.index') }}" class="bg-white dark:bg-dark-secondary border border-gray-300 dark:border-gray-700 hover:border-orange px-4 py-2 rounded-lg text-sm font-semibold transition">Referrals</a>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">

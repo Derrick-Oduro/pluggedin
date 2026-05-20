@@ -1,5 +1,3 @@
-@section('page-title', 'Super Admin Dashboard')
-
 <x-superadmin-layout>
     <div class="space-y-5">
             <x-page-header
@@ -8,29 +6,14 @@
                 :breadcrumbs="[
                     ['label' => 'Dashboard'],
                 ]"
-            />
-
-            <div class="backend-card p-4">
-                <h2 class="text-lg font-semibold mb-3">Quick Actions</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
-                    <a href="{{ route('superadmin.users.index') }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
-                        <p class="text-xs text-gray-500 dark:text-text-secondary">User Management</p>
-                        <p class="text-base font-semibold mt-1">{{ $stats['total_users'] }} accounts</p>
-                    </a>
-                    <a href="{{ route('admin.products.pending') }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
-                        <p class="text-xs text-gray-500 dark:text-text-secondary">Moderation Queue</p>
-                        <p class="text-base font-semibold mt-1">{{ $stats['pending_user_uploads'] }} pending uploads</p>
-                    </a>
-                    <a href="{{ route('superadmin.marketing.index', ['scope' => 'live']) }}#campaigns-manage" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
-                        <p class="text-xs text-gray-500 dark:text-text-secondary">Marketing</p>
-                        <p class="text-base font-semibold mt-1">{{ $stats['active_discount_campaigns'] }} live campaigns</p>
-                    </a>
-                    <a href="{{ route('notifications.index', ['scope' => 'unread']) }}" class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3 hover:border-orange transition">
-                        <p class="text-xs text-gray-500 dark:text-text-secondary">Notifications</p>
-                        <p class="text-base font-semibold mt-1">{{ auth()->user()->unreadNotifications()->count() }} unread</p>
-                    </a>
-                </div>
-            </div>
+            >
+                <x-slot name="actions">
+                    <a href="{{ route('superadmin.users.index') }}" class="backend-btn-primary">User Management</a>
+                    <a href="{{ route('admin.products.pending') }}" class="btn-secondary">Moderation Queue</a>
+                    <a href="{{ route('superadmin.marketing.index', ['scope' => 'live']) }}#campaigns-manage" class="btn-secondary">Marketing</a>
+                    <a href="{{ route('notifications.index', ['scope' => 'unread']) }}" class="btn-secondary">Notifications</a>
+                </x-slot>
+            </x-page-header>
 
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Users</p><p class="text-xl font-semibold">{{ $stats['total_users'] }}</p></div>

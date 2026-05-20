@@ -37,9 +37,13 @@
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end mt-4">
+            <a class="text-sm font-medium text-slate-600 hover:text-orange rounded-md focus:outline-none focus:ring-2 focus:ring-orange focus:ring-offset-2" href="{{ route('register') }}">
+                {{ __('Need an account? Sign up') }}
+            </a>
+
             @if (Route::has('password.request'))
-                <a class="text-sm font-medium text-gray-600 hover:text-orange dark:text-text-secondary dark:hover:text-orange rounded-md focus:outline-none focus:ring-2 focus:ring-orange focus:ring-offset-2 dark:focus:ring-offset-dark" href="{{ route('password.request') }}">
+                <a class="text-sm font-medium text-slate-600 hover:text-orange rounded-md focus:outline-none focus:ring-2 focus:ring-orange focus:ring-offset-2" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
                 </a>
             @endif

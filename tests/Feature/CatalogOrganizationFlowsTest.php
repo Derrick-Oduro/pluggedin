@@ -10,6 +10,8 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\WishlistItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -195,5 +197,39 @@ class CatalogOrganizationFlowsTest extends TestCase
             'entity_type' => HeroSlide::class,
             'entity_id' => $slide->id,
         ]);
+    }
+
+    public function test_superadmin_can_create_slide_with_uploaded_image_and_it_shows_on_homepage(): void
+    {
+        Storage::fake('public');
+
+        $superAdmin = User::factory()->create();
+        $superAdmin->assignRole('super-admin');
+
+        $response = $this->actingAs($superAdmin)->post(route('superadmin.marketing.slides.store'), [
+            'title' => 'Uploaded Slide',
+            'caption' => 'Fresh carousel promo',
+            'image_file' => UploadedFile::fake()->image('slide.jpg'),
+            'alt_text' => 'Uploaded hero slide',
+            'sort_order' => 2,
+            'is_active' => 1,
+        ]);
+
+        $response->assertRedirect(route('superadmin.marketing.index'));
+
+        $slide = HeroSlide::query()->where('title', 'Uploaded Slide')->firstOrFail();
+
+        $this->assertStringContainsString('/storage/hero-slides/', $slide->image_url);
+        $this->assertDatabaseHas('hero_slides', [
+            'id' => $slide->id,
+            'title' => 'Uploaded Slide',
+            'caption' => 'Fresh carousel promo',
+            'is_active' => true,
+        ]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('Fresh carousel promo')
+            ->assertSee(str_replace('/', '\\/', $slide->image_url), false);
     }
 }

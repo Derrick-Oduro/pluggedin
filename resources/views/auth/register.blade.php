@@ -44,9 +44,9 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="text-sm font-medium text-gray-600 hover:text-orange dark:text-text-secondary dark:hover:text-orange rounded-md focus:outline-none focus:ring-2 focus:ring-orange focus:ring-offset-2 dark:focus:ring-offset-dark" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end mt-4">
+            <a class="text-sm font-medium text-slate-600 hover:text-orange rounded-md focus:outline-none focus:ring-2 focus:ring-orange focus:ring-offset-2" href="{{ route('login') }}">
+                {{ __('Already have an account? Log in') }}
             </a>
 
             <x-primary-button class="ms-4">

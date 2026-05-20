@@ -32,10 +32,11 @@ class DatabaseSeeder extends Seeder
             'role' => 'user',
         ]);
 
-        // Seed categories and products
+        // Seed categories, products, and hero slides
         $this->call([
             CategorySeeder::class,
             ServiceSeeder::class,
+            \Database\Seeders\HeroSlideSeeder::class,
         ]);
     }
 }

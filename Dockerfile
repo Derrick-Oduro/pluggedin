@@ -24,12 +24,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --prefer-dist --no-progress --optimize-autoloader
+# Install PHP dependencies but skip composer scripts until app files are present
+RUN composer install --no-dev --prefer-dist --no-progress --optimize-autoloader --no-scripts
 
 COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
+
+# Now that application files (including artisan) exist, run composer scripts that require them
+RUN composer dump-autoload --optimize || true \
+    && php artisan package:discover --ansi || true
 
 RUN npm run build \
     && mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache

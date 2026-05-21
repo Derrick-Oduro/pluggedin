@@ -21,6 +21,18 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Deploying to Render with Docker
+
+This repo now includes a production Docker build and a Render blueprint in [render.yaml](render.yaml). The blueprint provisions PostgreSQL, mounts persistent storage for Laravel's `storage` directory, runs migrations at startup, and serves the app on Render's assigned port.
+
+You still need to finish a few deployment values in Render:
+
+1. Provide a real value for `APP_KEY` during the blueprint creation flow.
+2. After the web service is created, set `APP_URL` to the public Render URL if you want generated links to use the canonical domain.
+3. If you need email delivery, replace the default mail settings with your SMTP provider.
+
+Without persistent storage, uploaded images and logs will be lost on redeploys. The included blueprint keeps them on the attached disk at `/var/www/html/storage`.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.

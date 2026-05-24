@@ -16,27 +16,31 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@pluggedin.com',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-        ]);
-
-        // Create test user
-        User::create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'user',
-        ]);
-
-        // Seed categories, products, and hero slides
         $this->call([
+            RolesAndPermissionsSeeder::class,
+            SuperAdminSeeder::class,
+            MigrateExistingUsersToRolesSeeder::class,
             CategorySeeder::class,
             ServiceSeeder::class,
-            \Database\Seeders\HeroSlideSeeder::class,
+            HeroSlideSeeder::class,
         ]);
+
+        User::updateOrCreate(
+            ['email' => 'admin@pluggedin.com'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => Hash::make('password'),
+                'role' => 'user',
+            ]
+        );
     }
 }

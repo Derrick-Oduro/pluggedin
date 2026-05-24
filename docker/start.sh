@@ -38,6 +38,16 @@ if [[ "${RUN_MIGRATIONS_ON_BOOT:-true}" == "true" ]]; then
       echo "[startup] Migrations failed after ${attempts} attempts; continuing startup."
     fi
   fi
+
+  # Optionally run seeders after migrations (set RUN_SEEDERS_ON_BOOT=true)
+  if [[ "${RUN_SEEDERS_ON_BOOT:-false}" == "true" ]]; then
+    echo "[startup] Running seeders as RUN_SEEDERS_ON_BOOT is true."
+    if php artisan db:seed --force; then
+      echo "[startup] Database seeding completed."
+    else
+      echo "[startup] Database seeding failed; continuing startup."
+    fi
+  fi
 fi
 
 exec php artisan serve --host=0.0.0.0 --port="${PORT:-10000}"

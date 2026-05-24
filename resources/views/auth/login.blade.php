@@ -1,27 +1,28 @@
 <x-guest-layout>
     <div class="mb-6">
-        <p class="text-xs uppercase tracking-[0.16em] text-orange font-semibold">Welcome Back</p>
-        <h1 class="text-3xl font-bold mt-1">Sign in to your account</h1>
+        <p class="text-[0.65rem] uppercase tracking-[0.26em] text-slate-500">Member access</p>
+        <h1 class="mt-3 text-3xl font-semibold sm:text-4xl font-display">Sign in to PluggedIn</h1>
+        <p class="mt-2 text-sm text-slate-600">Welcome back. Jump into your dashboard and keep momentum going.</p>
     </div>
 
     <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <x-auth-session-status class="mb-5" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}" class="space-y-4">
         @csrf
 
         <!-- Email Address -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <x-text-input id="email" class="block mt-1 w-full rounded-xl border-slate-200 bg-white/80 focus:bg-white" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
-        <div class="mt-4">
+        <div>
             <x-input-label for="password" :value="__('Password')" />
 
-            <x-text-input id="password" class="block mt-1 w-full"
+            <x-text-input id="password" class="block mt-1 w-full rounded-xl border-slate-200 bg-white/80 focus:bg-white"
                             type="password"
                             name="password"
                             required autocomplete="current-password" />
@@ -30,27 +31,26 @@
         </div>
 
         <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-orange focus:ring-orange dark:border-gray-700 dark:bg-dark" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
+        <div class="flex flex-col gap-3 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+            <label for="remember_me" class="inline-flex items-center gap-2">
+                <input id="remember_me" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-orange focus:ring-orange" name="remember">
+                <span>{{ __('Remember me') }}</span>
             </label>
-        </div>
-
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end mt-4">
-            <a class="text-sm font-medium text-slate-600 hover:text-orange rounded-md focus:outline-none focus:ring-2 focus:ring-orange focus:ring-offset-2" href="{{ route('register') }}">
-                {{ __('Need an account? Sign up') }}
-            </a>
 
             @if (Route::has('password.request'))
-                <a class="text-sm font-medium text-slate-600 hover:text-orange rounded-md focus:outline-none focus:ring-2 focus:ring-orange focus:ring-offset-2" href="{{ route('password.request') }}">
+                <a class="font-medium text-slate-600 hover:text-orange focus:outline-none focus:ring-2 focus:ring-orange focus:ring-offset-2" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
                 </a>
             @endif
+        </div>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+        <x-primary-button class="w-full justify-center rounded-xl py-3 text-base">
+            {{ __('Log in') }}
+        </x-primary-button>
+
+        <div class="rounded-2xl border border-slate-200/80 bg-slate-50/70 px-4 py-3 text-sm text-slate-600">
+            <span class="text-slate-500">New here?</span>
+            <a class="font-semibold text-slate-700 hover:text-orange" href="{{ route('register') }}">{{ __('Create an account') }}</a>
         </div>
     </form>
 </x-guest-layout>

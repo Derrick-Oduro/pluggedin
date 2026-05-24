@@ -21,6 +21,26 @@ services:
         fromDatabase:
           name: pluggedin-db
           property: connectionString
+      - key: DB_HOST
+        fromDatabase:
+          name: pluggedin-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: pluggedin-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: pluggedin-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: pluggedin-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: pluggedin-db
+          property: password
       - key: CACHE_STORE
         value: database
       - key: SESSION_DRIVER

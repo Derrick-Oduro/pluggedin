@@ -56,7 +56,8 @@
 
                     <a href="{{ route('notifications.index') }}" class="relative text-gray-900 dark:text-text-primary hover:text-orange" title="Notifications" aria-label="Notifications">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 1-2.857.168 23.847 23.847 0 0 1-2.857-.168m5.714 0a8.966 8.966 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0m5.714 0H19.5a2.25 2.25 0 0 0 2.25-2.25V11.25a9.75 9.75 0 1 0-19.5 0v3.582A2.25 2.25 0 0 0 4.5 17.082h4.643" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118.6 14.4V11a6 6 0 10-12 0v3.4c0 .538-.214 1.055-.595 1.435L4 17h11z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.73 21a2 2 0 01-3.46 0" />
                         </svg>
                         @if($unreadNotificationsCount > 0)
                             <span class="absolute -top-2 -right-4 min-w-[18px] h-[18px] px-1 rounded-full bg-orange text-white text-[10px] leading-[18px] text-center font-bold">

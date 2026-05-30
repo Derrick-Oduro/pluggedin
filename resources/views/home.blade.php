@@ -32,7 +32,9 @@
                     Upgrade. Don't Replace.
                 </h1>
 
-                <p class="text-lg sm:text-xl md:text-2xl text-white/90 drop-shadow mb-9 max-w-2xl" x-text="slides.length ? slides[currentIndex].caption : 'No carousel slides are active right now. Add one from Marketing to feature your latest campaign.'"></p>
+                <p class="text-lg sm:text-xl md:text-2xl text-white/90 drop-shadow mb-9 max-w-2xl">
+                    Practical upgrades, careful installs, and support that keeps your devices running longer.
+                </p>
 
                 <div class="flex flex-col sm:flex-row gap-4">
                     <a href="{{ route('products.index') }}" class="inline-flex items-center justify-center bg-orange hover:bg-orange-light text-white px-8 py-4 rounded-lg font-semibold shadow-xl shadow-black/20 transition">
@@ -43,10 +45,10 @@
                     </a>
                 </div>
 
-                <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm sm:text-base">
-                    <div class="rounded-lg bg-white/10 border border-white/20 backdrop-blur px-4 py-3">Fast diagnostics</div>
-                    <div class="rounded-lg bg-white/10 border border-white/20 backdrop-blur px-4 py-3">Quality components</div>
-                    <div class="rounded-lg bg-white/10 border border-white/20 backdrop-blur px-4 py-3">Warranty-backed service</div>
+                <div class="mt-8 flex flex-wrap gap-3 text-sm sm:text-base">
+                    <div class="rounded-full bg-white/10 border border-white/20 backdrop-blur px-4 py-2">Fast diagnostics</div>
+                    <div class="rounded-full bg-white/10 border border-white/20 backdrop-blur px-4 py-2">Quality components</div>
+                    <div class="rounded-full bg-white/10 border border-white/20 backdrop-blur px-4 py-2">Warranty-backed service</div>
                 </div>
             </div>
 
@@ -65,14 +67,14 @@
         <button type="button"
                 x-show="slides.length > 1"
                 @click="prev()"
-                class="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 h-11 w-11 rounded-full bg-black/35 hover:bg-black/55 text-white backdrop-blur transition"
+                class="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 h-11 w-11 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur transition"
                 aria-label="Previous slide">
             &#10094;
         </button>
         <button type="button"
                 x-show="slides.length > 1"
                 @click="next()"
-                class="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 h-11 w-11 rounded-full bg-black/35 hover:bg-black/55 text-white backdrop-blur transition"
+                class="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 h-11 w-11 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur transition"
                 aria-label="Next slide">
             &#10095;
         </button>
@@ -151,13 +153,13 @@
     </script>
 
     <!-- Featured Products -->
-    <section class="relative py-20 bg-gradient-to-b from-white via-orange-50/40 to-white dark:from-dark dark:via-dark-secondary dark:to-dark">
+    <section class="relative py-20 bg-gradient-to-b from-white via-orange-50/30 to-white dark:from-dark dark:via-dark-secondary dark:to-dark">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange mb-3">Featured Picks</p>
                     <h2 class="text-4xl sm:text-5xl font-bold">Performance Upgrades Worth It</h2>
-                    <p class="text-gray-600 dark:text-text-secondary mt-4 max-w-2xl">Handpicked components and upgrade kits selected for real-world speed, reliability, and value.</p>
+                    <p class="text-gray-600 dark:text-text-secondary mt-4 max-w-2xl">Handpicked products and services focused on speed, reliability, and long-term value.</p>
                 </div>
                 <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 text-orange hover:text-orange-light font-semibold">
                     Browse all products
@@ -215,7 +217,7 @@
             <div class="text-center max-w-3xl mx-auto mb-12">
                 <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange mb-3">Why Choose Us</p>
                 <h2 class="text-4xl sm:text-5xl font-bold mb-4">Built Around Long-Term Value</h2>
-                <p class="text-gray-600 dark:text-text-secondary">You get practical recommendations, careful installs, and support that keeps your devices running smoothly.</p>
+                <p class="text-gray-600 dark:text-text-secondary">Practical recommendations, careful installs, and support that keeps devices running smoothly.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -261,7 +263,7 @@
                     <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange mb-3">Service Menu</p>
                     <h2 class="text-4xl sm:text-5xl font-bold">Professional Service, Start to Finish</h2>
                 </div>
-                <p class="text-gray-600 dark:text-text-secondary max-w-xl">Every booking includes transparent pricing, careful handling, and recommendations that fit your device goals.</p>
+                <p class="text-gray-600 dark:text-text-secondary max-w-xl">Transparent pricing, careful handling, and guidance that fits your device goals.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -301,7 +303,7 @@
                 <div class="max-w-2xl">
                     <p class="text-sm font-semibold uppercase tracking-[0.2em] text-white/90 mb-3">Ready to Start?</p>
                     <h2 class="text-4xl sm:text-5xl font-bold mb-4">Check Your Upgrade Options</h2>
-                    <p class="text-lg text-white/90">Not sure what your device needs? We will map out the best path based on your budget and performance goals.</p>
+                    <p class="text-lg text-white/90">Not sure what your device needs? We’ll map out the best path based on your budget and goals.</p>
                 </div>
 
                 <a href="{{ route('contact') }}" class="inline-flex items-center justify-center gap-2 bg-white text-orange px-8 py-4 rounded-lg font-semibold hover:bg-dark hover:text-white transition">

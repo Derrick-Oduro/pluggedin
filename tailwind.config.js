@@ -14,7 +14,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 'dark': {
@@ -25,10 +25,19 @@ export default {
                     DEFAULT: '#FFFFFF',
                     secondary: '#F5F5F5',
                 },
+                'brand': {
+                    DEFAULT: '#B02F00',
+                    deep: '#8F2500',
+                    light: '#FF5722',
+                    tint: '#FFF4EE',
+                    soft: '#FFE7DB',
+                },
                 'orange': {
                     DEFAULT: '#B02F00',
                     dark: '#8F2500',
                     light: '#FF5722',
+                    tint: '#FFF4EE',
+                    soft: '#FFE7DB',
                 },
                 'text': {
                     primary: '#FFFFFF',

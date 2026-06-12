@@ -9,7 +9,7 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
 
         <!-- Theme Script -->
         <script>
@@ -35,7 +35,7 @@
             <aside class="w-56 bg-white dark:bg-dark-secondary border-r border-gray-200 dark:border-gray-800 fixed h-full">
                 <div class="p-3 border-b border-gray-200 dark:border-gray-800">
                     <a href="{{ route('superadmin.dashboard') }}" class="text-lg font-bold tracking-tight">
-                        <span class="text-red-500">Super</span><span class="text-orange">Admin</span>
+                        <span class="text-brand-deep">Super</span><span class="text-brand">Admin</span>
                     </a>
                     <p class="mt-1 text-[10px] uppercase tracking-[0.14em] text-text-secondary">PluggedIn Control Panel</p>
                 </div>
@@ -43,7 +43,7 @@
                 <nav class="px-2 py-2 space-y-1">
                     <!-- Dashboard -->
                           <a href="{{ route('superadmin.dashboard') }}"
-                              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('superadmin.dashboard') ? 'bg-red-500/20 text-red-500' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-primary' }}">
+                              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('superadmin.dashboard') ? 'bg-brand-tint text-brand-deep' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-primary' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
@@ -52,7 +52,7 @@
 
                     <!-- User Management -->
                           <a href="{{ route('superadmin.users.index') }}"
-                              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('superadmin.users.*') ? 'bg-red-500/20 text-red-500' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-primary' }}">
+                              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('superadmin.users.*') ? 'bg-brand-tint text-brand-deep' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-primary' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
@@ -61,7 +61,7 @@
 
                     <!-- Category Management -->
                           <a href="{{ route('superadmin.categories.index') }}"
-                              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('superadmin.categories.*') ? 'bg-red-500/20 text-red-500' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-primary' }}">
+                              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('superadmin.categories.*') ? 'bg-brand-tint text-brand-deep' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-primary' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                         </svg>
@@ -69,7 +69,7 @@
                     </a>
 
                           <a href="{{ route('superadmin.marketing.index') }}"
-                              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('superadmin.marketing.*') ? 'bg-red-500/20 text-red-500' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-primary' }}">
+                              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('superadmin.marketing.*') ? 'bg-brand-tint text-brand-deep' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-primary' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.5 8.25h9m-9 3.75h9m-9 3.75h5.25M4.5 19.5h15a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5h-15A1.5 1.5 0 003 6v12a1.5 1.5 0 001.5 1.5z" />
                         </svg>
@@ -77,7 +77,7 @@
                     </a>
 
                           <a href="{{ route('superadmin.audit-logs.index') }}"
-                              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('superadmin.audit-logs.*') ? 'bg-red-500/20 text-red-500' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-primary' }}">
+                              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('superadmin.audit-logs.*') ? 'bg-brand-tint text-brand-deep' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-primary' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 13.5V5.25A2.25 2.25 0 0017.25 3h-10.5A2.25 2.25 0 004.5 5.25v13.5A2.25 2.25 0 006.75 21h10.5a2.25 2.25 0 002.25-2.25V16.5M8.25 7.5h7.5M8.25 11.25h7.5M8.25 15h4.5" />
                         </svg>
@@ -88,7 +88,7 @@
 
                     <!-- Regular Admin -->
                           <a href="{{ route('admin.dashboard') }}"
-                              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-orange">
+                              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-brand">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

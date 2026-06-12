@@ -9,7 +9,7 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
 
         <!-- Theme Script (must load before body) -->
         <script>
@@ -69,7 +69,7 @@
             <footer class="border-t border-gray-200/70 bg-white/80 backdrop-blur dark:border-gray-800 dark:bg-dark-secondary/80 mt-20">
                 <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                     <div class="text-center">
-                        <p class="text-base font-semibold">Plugged<span class="text-orange">In</span></p>
+                        <p class="text-base font-semibold">Plugged<span class="text-brand">In</span></p>
                         <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">Upgrade. Don't Replace.</p>
                         <p class="text-[11px] uppercase tracking-[0.14em] text-gray-500 dark:text-text-secondary mt-2">&copy; {{ date('Y') }} Built for longer-lasting devices</p>
                     </div>

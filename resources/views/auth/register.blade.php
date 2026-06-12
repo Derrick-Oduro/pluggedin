@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-6">
         <p class="text-[0.65rem] uppercase tracking-[0.26em] text-slate-500">New account</p>
-        <h1 class="mt-3 text-3xl font-semibold sm:text-4xl font-display">Create your PluggedIn profile</h1>
+        <h1 class="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Create your PluggedIn profile</h1>
         <p class="mt-2 text-sm text-slate-600">List services, track orders, and launch your first offer in minutes.</p>
     </div>
 

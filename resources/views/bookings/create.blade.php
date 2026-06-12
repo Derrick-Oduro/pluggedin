@@ -9,7 +9,7 @@
             <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 mb-8 border border-gray-200 dark:border-gray-800">
                 <h2 class="text-2xl font-bold mb-2">{{ $service->name }}</h2>
                 <p class="text-gray-600 dark:text-text-secondary mb-4">{{ $service->description }}</p>
-                <p class="text-3xl font-bold text-orange">${{ number_format($service->price, 2) }}</p>
+                <p class="text-3xl font-bold text-orange">GH₵{{ number_format($service->price, 2) }}</p>
             </div>
 
             <form action="{{ route('bookings.store') }}" method="POST" class="bg-white dark:bg-dark-secondary rounded-2xl p-8 border border-gray-200 dark:border-gray-800">

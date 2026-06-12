@@ -53,7 +53,7 @@
                                     {{ ucfirst($product->status) }}
                                 </span>
                             </td>
-                            <td class="backend-td text-orange font-semibold">${{ number_format($product->price, 2) }}</td>
+                            <td class="backend-td text-orange font-semibold">GH₵{{ number_format($product->price, 2) }}</td>
                             <td class="backend-td">{{ $product->stock_quantity }}</td>
                             <td class="backend-td">
                                 <div class="flex gap-2">

@@ -44,7 +44,7 @@
                                         {{ ucfirst($product->status) }}
                                     </span>
                                 </div>
-                                <p class="text-sm text-gray-600 dark:text-text-secondary">Category: {{ $product->category?->name ?? 'N/A' }} • Price: ${{ number_format($product->price, 2) }}</p>
+                                <p class="text-sm text-gray-600 dark:text-text-secondary">Category: {{ $product->category?->name ?? 'N/A' }} • Price: GH₵{{ number_format($product->price, 2) }}</p>
                                 <p class="text-gray-600 dark:text-text-secondary mt-3">{{ $product->description }}</p>
                                 @if($product->admin_review_comment)
                                     <div class="mt-4 rounded-lg border border-red-300/50 bg-red-50/60 dark:bg-red-500/10 dark:border-red-500/40 p-3">

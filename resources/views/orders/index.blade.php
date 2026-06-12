@@ -29,13 +29,13 @@
                                 @foreach($order->items as $item)
                                     <div class="flex justify-between py-2 text-sm">
                                         <span>{{ $item->product->name }} x {{ $item->quantity }}</span>
-                                        <span class="text-orange font-medium">${{ number_format($item->price * $item->quantity, 2) }}</span>
+                                        <span class="text-orange font-medium">GH₵{{ number_format($item->price * $item->quantity, 2) }}</span>
                                     </div>
                                 @endforeach
                             </div>
 
                             <div class="flex justify-between items-center">
-                                <span class="text-xl font-bold">Total: <span class="text-orange">${{ number_format($order->total_price, 2) }}</span></span>
+                                <span class="text-xl font-bold">Total: <span class="text-orange">GH₵{{ number_format($order->total_price, 2) }}</span></span>
                                 <a href="{{ route('orders.show', $order) }}" class="text-orange hover:text-orange-light font-semibold">
                                     View Details
                                 </a>

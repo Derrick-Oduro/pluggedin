@@ -191,7 +191,7 @@
                             <h3 class="text-xl font-semibold mb-2 group-hover:text-orange transition">{{ $product->name }}</h3>
                             <p class="text-gray-600 dark:text-text-secondary mb-5 line-clamp-2">{{ $product->description }}</p>
                             <div class="flex items-center justify-between">
-                                <p class="text-2xl font-bold text-orange">${{ number_format($product->price, 2) }}</p>
+                                <p class="text-2xl font-bold text-orange">GH₵{{ number_format($product->price, 2) }}</p>
                                 <span class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-orange transition">
                                     Details
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -206,7 +206,7 @@
         </div>
     </section>
 
-    <!-- Why PluggedIn Section -->
+    <!-- Why PluggedIn Section (connected steps) -->
     <section class="relative py-20 bg-white dark:bg-dark-secondary overflow-hidden">
         <div class="absolute inset-0 opacity-60 pointer-events-none">
             <div class="absolute top-0 left-1/3 h-48 w-48 rounded-full bg-orange/10 blur-3xl"></div>
@@ -220,36 +220,70 @@
                 <p class="text-gray-600 dark:text-text-secondary">Practical recommendations, careful installs, and support that keeps devices running smoothly.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-orange-50/70 dark:bg-dark rounded-2xl p-8 border border-orange/20">
-                    <div class="w-12 h-12 rounded-xl bg-orange text-white flex items-center justify-center mb-5">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5 7.5 8.25m0 0L4.5 11.25m3-3 5.25 5.25m0 0 3-3m-3 3-3.75 3.75M7.5 8.25 12 3.75a2.121 2.121 0 0 1 3 3l-4.5 4.5m0 0L9 12.75" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Upgrade-Ready Systems</h3>
-                    <p class="text-gray-600 dark:text-text-secondary">Expert advice on compatible upgrades tailored to your exact device and workload.</p>
+            <div class="relative mt-12">
+                <!-- horizontal connector for md+ -->
+                <div class="hidden md:block absolute left-0 right-0 top-10">
+                    <div class="mx-auto w-full max-w-4xl h-0.5 bg-gray-200 dark:bg-gray-800"></div>
                 </div>
 
-                <div class="bg-orange-50/70 dark:bg-dark rounded-2xl p-8 border border-orange/20">
-                    <div class="w-12 h-12 rounded-xl bg-orange text-white flex items-center justify-center mb-5">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m6 2.25a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
+                <div class="relative max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                    <div class="flex flex-col items-center text-center md:items-center md:text-center">
+                        <div class="relative z-10 w-16 h-16 rounded-full bg-orange text-white flex items-center justify-center shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v6m0 8v6m8-8h-6M4 12H2" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mt-4">Assessment</h3>
+                        <p class="text-gray-600 dark:text-text-secondary mt-2">Fast, no-nonsense diagnostics to identify upgrade opportunities and cost-effective fixes.</p>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Honest Advice</h3>
-                    <p class="text-gray-600 dark:text-text-secondary">Clear recommendations on when an upgrade is the right move and when it is not.</p>
+
+                    <div class="flex flex-col items-center text-center md:items-center md:text-center">
+                        <div class="relative z-10 w-16 h-16 rounded-full bg-orange text-white flex items-center justify-center shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M6 11h12M10 15h4" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mt-4">Install & Test</h3>
+                        <p class="text-gray-600 dark:text-text-secondary mt-2">Careful installs, thorough testing, and cleanup so the upgrade works reliably from day one.</p>
+                    </div>
+
+                    <div class="flex flex-col items-center text-center md:items-center md:text-center">
+                        <div class="relative z-10 w-16 h-16 rounded-full bg-orange text-white flex items-center justify-center shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l2 2" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mt-4">Support</h3>
+                        <p class="text-gray-600 dark:text-text-secondary mt-2">Warranty-backed service, follow-up guidance, and options for future upgrades.</p>
+                    </div>
                 </div>
 
-                <div class="bg-orange-50/70 dark:bg-dark rounded-2xl p-8 border border-orange/20">
-                    <div class="w-12 h-12 rounded-xl bg-orange text-white flex items-center justify-center mb-5">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 3.098a1 1 0 0 1 1.16 0l2.15 1.55a1 1 0 0 0 .58.186h2.66a1 1 0 0 1 .95.69l.82 2.52a1 1 0 0 0 .36.49l2.15 1.55a1 1 0 0 1 .36 1.118l-.82 2.52a1 1 0 0 0 0 .618l.82 2.52a1 1 0 0 1-.36 1.118l-2.15 1.55a1 1 0 0 0-.36.49l-.82 2.52a1 1 0 0 1-.95.69h-2.66a1 1 0 0 0-.58.186l-2.15 1.55a1 1 0 0 1-1.16 0l-2.15-1.55a1 1 0 0 0-.58-.186H6.03a1 1 0 0 1-.95-.69l-.82-2.52a1 1 0 0 0-.36-.49l-2.15-1.55a1 1 0 0 1-.36-1.118l.82-2.52a1 1 0 0 0 0-.618l-.82-2.52a1 1 0 0 1 .36-1.118l2.15-1.55a1 1 0 0 0 .36-.49l.82-2.52a1 1 0 0 1 .95-.69h2.66a1 1 0 0 0 .58-.186l2.15-1.55Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Long-Term Support</h3>
-                    <p class="text-gray-600 dark:text-text-secondary">Professional installs, post-service guidance, and support for future upgrades.</p>
+                <!-- vertical connectors for small screens -->
+                <div class="md:hidden mt-8 max-w-md mx-auto">
+                    <ul class="flex flex-col">
+                        <li class="flex items-start gap-4 py-4">
+                            <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-orange mt-1"></span></div>
+                            <div>
+                                <p class="font-semibold">Assessment</p>
+                                <p class="text-gray-600 dark:text-text-secondary text-sm mt-1">Fast, no-nonsense diagnostics to identify upgrade opportunities and cost-effective fixes.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 py-4">
+                            <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-orange mt-1"></span></div>
+                            <div>
+                                <p class="font-semibold">Install & Test</p>
+                                <p class="text-gray-600 dark:text-text-secondary text-sm mt-1">Careful installs, thorough testing, and cleanup so the upgrade works reliably from day one.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 py-4">
+                            <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-orange mt-1"></span></div>
+                            <div>
+                                <p class="font-semibold">Support</p>
+                                <p class="text-gray-600 dark:text-text-secondary text-sm mt-1">Warranty-backed service, follow-up guidance, and options for future upgrades.</p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -275,7 +309,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9m-9 6h9m-9 6h9M4.5 6h.008v.008H4.5V6Zm0 6h.008v.008H4.5V12Zm0 6h.008v.008H4.5V18Z" />
                                 </svg>
                             </div>
-                            <p class="text-3xl font-bold text-orange">${{ number_format($service->price, 2) }}</p>
+                            <p class="text-3xl font-bold text-orange">GH₵{{ number_format($service->price, 2) }}</p>
                         </div>
 
                         <h3 class="text-2xl font-bold mb-3 group-hover:text-orange transition">{{ $service->name }}</h3>

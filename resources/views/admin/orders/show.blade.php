@@ -78,15 +78,15 @@
                     </div>
                     <div class="backend-card rounded-xl">
                         <p class="text-xs text-gray-500 dark:text-text-secondary">Subtotal</p>
-                        <p class="text-xl font-semibold mt-1">${{ number_format($order->subtotal_price ?: $order->total_price, 2) }}</p>
+                        <p class="text-xl font-semibold mt-1">GH₵{{ number_format($order->subtotal_price ?: $order->total_price, 2) }}</p>
                     </div>
                     <div class="backend-card rounded-xl">
                         <p class="text-xs text-gray-500 dark:text-text-secondary">Discount</p>
-                        <p class="text-xl font-semibold mt-1 text-green-600 dark:text-green-400">- ${{ number_format($order->discount_amount ?? 0, 2) }}</p>
+                        <p class="text-xl font-semibold mt-1 text-green-600 dark:text-green-400">- GH₵{{ number_format($order->discount_amount ?? 0, 2) }}</p>
                     </div>
                     <div class="backend-card rounded-xl">
                         <p class="text-xs text-gray-500 dark:text-text-secondary">Total</p>
-                        <p class="text-xl font-semibold mt-1 text-orange">${{ number_format($order->total_price, 2) }}</p>
+                        <p class="text-xl font-semibold mt-1 text-orange">GH₵{{ number_format($order->total_price, 2) }}</p>
                     </div>
                 </div>
 
@@ -176,8 +176,8 @@
                                                 </div>
                                             </td>
                                             <td class="backend-td">{{ $item->quantity }}</td>
-                                            <td class="backend-td">${{ number_format($item->price, 2) }}</td>
-                                            <td class="backend-td text-orange font-semibold">${{ number_format($item->price * $item->quantity, 2) }}</td>
+                                            <td class="backend-td">GH₵{{ number_format($item->price, 2) }}</td>
+                                            <td class="backend-td text-orange font-semibold">GH₵{{ number_format($item->price * $item->quantity, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -188,17 +188,17 @@
                     <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-1.5 text-sm">
                         <div class="flex justify-between">
                             <span class="text-gray-600 dark:text-text-secondary">Subtotal</span>
-                            <span class="font-medium">${{ number_format($order->subtotal_price ?: $order->total_price, 2) }}</span>
+                            <span class="font-medium">GH₵{{ number_format($order->subtotal_price ?: $order->total_price, 2) }}</span>
                         </div>
                         @if($order->discount_amount > 0)
                             <div class="flex justify-between text-green-600 dark:text-green-400">
                                 <span>Discount ({{ $order->applied_discount_code ?: 'Auto campaign' }})</span>
-                                <span>- ${{ number_format($order->discount_amount, 2) }}</span>
+                                <span>- GH₵{{ number_format($order->discount_amount, 2) }}</span>
                             </div>
                         @endif
                         <div class="flex justify-between items-center pt-2 mt-2 border-t border-gray-200 dark:border-gray-700">
                             <span class="text-lg font-semibold">Final Total</span>
-                            <span class="text-2xl font-bold text-orange">${{ number_format($order->total_price, 2) }}</span>
+                            <span class="text-2xl font-bold text-orange">GH₵{{ number_format($order->total_price, 2) }}</span>
                         </div>
                     </div>
                 </div>

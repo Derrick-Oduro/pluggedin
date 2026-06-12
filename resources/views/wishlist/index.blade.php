@@ -44,7 +44,7 @@
                                 <p class="text-xs text-gray-500 dark:text-text-secondary">{{ $item->product?->category?->name ?? 'Uncategorized' }}</p>
                                 <h2 class="text-base font-semibold truncate">{{ $item->product?->name ?? 'Product unavailable' }}</h2>
                                 @if($item->product)
-                                    <p class="text-sm text-orange font-semibold mt-0.5">${{ number_format($item->product->price, 2) }}</p>
+                                    <p class="text-sm text-orange font-semibold mt-0.5">GH₵{{ number_format($item->product->price, 2) }}</p>
                                 @endif
                             </div>
 

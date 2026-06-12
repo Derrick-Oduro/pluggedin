@@ -21,7 +21,7 @@
                 <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Products</p><p class="text-xl font-semibold">{{ $stats['total_products'] }}</p></div>
                 <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Orders</p><p class="text-xl font-semibold">{{ $stats['total_orders'] }}</p></div>
                 <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Bookings</p><p class="text-xl font-semibold">{{ $stats['total_bookings'] }}</p></div>
-                <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Revenue</p><p class="text-xl font-semibold">${{ number_format($stats['total_revenue'], 2) }}</p></div>
+                <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Revenue</p><p class="text-xl font-semibold">GH₵{{ number_format($stats['total_revenue'], 2) }}</p></div>
                 <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Pending uploads</p><p class="text-xl font-semibold">{{ $stats['pending_user_uploads'] }}</p></div>
                 <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Active discounts</p><p class="text-xl font-semibold">{{ $stats['active_discount_campaigns'] }}</p></div>
             </div>
@@ -137,7 +137,7 @@
                         <tr class="border-b border-gray-300 dark:border-gray-700">
                             <td class="p-2">#{{ $order->id }}</td>
                             <td class="p-2">{{ $order->user->name }}</td>
-                            <td class="p-2 text-orange font-semibold">${{ number_format($order->total_price, 2) }}</td>
+                            <td class="p-2 text-orange font-semibold">GH₵{{ number_format($order->total_price, 2) }}</td>
                             <td class="p-2">
                                 <span class="text-xs px-2 py-1 rounded-full
                                     @if($order->status === 'pending') bg-yellow-500/20 text-yellow-500

@@ -33,7 +33,7 @@
             <div>
                 <p class="text-orange text-sm mb-2">{{ $product->category->name }}</p>
                 <h1 class="text-4xl font-bold mb-4">{{ $product->name }}</h1>
-                <p class="text-3xl font-bold text-orange mb-6">${{ number_format($product->price, 2) }}</p>
+                <p class="text-3xl font-bold text-orange mb-6">GH₵{{ number_format($product->price, 2) }}</p>
 
                 <div class="mb-6">
                     <p class="text-gray-600 dark:text-text-secondary mb-2">Stock: {{ $product->stock_quantity }} available</p>
@@ -175,7 +175,7 @@
                             @endif
                             <div class="p-4">
                                 <h3 class="font-semibold mb-2">{{ $related->name }}</h3>
-                                <p class="text-orange font-bold">${{ number_format($related->price, 2) }}</p>
+                                <p class="text-orange font-bold">GH₵{{ number_format($related->price, 2) }}</p>
                             </div>
                         </a>
                     @endforeach

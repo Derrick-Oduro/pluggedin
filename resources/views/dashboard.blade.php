@@ -141,7 +141,7 @@
                 <div class="space-y-3">
                     @forelse(($orders ?? collect()) as $order)
                         <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-3">
-                            <p class="font-semibold">Order #{{ $order->id }} - ${{ number_format($order->total_price, 2) }}</p>
+                            <p class="font-semibold">Order #{{ $order->id }} - GH₵{{ number_format($order->total_price, 2) }}</p>
                             <p class="text-sm text-gray-600 dark:text-text-secondary">{{ ucfirst($order->status) }} | {{ $order->created_at->format('M d, Y') }}</p>
                         </div>
                     @empty

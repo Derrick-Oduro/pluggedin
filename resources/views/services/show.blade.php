@@ -9,7 +9,7 @@
 
             <div class="flex justify-between items-center mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
                 <span class="text-2xl font-bold">Service Price:</span>
-                <span class="text-4xl font-bold text-orange">${{ number_format($service->price, 2) }}</span>
+                <span class="text-4xl font-bold text-orange">GH₵{{ number_format($service->price, 2) }}</span>
             </div>
 
             @auth

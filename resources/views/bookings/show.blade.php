@@ -46,7 +46,7 @@
             <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 mb-6 border border-gray-200 dark:border-gray-800">
                 <h2 class="text-xl font-bold mb-4">Service Information</h2>
                 <p class="text-gray-600 dark:text-text-secondary mb-2"><span class="font-semibold text-gray-900 dark:text-text-primary">Service:</span> {{ $booking->service->name }}</p>
-                <p class="text-gray-600 dark:text-text-secondary mb-2"><span class="font-semibold text-gray-900 dark:text-text-primary">Price:</span> ${{ number_format($booking->service->price, 2) }}</p>
+                <p class="text-gray-600 dark:text-text-secondary mb-2"><span class="font-semibold text-gray-900 dark:text-text-primary">Price:</span> GH₵{{ number_format($booking->service->price, 2) }}</p>
                 <p class="text-gray-600 dark:text-text-secondary mb-2"><span class="font-semibold text-gray-900 dark:text-text-primary">Device Model:</span> {{ $booking->device_model }}</p>
                 <p class="text-gray-600 dark:text-text-secondary"><span class="font-semibold text-gray-900 dark:text-text-primary">Preferred Date:</span> {{ $booking->preferred_date->format('M d, Y') }}</p>
             </div>

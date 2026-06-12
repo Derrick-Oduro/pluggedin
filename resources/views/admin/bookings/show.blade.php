@@ -46,7 +46,7 @@
                 <h2 class="text-lg font-semibold mb-3">Service Details</h2>
                 <div class="space-y-2 text-gray-600 dark:text-text-secondary">
                     <p><span class="font-semibold text-text-primary">Service:</span> {{ $booking->service->name }}</p>
-                    <p><span class="font-semibold text-text-primary">Price:</span> <span class="text-orange font-bold">${{ number_format($booking->service->price, 2) }}</span></p>
+                    <p><span class="font-semibold text-text-primary">Price:</span> <span class="text-orange font-bold">GH₵{{ number_format($booking->service->price, 2) }}</span></p>
                     <p><span class="font-semibold text-text-primary">Device Model:</span> {{ $booking->device_model }}</p>
                     <p><span class="font-semibold text-text-primary">Preferred Date:</span> {{ $booking->preferred_date->format('M d, Y') }}</p>
                 </div>

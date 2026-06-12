@@ -14,13 +14,13 @@
                     @foreach($cartItems as $item)
                         <div class="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700 text-sm">
                             <span>{{ $item->product->name }} x {{ $item->quantity }}</span>
-                            <span class="text-orange font-medium">${{ number_format($item->product->price * $item->quantity, 2) }}</span>
+                            <span class="text-orange font-medium">GH₵{{ number_format($item->product->price * $item->quantity, 2) }}</span>
                         </div>
                     @endforeach
 
                     <div class="flex justify-between py-2 text-sm border-t border-gray-200 dark:border-gray-700 mt-3 pt-3">
                         <span>Subtotal</span>
-                        <span>${{ number_format($subtotal ?? $total, 2) }}</span>
+                        <span>GH₵{{ number_format($subtotal ?? $total, 2) }}</span>
                     </div>
 
                     @if(($discountAmount ?? 0) > 0)
@@ -31,13 +31,13 @@
                                     ({{ $autoCampaign->name }})
                                 @endif
                             </span>
-                            <span>- ${{ number_format($discountAmount, 2) }}</span>
+                            <span>- GH₵{{ number_format($discountAmount, 2) }}</span>
                         </div>
                     @endif
 
                     <div class="flex justify-between py-3 text-xl font-bold border-t border-gray-200 dark:border-gray-700 mt-2">
                         <span>Total:</span>
-                        <span class="text-orange">${{ number_format($total, 2) }}</span>
+                        <span class="text-orange">GH₵{{ number_format($total, 2) }}</span>
                     </div>
                 </div>
 

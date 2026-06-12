@@ -21,7 +21,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5.1 14.4a2.25 2.25 0 0 0-.659 1.591v3.905a1.5 1.5 0 0 0 2.56 1.06l3.683-3.683a2.25 2.25 0 0 1 1.591-.659h5.714a2.25 2.25 0 0 0 1.591-.659l1.316-1.316a2.25 2.25 0 0 0 0-3.182L12.93 3.763a2.25 2.25 0 0 0-3.18 0Z" />
                                 </svg>
                             </div>
-                            <p class="text-3xl font-bold text-orange">${{ number_format($service->price, 2) }}</p>
+                            <p class="text-3xl font-bold text-orange">GH₵{{ number_format($service->price, 2) }}</p>
                         </div>
 
                         <h3 class="text-2xl font-bold mb-3 group-hover:text-orange transition">{{ $service->name }}</h3>

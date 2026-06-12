@@ -39,7 +39,7 @@
                         <tr class="backend-row">
                             <td class="backend-td font-semibold">#{{ $order->id }}</td>
                             <td class="backend-td">{{ $order->user->name }}</td>
-                            <td class="backend-td text-orange font-semibold">${{ number_format($order->total_price, 2) }}</td>
+                            <td class="backend-td text-orange font-semibold">GH₵{{ number_format($order->total_price, 2) }}</td>
                             <td class="backend-td">
                                 <span class="text-xs px-3 py-1 rounded-full
                                     @if($order->status === 'pending') bg-yellow-500/20 text-yellow-500

@@ -69,7 +69,7 @@
                                 @forelse($products as $product)
                                     <a href="{{ route('products.show', $product) }}" class="block rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 hover:border-orange transition">
                                         <p class="font-semibold">{{ $product->name }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-text-secondary">{{ $product->category?->name ?? 'Uncategorized' }} · ${{ number_format($product->price, 2) }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-text-secondary">{{ $product->category?->name ?? 'Uncategorized' }} · GH₵{{ number_format($product->price, 2) }}</p>
                                     </a>
                                 @empty
                                     <p class="text-sm text-gray-600 dark:text-text-secondary">No products matched.</p>
@@ -85,7 +85,7 @@
                                 @forelse($services as $service)
                                     <a href="{{ route('services.show', $service) }}" class="block rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 hover:border-orange transition">
                                         <p class="font-semibold">{{ $service->name }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-text-secondary">${{ number_format($service->price, 2) }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-text-secondary">GH₵{{ number_format($service->price, 2) }}</p>
                                     </a>
                                 @empty
                                     <p class="text-sm text-gray-600 dark:text-text-secondary">No services matched.</p>
@@ -103,7 +103,7 @@
                                     @php($orderRoute = auth()->user()->isAdmin() ? route('admin.orders.show', $order) : route('orders.show', $order))
                                     <a href="{{ $orderRoute }}" class="block rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 hover:border-orange transition">
                                         <p class="font-semibold">Order #{{ $order->id }} · {{ ucfirst($order->status) }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-text-secondary">${{ number_format($order->total_price, 2) }} · {{ $order->created_at->format('M d, Y') }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-text-secondary">GH₵{{ number_format($order->total_price, 2) }} · {{ $order->created_at->format('M d, Y') }}</p>
                                     </a>
                                 @empty
                                     <p class="text-sm text-gray-600 dark:text-text-secondary">No orders matched.</p>

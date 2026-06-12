@@ -38,7 +38,7 @@
                     <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Pending Orders</p><p class="text-xl font-semibold">{{ $stats['pending_orders'] }}</p></div>
                     <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Bookings</p><p class="text-xl font-semibold">{{ $stats['total_bookings'] }}</p></div>
                     <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Pending Bookings</p><p class="text-xl font-semibold">{{ $stats['pending_bookings'] }}</p></div>
-                    <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Revenue</p><p class="text-xl font-semibold">${{ number_format($stats['total_revenue'], 2) }}</p></div>
+                    <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Revenue</p><p class="text-xl font-semibold">GH₵{{ number_format($stats['total_revenue'], 2) }}</p></div>
                     <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Referral Conversions</p><p class="text-xl font-semibold">{{ $stats['total_referral_conversions'] }}</p></div>
                     <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Pending Reviews</p><p class="text-xl font-semibold">{{ $stats['pending_reviews'] }}</p></div>
                     <div class="backend-card"><p class="text-xs text-gray-500 dark:text-text-secondary">Reported Reviews</p><p class="text-xl font-semibold">{{ $stats['reported_reviews'] }}</p></div>
@@ -94,7 +94,7 @@
                                     <p class="text-xs text-gray-600 dark:text-text-secondary">{{ $order->user->name }}</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="font-bold text-orange">${{ number_format($order->total_price, 2) }}</p>
+                                    <p class="font-bold text-orange">GH₵{{ number_format($order->total_price, 2) }}</p>
                                     <span class="text-xs px-2 py-1 rounded
                                         @if($order->status === 'pending') bg-yellow-500/20 text-yellow-500
                                         @elseif($order->status === 'confirmed') bg-blue-500/20 text-blue-500

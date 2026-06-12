@@ -44,7 +44,7 @@
 
                                         <div class="min-w-0">
                                             <h3 class="text-base font-semibold truncate">{{ $item->product->name }}</h3>
-                                            <p class="text-sm text-gray-600 dark:text-text-secondary">${{ number_format($item->product->price, 2) }} each</p>
+                                            <p class="text-sm text-gray-600 dark:text-text-secondary">GH₵{{ number_format($item->product->price, 2) }} each</p>
                                             <p class="text-xs text-gray-500 dark:text-text-secondary">Stock: {{ $item->product->stock_quantity }}</p>
                                         </div>
                                     </div>
@@ -73,7 +73,7 @@
 
                                     <div class="sm:text-right">
                                         <p class="text-xs text-gray-500 dark:text-text-secondary">Line total</p>
-                                        <p class="text-lg font-bold text-orange">${{ number_format($item->product->price * $item->quantity, 2) }}</p>
+                                        <p class="text-lg font-bold text-orange">GH₵{{ number_format($item->product->price * $item->quantity, 2) }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -95,13 +95,13 @@
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <span class="text-gray-600 dark:text-text-secondary">Average line</span>
-                                    <span class="font-semibold">${{ number_format($avgLine, 2) }}</span>
+                                    <span class="font-semibold">GH₵{{ number_format($avgLine, 2) }}</span>
                                 </div>
                             </div>
 
                             <div class="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
                                 <span class="text-base font-semibold">Total</span>
-                                <span class="text-2xl font-bold text-orange">${{ number_format($total, 2) }}</span>
+                                <span class="text-2xl font-bold text-orange">GH₵{{ number_format($total, 2) }}</span>
                             </div>
 
                             <a href="{{ route('checkout') }}" class="h-11 w-full inline-flex items-center justify-center bg-orange hover:bg-orange-light text-white rounded-lg font-semibold transition">

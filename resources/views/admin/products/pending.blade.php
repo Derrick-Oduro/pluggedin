@@ -92,7 +92,7 @@
                             <h2 class="text-2xl font-bold mb-2">{{ $product->name }}</h2>
                             <p class="text-sm text-gray-600 dark:text-text-secondary mb-2">Category: {{ $product->category->name }}</p>
                             <p class="text-sm text-gray-600 dark:text-text-secondary mb-2">Uploaded by: {{ $product->uploader?->name ?? 'N/A' }}</p>
-                            <p class="text-sm text-gray-600 dark:text-text-secondary">Price: ${{ number_format($product->price, 2) }} | Stock: {{ $product->stock_quantity }}</p>
+                            <p class="text-sm text-gray-600 dark:text-text-secondary">Price: GH₵{{ number_format($product->price, 2) }} | Stock: {{ $product->stock_quantity }}</p>
                             <p class="text-gray-600 dark:text-text-secondary mt-4">{{ $product->description }}</p>
                         </div>
 

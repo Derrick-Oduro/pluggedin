@@ -84,8 +84,8 @@
                             </div>
 
                             <div class="text-right">
-                                <p class="text-gray-600 dark:text-text-secondary text-sm">${{ number_format($item->price, 2) }} each</p>
-                                <p class="text-orange font-bold">${{ number_format($item->price * $item->quantity, 2) }}</p>
+                                <p class="text-gray-600 dark:text-text-secondary text-sm">GH₵{{ number_format($item->price, 2) }} each</p>
+                                <p class="text-orange font-bold">GH₵{{ number_format($item->price * $item->quantity, 2) }}</p>
                             </div>
                             </div>
 
@@ -126,7 +126,7 @@
 
                 <div class="flex justify-between items-center pt-4 mt-4 border-t border-gray-300 dark:border-gray-700">
                     <span class="text-2xl font-bold">Total:</span>
-                    <span class="text-3xl font-bold text-orange">${{ number_format($order->total_price, 2) }}</span>
+                    <span class="text-3xl font-bold text-orange">GH₵{{ number_format($order->total_price, 2) }}</span>
                 </div>
             </div>
         </div>

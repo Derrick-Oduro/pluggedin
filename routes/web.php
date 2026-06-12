@@ -164,6 +164,10 @@ Route::prefix('superadmin')->middleware(['auth', 'superadmin'])->name('superadmi
     Route::patch('/marketing/campaigns/{campaign}', [SuperAdminMarketingController::class, 'updateCampaign'])->name('marketing.campaigns.update');
     Route::delete('/marketing/campaigns/{campaign}', [SuperAdminMarketingController::class, 'destroyCampaign'])->name('marketing.campaigns.destroy');
     Route::post('/marketing/campaigns/{id}/restore', [SuperAdminMarketingController::class, 'restoreCampaign'])->name('marketing.campaigns.restore');
+
+    // Site-wide Settings
+    Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings.index');
+    Route::patch('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
 });
 
 require __DIR__.'/auth.php';

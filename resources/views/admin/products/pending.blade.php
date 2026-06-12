@@ -2,17 +2,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
             <aside class="xl:col-span-3">
-                <div class="bg-white dark:bg-dark-secondary border border-gray-200 dark:border-gray-800 rounded-xl p-4 sticky top-4">
-                    <p class="text-xs uppercase tracking-[0.15em] text-gray-500 dark:text-text-secondary mb-3">Admin Tabs</p>
-                    <nav class="space-y-1">
-                        <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Dashboard</a>
-                        <a href="{{ route('admin.products.pending') }}" class="block px-3 py-2 rounded-lg text-sm bg-orange/15 text-orange">Moderation Queue</a>
-                        <a href="{{ route('admin.reviews.index') }}" class="block px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Review Moderation</a>
-                        <a href="{{ route('admin.products.index') }}" class="block px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Products</a>
-                        <a href="{{ route('admin.orders.index') }}" class="block px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Orders</a>
-                        <a href="{{ route('admin.bookings.index') }}" class="block px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Bookings</a>
-                    </nav>
-                </div>
+                @include('admin._tabs')
             </aside>
 
             <div class="xl:col-span-9 space-y-4">

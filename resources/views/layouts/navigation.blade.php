@@ -39,11 +39,11 @@
                     @php($wishlistItemsCount = auth()->user()->wishlistItems()->count())
 
                     @if(auth()->user()->hasRole('super-admin'))
-                        <a href="{{ route('superadmin.dashboard') }}" class="px-3 py-1.5 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500/20 text-sm font-semibold transition">
+                        <a href="{{ route('superadmin.dashboard') }}" class="px-3 py-1.5 rounded-full text-sm font-semibold transition {{ request()->routeIs('superadmin.*') ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20' : 'text-gray-700 dark:text-text-primary hover:bg-gray-100 dark:hover:bg-gray-800' }}">
                             Super Admin
                         </a>
                     @elseif(auth()->user()->hasRole('admin'))
-                        <a href="{{ route('admin.dashboard') }}" class="px-3 py-1.5 rounded-full bg-orange/15 text-orange hover:bg-orange/25 text-sm font-semibold transition">
+                        <a href="{{ route('admin.dashboard') }}" class="px-3 py-1.5 rounded-full text-sm font-semibold transition {{ request()->routeIs('admin.*') ? 'bg-orange/15 text-orange hover:bg-orange/25' : 'text-gray-700 dark:text-text-primary hover:bg-gray-100 dark:hover:bg-gray-800' }}">
                             Admin
                         </a>
                     @endif

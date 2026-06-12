@@ -2,17 +2,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
             <aside class="xl:col-span-3">
-                <div class="backend-sidebar sticky top-24">
-                    <p class="text-xs uppercase tracking-[0.15em] text-gray-500 dark:text-text-secondary mb-3">Admin Tabs</p>
-                    <nav class="space-y-1">
-                        <a href="{{ route('admin.dashboard') }}" class="backend-tab">Dashboard</a>
-                        <a href="{{ route('admin.products.pending') }}" class="backend-tab">Moderation Queue</a>
-                        <a href="{{ route('admin.products.index') }}" class="backend-tab">Products</a>
-                        <a href="{{ route('admin.orders.index') }}" class="backend-tab">Orders</a>
-                        <a href="{{ route('admin.reviews.index') }}" class="backend-tab">Review Moderation</a>
-                        <a href="{{ route('admin.bookings.index') }}" class="backend-tab backend-tab-active">Bookings</a>
-                    </nav>
-                </div>
+                @include('admin._tabs')
             </aside>
 
             <div class="xl:col-span-9 space-y-4">

@@ -59,6 +59,11 @@
                                 <a href="{{ route('products.upload.edit', $product) }}" class="text-center px-4 py-2.5 rounded-lg bg-orange hover:bg-orange-light text-white font-semibold transition">
                                     {{ $product->status === 'rejected' ? 'Fix and Resubmit' : 'Edit Upload' }}
                                 </a>
+                                @if($product->status === 'approved')
+                                    <form method="POST" action="{{ route('products.upload.state', $product) }}">@csrf @method('PATCH')<input type="hidden" name="listing_state" value="{{ $product->listing_state === 'active' ? 'paused' : 'active' }}"><button class="w-full text-center px-4 py-2.5 rounded-lg border border-stone-300 text-sm font-bold text-stone-700 hover:border-brand">{{ $product->listing_state === 'active' ? 'Pause listing' : 'Reactivate listing' }}</button></form>
+                                    @if($product->listing_state !== 'sold')<form method="POST" action="{{ route('products.upload.state', $product) }}">@csrf @method('PATCH')<input type="hidden" name="listing_state" value="sold"><button class="w-full text-center px-4 py-2.5 rounded-lg border border-emerald-300 text-sm font-bold text-emerald-700 hover:bg-emerald-50">Mark as sold</button></form>@endif
+                                @endif
+                                <form method="POST" action="{{ route('products.upload.destroy', $product) }}" onsubmit="return confirm('Remove this listing permanently?')">@csrf @method('DELETE')<button class="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold text-red-600 hover:bg-red-50">Remove listing</button></form>
                             </div>
                         </div>
                     </div>

@@ -16,7 +16,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $filters = ProductCatalogFilter::fromRequest($request);
-        $query = Product::approved()->with('category');
+        $query = Product::approved()->with(['category', 'uploader']);
 
         ProductCatalogFilter::apply($query, $filters);
 
@@ -34,7 +34,7 @@ class ProductController extends Controller
             }
         }
 
-        $product->load('category');
+        $product->load(['category', 'uploader']);
 
         $relatedProducts = Product::approved()->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)

@@ -16,6 +16,8 @@ class Order extends Model
         'discount_campaign_id',
         'applied_discount_code',
         'status',
+        'fulfilment_method',
+        'pickup_campus',
         'delivery_address',
         'delivery_phone'
     ];

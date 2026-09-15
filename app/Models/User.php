@@ -55,6 +55,7 @@ class User extends Authenticatable
             'notify_order_updates' => 'boolean',
             'notify_booking_updates' => 'boolean',
             'notify_product_updates' => 'boolean',
+            'seller_verified_at' => 'datetime',
         ];
     }
 

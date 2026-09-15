@@ -11,6 +11,7 @@ class Product extends Model
 {
     protected $fillable = [
         'uploaded_by',
+        'shop_id',
         'name',
         'description',
         'price',
@@ -18,6 +19,7 @@ class Product extends Model
         'stock_quantity',
         'image_path',
         'status',
+        'listing_state',
         'admin_review_comment',
         'reviewed_by',
         'reviewed_at',
@@ -34,7 +36,7 @@ class Product extends Model
 
     public function scopeApproved(Builder $query): Builder
     {
-        return $query->where('status', 'approved');
+        return $query->where('status', 'approved')->where('listing_state', 'active');
     }
 
     public function category(): BelongsTo
@@ -45,6 +47,11 @@ class Product extends Model
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class);
     }
 
     public function reviewer(): BelongsTo

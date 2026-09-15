@@ -9,6 +9,10 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\SuperAdminMarketingController;
 use App\Http\Controllers\Admin\SuperAdminDashboardController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\Admin\TradeInManagementController;
+use App\Http\Controllers\Admin\ShopManagementController;
+use App\Http\Controllers\Admin\ProductReportManagementController;
+use App\Http\Controllers\Admin\SellerVerificationController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ContactMessageController;
@@ -25,6 +29,10 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserProductController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\TradeInController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\SellerController;
+use App\Http\Controllers\ProductReportController;
 use Illuminate\Support\Facades\Route;
 
 // Home
@@ -41,9 +49,12 @@ Route::get('/services/{service}', [ServiceController::class, 'show'])->name('ser
 
 // About & Contact (static pages for now)
 Route::view('/about', 'about')->name('about');
+Route::view('/campuses', 'campuses')->name('campuses');
 Route::view('/contact', 'contact')->name('contact');
 Route::post('/contact', [ContactMessageController::class, 'store'])->middleware('throttle:6,1')->name('contact.store');
 Route::get('/search', [GlobalSearchController::class, 'index'])->name('search.global');
+Route::get('/shops/{shop:slug}', [ShopController::class, 'show'])->name('shops.show');
+Route::get('/sellers/{seller}', [SellerController::class, 'show'])->name('sellers.show');
 
 // Authenticated User Routes
 Route::middleware('auth')->group(function () {
@@ -80,9 +91,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/products/upload', [UserProductController::class, 'create'])->name('products.upload.create');
     Route::post('/products/upload', [UserProductController::class, 'store'])->name('products.upload.store');
 
+    // PluggedIn trade-in programme (direct exchange quotes, not peer swaps)
+    Route::get('/trade-in', [TradeInController::class, 'create'])->name('trade-ins.create');
+    Route::post('/trade-in', [TradeInController::class, 'store'])->name('trade-ins.store');
+    Route::get('/my-trade-ins', [TradeInController::class, 'index'])->name('trade-ins.index');
+    Route::patch('/my-trade-ins/{tradeIn}/respond', [TradeInController::class, 'respond'])->name('trade-ins.respond');
+    Route::get('/open-a-shop', [ShopController::class, 'create'])->name('shops.create');
+    Route::post('/open-a-shop', [ShopController::class, 'store'])->name('shops.store');
+    Route::get('/my-shop', [ShopController::class, 'dashboard'])->name('shops.dashboard');
+    Route::get('/my-shop/products/create', [ShopController::class, 'createProduct'])->name('shops.products.create');
+    Route::post('/my-shop/products', [ShopController::class, 'storeProduct'])->name('shops.products.store');
+
     // Product Reviews and Referrals
     Route::get('/my-reviews', [ProductReviewController::class, 'index'])->name('reviews.index');
     Route::post('/products/{product}/reviews', [ProductReviewController::class, 'store'])->name('products.reviews.store');
+    Route::post('/products/{product}/report', [ProductReportController::class, 'store'])->name('products.report.store');
     Route::post('/reviews/{review}/report', [ProductReviewController::class, 'report'])->name('reviews.report');
     Route::post('/products/{product}/referral-links', [ReferralController::class, 'store'])->name('products.referrals.store');
 
@@ -90,6 +113,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-uploads', [UserProductController::class, 'index'])->name('products.upload.index');
     Route::get('/my-uploads/{product}/edit', [UserProductController::class, 'edit'])->name('products.upload.edit');
     Route::patch('/my-uploads/{product}', [UserProductController::class, 'update'])->name('products.upload.update');
+    Route::patch('/my-uploads/{product}/listing-state', [UserProductController::class, 'changeListingState'])->name('products.upload.state');
+    Route::delete('/my-uploads/{product}', [UserProductController::class, 'destroy'])->name('products.upload.destroy');
 
     // User Dashboard
     Route::get('/user/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
@@ -149,6 +174,14 @@ Route::prefix('superadmin')->middleware(['auth', 'superadmin'])->name('superadmi
     Route::get('/dashboard', [SuperAdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/audit-logs', [SuperAdminDashboardController::class, 'auditLogs'])->name('audit-logs.index');
     Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
+    Route::get('/trade-ins', [TradeInManagementController::class, 'index'])->name('trade-ins.index');
+    Route::patch('/trade-ins/{tradeIn}/quote', [TradeInManagementController::class, 'quote'])->name('trade-ins.quote');
+    Route::get('/shops', [ShopManagementController::class, 'index'])->name('shops.index');
+    Route::patch('/shops/{shop}', [ShopManagementController::class, 'update'])->name('shops.update');
+    Route::get('/product-reports', [ProductReportManagementController::class, 'index'])->name('product-reports.index');
+    Route::patch('/product-reports/{report}', [ProductReportManagementController::class, 'update'])->name('product-reports.update');
+    Route::get('/sellers', [SellerVerificationController::class, 'index'])->name('sellers.index');
+    Route::patch('/sellers/{seller}/verification', [SellerVerificationController::class, 'update'])->name('sellers.verification');
 
     // User Management
     Route::resource('users', UserManagementController::class)->except(['show']);

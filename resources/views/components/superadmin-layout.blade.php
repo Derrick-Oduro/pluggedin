@@ -75,6 +75,16 @@
                         <span>Messages</span>
                     </a>
 
+                    <a href="{{ route('superadmin.trade-ins.index') }}" class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition {{ request()->routeIs('superadmin.trade-ins.*') ? 'bg-brand-tint text-brand-deep' : 'text-stone-600 hover:bg-stone-100 hover:text-stone-950' }}">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.5 0 1 .2 1.4.6l7 7a2 2 0 0 1 0 2.8l-7 7a2 2 0 0 1-2.8 0l-7-7A2 2 0 0 1 3 12V7a4 4 0 0 1 4-4Z" /></svg>
+                        <span>Trade-ins</span>
+                    </a>
+
+                    <a href="{{ route('superadmin.shops.index') }}" class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition {{ request()->routeIs('superadmin.shops.*') ? 'bg-brand-tint text-brand-deep' : 'text-stone-600 hover:bg-stone-100 hover:text-stone-950' }}">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6" /></svg>
+                        <span>Shops</span>
+                    </a>
+
                     <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
 
                     <!-- Regular Admin -->

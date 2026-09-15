@@ -73,7 +73,9 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'delivery_address' => 'required|string',
+            'fulfilment_method' => 'required|in:delivery,campus_pickup',
+            'pickup_campus' => 'required_if:fulfilment_method,campus_pickup|nullable|string|max:120',
+            'delivery_address' => 'required_if:fulfilment_method,delivery|nullable|string',
             'delivery_phone' => 'required|string',
             'promo_code' => 'nullable|string|max:100',
         ]);
@@ -133,6 +135,8 @@ class OrderController extends Controller
                 'discount_campaign_id' => $campaign?->id,
                 'applied_discount_code' => $campaign?->code,
                 'status' => 'pending',
+                'fulfilment_method' => $request->fulfilment_method,
+                'pickup_campus' => $request->pickup_campus,
                 'delivery_address' => $request->delivery_address,
                 'delivery_phone' => $request->delivery_phone
             ]);

@@ -156,4 +156,22 @@ class UserProductController extends Controller
             ->route('products.upload.index')
             ->with('success', 'Product updated and resubmitted for review.');
     }
+
+    public function changeListingState(Request $request, Product $product)
+    {
+        abort_unless((int) $product->uploaded_by === (int) $request->user()->id && $product->is_user_uploaded, 403);
+        $data = $request->validate(['listing_state' => 'required|in:active,paused,sold']);
+        abort_unless($product->status === 'approved', 422);
+        $product->update($data);
+        return back()->with('success', 'Listing status updated.');
+    }
+
+    public function destroy(Product $product)
+    {
+        abort_unless((int) $product->uploaded_by === (int) auth()->id() && $product->is_user_uploaded, 403);
+        foreach ($product->images ?: [] as $image) { Storage::disk('public')->delete($image); }
+        if ($product->image_path) { Storage::disk('public')->delete($product->image_path); }
+        $product->delete();
+        return back()->with('success', 'Listing removed.');
+    }
 }

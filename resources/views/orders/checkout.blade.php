@@ -57,12 +57,18 @@
                 </div>
 
                 <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
-                    <h2 class="text-2xl font-bold mb-4">Delivery Information</h2>
+                    <h2 class="text-2xl font-bold mb-4">How would you like to receive this order?</h2>
 
                     <div class="space-y-4">
+                        <label class="flex cursor-pointer gap-3 rounded-xl border border-gray-200 p-4"><input type="radio" name="fulfilment_method" value="delivery" {{ old('fulfilment_method', 'delivery') === 'delivery' ? 'checked' : '' }}><span><b>Delivery</b><span class="mt-1 block text-sm text-gray-600">Send the order to your preferred address.</span></span></label>
+                        <label class="flex cursor-pointer gap-3 rounded-xl border border-gray-200 p-4"><input type="radio" name="fulfilment_method" value="campus_pickup" {{ old('fulfilment_method') === 'campus_pickup' ? 'checked' : '' }}><span><b>Campus pickup</b><span class="mt-1 block text-sm text-gray-600">Collect from the PluggedIn pickup point on your campus.</span></span></label>
                         <div>
-                            <label class="block text-sm mb-2">Delivery Address *</label>
-                            <textarea name="delivery_address" rows="3" required
+                            <label class="block text-sm mb-2">Campus for pickup</label>
+                            <input type="text" name="pickup_campus" value="{{ old('pickup_campus') }}" placeholder="e.g. University of Ghana" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5">
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-2">Delivery Address</label>
+                            <textarea name="delivery_address" rows="3"
                                       class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 focus:border-orange focus:ring-orange">{{ old('delivery_address') }}</textarea>
                             @error('delivery_address')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

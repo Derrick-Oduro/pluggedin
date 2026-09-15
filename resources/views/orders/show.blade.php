@@ -1,6 +1,4 @@
 <x-app-layout>
-    @php($isCancelled = $order->status === 'cancelled')
-
     <section class="relative overflow-hidden py-20 bg-gradient-to-b from-white via-orange-50/40 to-white dark:from-dark dark:via-dark-secondary dark:to-dark">
         <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-8">
@@ -25,28 +23,25 @@
 
             <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 mb-6 border border-gray-200 dark:border-gray-800">
                 <h2 class="text-xl font-bold mb-4">Order Tracking</h2>
-                @if($isCancelled)
+                @if($order->status === 'cancelled')
                     <div class="mb-4 rounded-lg border border-red-500/50 bg-red-500/10 px-3 py-2 text-sm text-red-500">
                         This order was cancelled before completion.
                     </div>
                 @endif
                 @php
-                    $statusLabels = [
-                        'pending' => 'Pending',
-                        'confirmed' => 'Confirmed',
-                        'completed' => 'Completed',
-                        'cancelled' => 'Cancelled',
-                    ];
-                    $statusTimes = $order->statusHistories
-                        ->groupBy('to_status')
-                        ->map(fn ($events) => $events->first()->created_at);
+                    $statusRanks = ['pending' => 1, 'confirmed' => 2, 'completed' => 3];
                 @endphp
+                <div class="mb-5 grid grid-cols-3 gap-2">
+                    @foreach(['pending' => 'Order placed', 'confirmed' => 'Being prepared', 'completed' => $order->fulfilment_method === 'campus_pickup' ? 'Ready / collected' : 'Delivered'] as $step => $label)
+                        <div class="h-1.5 rounded-full {{ ($statusRanks[$step] ?? 0) <= ($statusRanks[$order->status] ?? 0) ? 'bg-orange' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
+                    @endforeach
+                </div>
                 <div class="space-y-3">
-                    @foreach($statusLabels as $statusKey => $statusLabel)
-                        @php($timestamp = $statusTimes->get($statusKey))
-                        <div class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3">
+                    @foreach(['pending' => 'Pending', 'confirmed' => 'Confirmed', 'completed' => 'Completed', 'cancelled' => 'Cancelled'] as $statusKey => $statusLabel)
+                        @php($timestamp = optional($order->statusHistories->firstWhere('to_status', $statusKey))->created_at)
+                        <div class="rounded-xl border px-4 py-3 {{ ($statusRanks[$statusKey] ?? 0) <= ($statusRanks[$order->status] ?? 0) && $order->status !== 'cancelled' ? 'border-orange/30 bg-orange/5' : 'border-gray-200 dark:border-gray-700' }}">
                             <div class="flex flex-wrap items-center justify-between gap-2">
-                                <p class="text-sm font-semibold">{{ $statusLabel }}</p>
+                                <p class="text-sm font-semibold">{{ $statusLabel }}@if($statusKey === 'pending') <span class="font-normal text-gray-500">— we received your order</span>@elseif($statusKey === 'confirmed') <span class="font-normal text-gray-500">— PluggedIn is preparing it</span>@elseif($statusKey === 'completed') <span class="font-normal text-gray-500">— {{ $order->fulfilment_method === 'campus_pickup' ? 'pickup completed' : 'delivery completed' }}</span>@endif</p>
                                 <span class="text-xs text-gray-500 dark:text-text-secondary">
                                     {{ $timestamp ? $timestamp->format('M d, Y H:i') : 'Not reached yet' }}
                                 </span>
@@ -57,9 +52,13 @@
             </div>
 
             <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 mb-6 border border-gray-200 dark:border-gray-800">
-                <h2 class="text-xl font-bold mb-4">Delivery Information</h2>
-                <p class="text-gray-600 dark:text-text-secondary mb-2"><span class="font-semibold text-gray-900 dark:text-text-primary">Address:</span></p>
-                <p class="text-gray-600 dark:text-text-secondary mb-4">{{ $order->delivery_address }}</p>
+                <h2 class="text-xl font-bold mb-4">Fulfilment</h2>
+                <p class="text-gray-600 dark:text-text-secondary mb-2"><span class="font-semibold text-gray-900 dark:text-text-primary">{{ $order->fulfilment_method === 'campus_pickup' ? 'Campus pickup' : 'Delivery' }}</span></p>
+                @if($order->fulfilment_method === 'campus_pickup')
+                    <p class="text-gray-600 dark:text-text-secondary mb-4">Pickup campus: {{ $order->pickup_campus }}</p>
+                @else
+                    <p class="text-gray-600 dark:text-text-secondary mb-4">{{ $order->delivery_address }}</p>
+                @endif
                 <p class="text-gray-600 dark:text-text-secondary"><span class="font-semibold text-gray-900 dark:text-text-primary">Phone:</span> {{ $order->delivery_phone }}</p>
             </div>
 

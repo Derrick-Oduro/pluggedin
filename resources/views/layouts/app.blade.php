@@ -50,49 +50,20 @@
             </main>
 
             <!-- Footer -->
-            <footer class="mt-20 border-t border-stone-200 bg-white">
-                <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                        <div>
-                            <p class="text-base font-extrabold tracking-[-0.04em]">Plugged<span class="text-brand">In</span></p>
-                            <p class="mt-3 text-sm leading-6 text-stone-600">Practical upgrades and thoughtful repairs that extend device life and save you money over time.</p>
+            <footer class="mt-20 bg-stone-950 text-stone-300">
+                <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+                    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
+                        <div class="lg:col-span-2">
+                            <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-xl font-extrabold tracking-[-0.06em] text-white">Plugged<span class="text-brand-soft">In</span></a>
+                            <p class="mt-4 max-w-sm text-sm leading-6 text-stone-400">A safer, smarter place for campus communities to buy, sell, repair, and get more from their tech.</p>
+                            <a href="{{ route('contact') }}" class="mt-6 inline-flex text-sm font-extrabold text-brand-soft transition hover:text-white">Bring PluggedIn to your campus →</a>
                         </div>
-
-                        <div>
-                            <h4 class="font-semibold mb-3">Quick Links</h4>
-                            <ul class="space-y-2 text-sm text-gray-600 dark:text-text-secondary">
-                                <li><a href="{{ url('/') }}" class="hover:underline">Home</a></li>
-                                <li><a href="{{ route('products.index') }}" class="hover:underline">Products</a></li>
-                                <li><a href="{{ route('services.index') }}" class="hover:underline">Services</a></li>
-                                <li><a href="{{ route('contact') }}" class="hover:underline">Contact</a></li>
-                                <li><a href="{{ url('/about') }}" class="hover:underline">About</a></li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 class="font-semibold mb-3">Services</h4>
-                            <ul class="space-y-2 text-sm text-gray-600 dark:text-text-secondary">
-                                <li><a href="{{ route('services.index') }}" class="hover:underline">Diagnostics & Repair</a></li>
-                                <li><a href="{{ route('services.index') }}" class="hover:underline">Component Upgrades</a></li>
-                                <li><a href="{{ route('services.index') }}" class="hover:underline">Data Migration</a></li>
-                                <li><a href="{{ route('services.index') }}" class="hover:underline">Warranty Support</a></li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 class="font-semibold mb-3">Contact</h4>
-                            <p class="text-sm leading-6 text-stone-600">support@pluggedin.com<br>+233 20 000 0000</p>
-                            <p class="mt-4 text-sm leading-6 text-stone-600">Accra, Ghana</p>
-                        </div>
+                        <div><h4 class="text-xs font-extrabold uppercase tracking-[0.15em] text-stone-500">Marketplace</h4><ul class="mt-4 space-y-3 text-sm"><li><a href="{{ route('products.index') }}" class="hover:text-white">Browse all tech</a></li><li><a href="{{ route('products.index', ['q' => 'laptop']) }}" class="hover:text-white">Laptops</a></li><li><a href="{{ route('products.index', ['q' => 'SSD']) }}" class="hover:text-white">Parts & upgrades</a></li><li><a href="{{ auth()->check() ? route('products.upload.create') : route('register') }}" class="hover:text-white">Sell or swap</a></li></ul></div>
+                        <div><h4 class="text-xs font-extrabold uppercase tracking-[0.15em] text-stone-500">Support</h4><ul class="mt-4 space-y-3 text-sm"><li><a href="{{ route('services.index') }}" class="hover:text-white">Repairs & upgrades</a></li><li><a href="{{ route('contact') }}" class="hover:text-white">Contact us</a></li><li><a href="{{ route('about') }}" class="hover:text-white">Our approach</a></li></ul></div>
+                        <div><h4 class="text-xs font-extrabold uppercase tracking-[0.15em] text-stone-500">Get in touch</h4><p class="mt-4 text-sm leading-7 text-stone-400">support@pluggedin.com<br>+233 20 000 0000<br>Accra, Ghana</p></div>
                     </div>
                 </div>
-
-                <div class="border-t border-stone-100">
-                    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between text-sm text-stone-500">
-                        <p class="mb-2 md:mb-0">&copy; {{ date('Y') }} PluggedIn — All rights reserved.</p>
-                        <p class="opacity-80">Built for longer-lasting devices</p>
-                    </div>
-                </div>
+                <div class="border-t border-white/10"><div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-xs text-stone-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8"><p>© {{ date('Y') }} PluggedIn. Built for better campus tech.</p><p>Buy better. Keep devices useful longer.</p></div></div>
             </footer>
         </div>
     </body>

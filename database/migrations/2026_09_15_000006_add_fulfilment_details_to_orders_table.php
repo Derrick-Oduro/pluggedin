@@ -1,0 +1,5 @@
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+return new class extends Migration { public function up(): void { Schema::table('orders', function (Blueprint $table) { $table->enum('fulfilment_method', ['delivery','campus_pickup'])->default('delivery')->after('status'); $table->string('pickup_campus')->nullable()->after('fulfilment_method'); }); } public function down(): void { Schema::table('orders', fn (Blueprint $table) => $table->dropColumn(['fulfilment_method','pickup_campus'])); } };

@@ -1,264 +1,47 @@
 <x-app-layout>
-    <section class="relative overflow-hidden py-20 bg-gradient-to-b from-white via-orange-50/45 to-white dark:from-dark dark:via-dark-secondary dark:to-dark">
-        <div class="absolute inset-0 pointer-events-none opacity-70">
-            <div class="absolute -top-20 left-1/4 h-64 w-64 rounded-full bg-orange/20 blur-3xl"></div>
-            <div class="absolute -bottom-16 right-1/4 h-64 w-64 rounded-full bg-orange/15 blur-3xl"></div>
-        </div>
-
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-10">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange mb-3">Preferences</p>
-                <h1 class="text-5xl sm:text-6xl font-bold">Settings</h1>
-                <p class="text-gray-600 dark:text-text-secondary mt-3 max-w-2xl">Customize your app experience, account options, and notification preferences.</p>
+    <section class="page-shell">
+        <div class="content-wrap relative z-10 max-w-5xl">
+            <div class="mb-10 max-w-2xl">
+                <span class="brand-badge">Account</span>
+                <h1 class="section-title mt-4">Settings that stay out of your way.</h1>
+                <p class="section-subtitle mt-3">Manage your account and choose the updates that are useful to you. PluggedIn uses one considered light appearance across the entire experience.</p>
             </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Settings Navigation -->
-            <div class="space-y-2 bg-white/95 dark:bg-dark-secondary rounded-2xl p-4 border border-gray-200/70 dark:border-gray-800 h-fit">
-                <a href="#appearance"
-                   onclick="showSection('appearance')"
-                   id="nav-appearance"
-                   class="settings-nav-link flex items-center gap-3 px-4 py-3 rounded-lg transition bg-orange/20 text-orange border-l-4 border-orange">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                    </svg>
-                    <span class="font-semibold">Appearance</span>
-                </a>
+            @if(session('success'))
+                <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">{{ session('success') }}</div>
+            @endif
 
-                <a href="#account"
-                   onclick="showSection('account')"
-                   id="nav-account"
-                   class="settings-nav-link flex items-center gap-3 px-4 py-3 rounded-lg transition text-gray-600 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <span class="font-semibold">Account</span>
-                </a>
+            <div class="grid gap-6 md:grid-cols-5">
+                <article class="glass-panel p-6 md:col-span-2">
+                    <p class="text-sm font-bold text-stone-950">Your account</p>
+                    <p class="mt-2 text-sm leading-6 text-stone-600">Update your details, password, or security preferences from one place.</p>
+                    <a href="{{ route('profile.edit') }}" class="btn-secondary mt-6 w-full">Manage account</a>
+                </article>
 
-                <a href="#notifications"
-                   onclick="showSection('notifications')"
-                   id="nav-notifications"
-                   class="settings-nav-link flex items-center gap-3 px-4 py-3 rounded-lg transition text-gray-600 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                    <span class="font-semibold">Notifications</span>
-                </a>
-
-                <a href="{{ route('profile.edit') }}"
-                   class="settings-nav-link flex items-center gap-3 px-4 py-3 rounded-lg transition text-gray-600 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                    <span class="font-semibold">Security</span>
-                </a>
-            </div>
-
-            <!-- Settings Content -->
-            <div class="md:col-span-2 space-y-6">
-                @if(session('success'))
-                    <div class="bg-green-500/20 border border-green-500 text-green-500 rounded-lg p-4 mb-6">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                <!-- Appearance Section -->
-                <div id="section-appearance" class="settings-section">
-                    <div class="bg-white dark:bg-dark-secondary rounded-2xl p-8 border border-gray-200/70 dark:border-gray-800 shadow-sm">
-                        <h2 class="text-2xl font-bold mb-6">Appearance</h2>
-
-                        <div class="space-y-6">
-                            <!-- Theme Options -->
-                            <div>
-                                <h3 class="text-lg font-semibold mb-4">Theme Preference</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <!-- Light Mode -->
-                                    <button onclick="setTheme('light')"
-                                            id="theme-light"
-                                            class="theme-option border-2 rounded-lg p-6 transition hover:border-orange">
-                                        <div class="mb-3 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-orange/10 text-orange">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1.5m0 15V21m6.364-14.364-1.06 1.06M6.696 17.304l-1.06 1.06M21 12h-1.5m-15 0H3m15.364 5.304-1.06-1.06M6.696 6.696l-1.06-1.06M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
-                                            </svg>
-                                        </div>
-                                        <h4 class="font-bold text-lg mb-2">Light Mode</h4>
-                                        <p class="text-sm text-gray-500 dark:text-text-secondary">Bright and clean</p>
-                                    </button>
-
-                                    <!-- Dark Mode -->
-                                    <button onclick="setTheme('dark')"
-                                            id="theme-dark"
-                                            class="theme-option border-2 rounded-lg p-6 transition hover:border-orange">
-                                        <div class="mb-3 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-orange/10 text-orange">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0 1 18 15.75 9.75 9.75 0 0 1 8.25 6c0-1.33.266-2.598.748-3.752A9.75 9.75 0 1 0 21.752 15.002Z" />
-                                            </svg>
-                                        </div>
-                                        <h4 class="font-bold text-lg mb-2">Dark Mode</h4>
-                                        <p class="text-sm text-gray-500 dark:text-text-secondary">Easy on the eyes</p>
-                                    </button>
-
-                                    <!-- System Default -->
-                                    <button onclick="setTheme('system')"
-                                            id="theme-system"
-                                            class="theme-option border-2 rounded-lg p-6 transition hover:border-orange">
-                                        <div class="mb-3 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-orange/10 text-orange">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.25h16.5A2.25 2.25 0 0 1 22.5 7.5v9a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 16.5v-9a2.25 2.25 0 0 1 2.25-2.25Zm0 13.5h16.5" />
-                                            </svg>
-                                        </div>
-                                        <h4 class="font-bold text-lg mb-2">System</h4>
-                                        <p class="text-sm text-gray-500 dark:text-text-secondary">Match system</p>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Current Theme Display -->
-                            <div class="p-4 bg-gray-50 dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg">
-                                <p class="text-sm text-gray-600 dark:text-text-secondary">
-                                    Current theme: <span id="current-theme" class="font-semibold text-orange">Loading...</span>
-                                </p>
-                            </div>
-
-                            <!-- Preview -->
-                            <div>
-                                <h3 class="text-lg font-semibold mb-4">Preview</h3>
-                                <div class="border-2 border-gray-300 dark:border-gray-700 rounded-lg p-6 bg-dark-secondary light:bg-gray-50">
-                                    <div class="flex items-center gap-4 mb-4">
-                                        <div class="bg-orange w-12 h-12 rounded-lg"></div>
-                                        <div>
-                                            <p class="font-bold">Sample Card</p>
-                                            <p class="text-sm text-gray-500 dark:text-text-secondary">This is how content will appear</p>
-                                        </div>
-                                    </div>
-                                    <button class="bg-orange hover:bg-orange-light text-white px-6 py-2 rounded-lg font-semibold transition">
-                                        Sample Button
-                                    </button>
-                                </div>
-                            </div>
+                <form action="{{ route('settings.notifications.update') }}" method="POST" class="glass-panel p-6 md:col-span-3">
+                    @csrf
+                    @method('PATCH')
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <h2 class="text-lg font-extrabold tracking-[-0.02em]">Notification preferences</h2>
+                            <p class="mt-1 text-sm leading-6 text-stone-600">Control the operational updates you receive.</p>
                         </div>
+                        <span class="brand-badge">Email</span>
                     </div>
-                </div>
 
-                <!-- Account Section -->
-                <div id="section-account" class="settings-section hidden">
-                    <div class="bg-white dark:bg-dark-secondary rounded-2xl p-8 border border-gray-200/70 dark:border-gray-800 shadow-sm">
-                        <h2 class="text-2xl font-bold mb-6">Account Settings</h2>
-                        <p class="text-gray-600 dark:text-text-secondary mb-4">Manage your account information and preferences.</p>
-                        <a href="{{ route('profile.edit') }}" class="text-orange hover:text-orange-light font-semibold">
-                            Edit Profile →
-                        </a>
+                    <div class="mt-6 divide-y divide-stone-100 rounded-xl border border-stone-200">
+                        @foreach (['notify_order_updates' => ['Order updates', 'Confirmation, payment, and delivery progress.'], 'notify_booking_updates' => ['Service bookings', 'Booking confirmations and appointment updates.'], 'notify_product_updates' => ['Product updates', 'Updates on your submitted marketplace listings.']] as $field => [$label, $description])
+                            <label class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-stone-50">
+                                <span><span class="block text-sm font-bold text-stone-900">{{ $label }}</span><span class="mt-0.5 block text-xs leading-5 text-stone-500">{{ $description }}</span></span>
+                                <input type="hidden" name="{{ $field }}" value="0">
+                                <input type="checkbox" name="{{ $field }}" value="1" @checked(auth()->user()->{$field}) class="h-5 w-5 rounded border-stone-300 text-brand focus:ring-brand">
+                            </label>
+                        @endforeach
                     </div>
-                </div>
 
-                <!-- Notifications Section -->
-                <div id="section-notifications" class="settings-section hidden">
-                    <div class="bg-white dark:bg-dark-secondary rounded-2xl p-8 border border-gray-200/70 dark:border-gray-800 shadow-sm">
-                        <h2 class="text-2xl font-bold mb-6">Notification Preferences</h2>
-                        <p class="text-gray-600 dark:text-text-secondary">Configure how you receive notifications about orders, bookings, and updates.</p>
-                        <p class="text-sm text-gray-500 dark:text-text-secondary mt-4">(Coming soon)</p>
-                    </div>
-                </div>
+                    <button class="btn-primary mt-6">Save preferences</button>
+                </form>
             </div>
-        </div>
         </div>
     </section>
-
-    <script>
-        // Get theme from localStorage or default to dark
-        function getTheme() {
-            return localStorage.getItem('theme') || 'dark';
-        }
-
-        // Set theme
-        function setTheme(theme) {
-            localStorage.setItem('theme', theme);
-            applyTheme(theme);
-            updateThemeUI(theme);
-
-            // Save to backend
-            fetch('{{ route("settings.appearance.update") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ theme: theme })
-            });
-        }
-
-        // Apply theme to document
-        function applyTheme(theme) {
-            const root = document.documentElement;
-
-            if (theme === 'system') {
-                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                theme = systemPrefersDark ? 'dark' : 'light';
-            }
-
-            if (theme === 'dark') {
-                root.classList.add('dark');
-            } else {
-                root.classList.remove('dark');
-            }
-        }
-
-        // Update UI to show selected theme
-        function updateThemeUI(theme) {
-            document.querySelectorAll('.theme-option').forEach(btn => {
-                btn.classList.remove('border-orange', 'bg-orange/10');
-            });
-
-            const selected = document.getElementById('theme-' + theme);
-            if (selected) {
-                selected.classList.add('border-orange', 'bg-orange/10');
-            }
-
-            const currentThemeEl = document.getElementById('current-theme');
-            if (currentThemeEl) {
-                currentThemeEl.textContent = theme.charAt(0).toUpperCase() + theme.slice(1) + ' Mode';
-            }
-        }
-
-        // Show section
-        function showSection(section) {
-            // Hide all sections
-            document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
-
-            // Show selected section
-            document.getElementById('section-' + section).classList.remove('hidden');
-
-            // Update navigation
-            document.querySelectorAll('.settings-nav-link').forEach(link => {
-                link.classList.remove('bg-orange/20', 'text-orange', 'border-orange', 'border-l-4');
-                link.classList.add('text-text-secondary');
-            });
-
-            const navLink = document.getElementById('nav-' + section);
-            if (navLink) {
-                navLink.classList.remove('text-text-secondary');
-                navLink.classList.add('bg-orange/20', 'text-orange', 'border-l-4', 'border-orange');
-            }
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentTheme = getTheme();
-            applyTheme(currentTheme);
-            updateThemeUI(currentTheme);
-
-            // Check URL hash for section
-            const hash = window.location.hash.substring(1);
-            if (hash && ['appearance', 'account', 'notifications'].includes(hash)) {
-                showSection(hash);
-            }
-        });
-
-        // Listen for system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-            if (getTheme() === 'system') {
-                applyTheme('system');
-            }
-        });
-    </script>
 </x-app-layout>

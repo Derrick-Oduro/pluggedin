@@ -70,27 +70,32 @@
                     <h2 class="text-3xl font-bold mb-2">Send a Message</h2>
                     <p class="text-gray-600 dark:text-text-secondary mb-8">Tell us what device you have and what you want to improve. We will guide you from there.</p>
 
-                    <form class="space-y-6">
+                    <form action="{{ route('contact.store') }}" method="POST" class="space-y-6">
+                        @csrf
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div>
                                 <label for="name" class="block text-sm font-medium mb-2">Name</label>
-                                <input id="name" type="text" placeholder="Your name" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3 focus:border-orange focus:ring-orange transition">
+                                <input id="name" name="name" type="text" value="{{ old('name') }}" required autocomplete="name" placeholder="Your name" class="w-full bg-white border border-stone-300 rounded-xl px-4 py-3 focus:border-orange focus:ring-orange transition">
+                                @error('name')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                             </div>
 
                             <div>
                                 <label for="email" class="block text-sm font-medium mb-2">Email</label>
-                                <input id="email" type="email" placeholder="you@example.com" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3 focus:border-orange focus:ring-orange transition">
+                                <input id="email" name="email" type="email" value="{{ old('email') }}" required autocomplete="email" placeholder="you@example.com" class="w-full bg-white border border-stone-300 rounded-xl px-4 py-3 focus:border-orange focus:ring-orange transition">
+                                @error('email')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                             </div>
                         </div>
 
                         <div>
                             <label for="subject" class="block text-sm font-medium mb-2">Subject</label>
-                            <input id="subject" type="text" placeholder="Upgrade consultation, repair booking, etc." class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3 focus:border-orange focus:ring-orange transition">
+                            <input id="subject" name="subject" type="text" value="{{ old('subject') }}" required placeholder="Upgrade consultation, repair booking, etc." class="w-full bg-white border border-stone-300 rounded-xl px-4 py-3 focus:border-orange focus:ring-orange transition">
+                            @error('subject')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label for="message" class="block text-sm font-medium mb-2">Message</label>
-                            <textarea id="message" rows="6" placeholder="Share your device model, current issue, and what you are hoping to achieve." class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3 focus:border-orange focus:ring-orange transition"></textarea>
+                            <textarea id="message" name="message" rows="6" required placeholder="Share your device model, current issue, and what you are hoping to achieve." class="w-full bg-white border border-stone-300 rounded-xl px-4 py-3 focus:border-orange focus:ring-orange transition">{{ old('message') }}</textarea>
+                            @error('message')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
 
                         <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-orange hover:bg-orange-light text-white px-7 py-3.5 rounded-lg font-semibold transition shadow-lg shadow-orange/20">

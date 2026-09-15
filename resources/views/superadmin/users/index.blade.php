@@ -1,87 +1,42 @@
-@section('page-title', 'User Management')
+@section('page-title', 'Users')
 
 <x-superadmin-layout>
-    <div class="space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-            <h1 class="text-2xl font-bold">User Management</h1>
-            <a href="{{ route('superadmin.users.create') }}" class="backend-btn-primary">
-                + Add New User
-            </a>
+    <div class="space-y-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div><p class="brand-badge">Access control</p><h1 class="mt-3 text-3xl font-extrabold tracking-[-0.04em] text-stone-950">Team members</h1><p class="mt-1 text-sm text-stone-600">Manage platform access without leaving this page.</p></div>
+            <a href="{{ route('superadmin.users.index', ['modal' => 'create-user']) }}" class="backend-btn-primary"><svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>Add member</a>
         </div>
-
-        @if(session('success'))
-            <div class="bg-green-500/20 border border-green-500 text-green-500 rounded-lg px-3 py-2 text-sm">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="bg-red-500/20 border border-red-500 text-red-500 rounded-lg px-3 py-2 text-sm">
-                {{ session('error') }}
-            </div>
-        @endif
 
         @if($users->count())
-            <x-table-shell>
-                <table class="backend-table">
-                    <thead class="border-b border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-dark">
-                        <tr>
-                            <th class="backend-th">ID</th>
-                            <th class="backend-th">Name</th>
-                            <th class="backend-th">Email</th>
-                            <th class="backend-th">Role</th>
-                            <th class="backend-th">Joined</th>
-                            <th class="backend-th">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($users as $user)
-                        <tr class="backend-row">
-                            <td class="backend-td">{{ $user->id }}</td>
-                            <td class="backend-td font-medium">{{ $user->name }}</td>
-                            <td class="backend-td text-gray-600 dark:text-text-secondary">{{ $user->email }}</td>
-                            <td class="backend-td">
-                                @if($user->hasRole('super-admin'))
-                                    <span class="text-xs px-3 py-1 rounded-full bg-red-500/20 text-red-500">Super Admin</span>
-                                @elseif($user->hasRole('admin'))
-                                    <span class="text-xs px-3 py-1 rounded-full bg-orange/20 text-orange">Admin</span>
-                                @else
-                                    <span class="text-xs px-3 py-1 rounded-full bg-blue-500/20 text-blue-500">User</span>
-                                @endif
-                            </td>
-                            <td class="backend-td text-gray-600 dark:text-text-secondary">{{ $user->created_at->format('M d, Y') }}</td>
-                            <td class="backend-td">
-                                <div class="flex gap-2">
-                                    <a href="{{ route('superadmin.users.edit', $user) }}" class="text-sm text-blue-500 hover:text-blue-400">
-                                        Edit
-                                    </a>
-                                    @if($user->id !== auth()->id())
-                                        <form action="{{ route('superadmin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-sm text-red-500 hover:text-red-400">
-                                                Delete
-                                            </button>
-                                        </form>
-                                    @endif
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </x-table-shell>
+            <div class="backend-table-wrap"><div class="flex items-center justify-between border-b border-stone-100 px-5 py-4"><p class="text-sm font-bold text-stone-950">All members</p><p class="text-xs font-semibold text-stone-500">{{ $users->total() }} total</p></div><div class="overflow-x-auto"><table class="backend-table min-w-[760px]"><thead><tr><th class="backend-th">Member</th><th class="backend-th">Role</th><th class="backend-th">Joined</th><th class="backend-th text-right">Actions</th></tr></thead><tbody>
+                @foreach($users as $user)
+                    @php($role = $user->roles->first()?->name ?? 'user')
+                    <tr class="backend-row"><td class="backend-td"><p class="font-bold text-stone-950">{{ $user->name }}</p><p class="mt-0.5 text-xs text-stone-500">{{ $user->email }}</p></td><td class="backend-td"><span class="inline-flex rounded-full px-2.5 py-1 text-xs font-bold {{ $role === 'super-admin' ? 'bg-red-50 text-red-700' : ($role === 'admin' ? 'bg-brand-tint text-brand-deep' : 'bg-stone-100 text-stone-600') }}">{{ $role === 'super-admin' ? 'Super admin' : ucfirst($role) }}</span></td><td class="backend-td text-stone-500">{{ $user->created_at->format('M j, Y') }}</td><td class="backend-td"><div class="flex justify-end gap-3"><a class="text-sm font-bold text-brand hover:text-brand-deep" href="{{ route('superadmin.users.index', ['modal' => 'edit-user-'.$user->id]) }}">Edit</a>@if($user->id !== auth()->id())<a class="text-sm font-bold text-red-600 hover:text-red-800" href="{{ route('superadmin.users.index', ['modal' => 'delete-user-'.$user->id]) }}">Delete</a>@endif</div></td></tr>
+                @endforeach
+            </tbody></table></div></div>
         @else
-            <x-empty-state
-                title="No users found"
-                message="Create an account to get started with platform access control."
-                action-label="Add New User"
-                :action-href="route('superadmin.users.create')"
-            />
+            <div class="backend-card py-14 text-center"><h2 class="text-lg font-extrabold text-stone-950">Add your first team member</h2><p class="mt-1 text-sm text-stone-600">Give the right people the right level of access.</p><a href="{{ route('superadmin.users.index', ['modal' => 'create-user']) }}" class="mt-5 backend-btn-primary">Add member</a></div>
         @endif
-
-        <div class="pt-1">
-            {{ $users->links() }}
-        </div>
+        <div>{{ $users->links() }}</div>
     </div>
+
+    <x-modal name="create-user" maxWidth="lg" focusable :show="old('form_context') === 'create-user' || request('modal') === 'create-user'">
+        <form action="{{ route('superadmin.users.store') }}" method="POST">@csrf<input type="hidden" name="form_context" value="create-user">
+            <div class="border-b border-stone-200 px-6 py-5"><p class="brand-badge">New member</p><h2 class="mt-3 text-xl font-extrabold tracking-tight text-stone-950">Add a team member</h2><p class="mt-1 text-sm text-stone-600">Set up their account and choose the access level they need.</p></div>
+            <div class="grid gap-4 px-6 py-5 sm:grid-cols-2"><div><label class="mb-2 block text-sm font-bold text-stone-800" for="new-user-name">Name</label><input class="backend-field" id="new-user-name" name="name" value="{{ old('form_context') === 'create-user' ? old('name') : '' }}" required>@error('name') @if(old('form_context') === 'create-user')<p class="mt-1 text-xs font-semibold text-red-600">{{ $message }}</p>@endif @enderror</div><div><label class="mb-2 block text-sm font-bold text-stone-800" for="new-user-email">Email</label><input class="backend-field" id="new-user-email" type="email" name="email" value="{{ old('form_context') === 'create-user' ? old('email') : '' }}" required>@error('email') @if(old('form_context') === 'create-user')<p class="mt-1 text-xs font-semibold text-red-600">{{ $message }}</p>@endif @enderror</div><div><label class="mb-2 block text-sm font-bold text-stone-800" for="new-user-password">Password</label><input class="backend-field" id="new-user-password" type="password" name="password" required>@error('password') @if(old('form_context') === 'create-user')<p class="mt-1 text-xs font-semibold text-red-600">{{ $message }}</p>@endif @enderror</div><div><label class="mb-2 block text-sm font-bold text-stone-800" for="new-user-password-confirmation">Confirm password</label><input class="backend-field" id="new-user-password-confirmation" type="password" name="password_confirmation" required></div><div class="sm:col-span-2"><label class="mb-2 block text-sm font-bold text-stone-800" for="new-user-role">Access level</label><select class="backend-field" id="new-user-role" name="role" required><option value="user" @selected(old('role', 'user') === 'user')>User</option><option value="admin" @selected(old('role') === 'admin')>Admin</option><option value="super-admin" @selected(old('role') === 'super-admin')>Super admin</option></select></div></div>
+            <div class="flex justify-end gap-3 border-t border-stone-200 bg-stone-50 px-6 py-4"><a href="{{ route('superadmin.users.index') }}" class="btn-secondary">Cancel</a><button type="submit" class="backend-btn-primary">Add member</button></div>
+        </form>
+    </x-modal>
+
+    @foreach($users as $user)
+        @php($currentRole = $user->roles->first()?->name ?? 'user')
+        <x-modal name="edit-user-{{ $user->id }}" maxWidth="lg" focusable :show="old('form_context') === 'edit-user-'.$user->id || request('modal') === 'edit-user-'.$user->id">
+            <form action="{{ route('superadmin.users.update', $user) }}" method="POST">@csrf @method('PUT')<input type="hidden" name="form_context" value="edit-user-{{ $user->id }}">
+                <div class="border-b border-stone-200 px-6 py-5"><p class="brand-badge">Edit member</p><h2 class="mt-3 text-xl font-extrabold tracking-tight text-stone-950">{{ $user->name }}</h2><p class="mt-1 text-sm text-stone-600">Leave the password blank to keep the current one.</p></div>
+                <div class="grid gap-4 px-6 py-5 sm:grid-cols-2"><div><label class="mb-2 block text-sm font-bold text-stone-800" for="user-name-{{ $user->id }}">Name</label><input class="backend-field" id="user-name-{{ $user->id }}" name="name" value="{{ old('form_context') === 'edit-user-'.$user->id ? old('name') : $user->name }}" required>@error('name') @if(old('form_context') === 'edit-user-'.$user->id)<p class="mt-1 text-xs font-semibold text-red-600">{{ $message }}</p>@endif @enderror</div><div><label class="mb-2 block text-sm font-bold text-stone-800" for="user-email-{{ $user->id }}">Email</label><input class="backend-field" id="user-email-{{ $user->id }}" type="email" name="email" value="{{ old('form_context') === 'edit-user-'.$user->id ? old('email') : $user->email }}" required>@error('email') @if(old('form_context') === 'edit-user-'.$user->id)<p class="mt-1 text-xs font-semibold text-red-600">{{ $message }}</p>@endif @enderror</div><div><label class="mb-2 block text-sm font-bold text-stone-800" for="user-password-{{ $user->id }}">New password</label><input class="backend-field" id="user-password-{{ $user->id }}" type="password" name="password"></div><div><label class="mb-2 block text-sm font-bold text-stone-800" for="user-password-confirmation-{{ $user->id }}">Confirm password</label><input class="backend-field" id="user-password-confirmation-{{ $user->id }}" type="password" name="password_confirmation"></div><div class="sm:col-span-2"><label class="mb-2 block text-sm font-bold text-stone-800" for="user-role-{{ $user->id }}">Access level</label><select class="backend-field" id="user-role-{{ $user->id }}" name="role" required><option value="user" @selected(old('form_context') === 'edit-user-'.$user->id ? old('role') === 'user' : $currentRole === 'user')>User</option><option value="admin" @selected(old('form_context') === 'edit-user-'.$user->id ? old('role') === 'admin' : $currentRole === 'admin')>Admin</option><option value="super-admin" @selected(old('form_context') === 'edit-user-'.$user->id ? old('role') === 'super-admin' : $currentRole === 'super-admin')>Super admin</option></select></div></div>
+                <div class="flex justify-end gap-3 border-t border-stone-200 bg-stone-50 px-6 py-4"><a href="{{ route('superadmin.users.index') }}" class="btn-secondary">Cancel</a><button type="submit" class="backend-btn-primary">Save changes</button></div>
+            </form>
+        </x-modal>
+        @if($user->id !== auth()->id())<x-modal name="delete-user-{{ $user->id }}" maxWidth="sm" :show="request('modal') === 'delete-user-'.$user->id"><div class="px-6 py-6"><div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-50 text-red-600"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m15 9-6 6m0-6 6 6M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" /></svg></div><h2 class="mt-4 text-xl font-extrabold text-stone-950">Delete {{ $user->name }}?</h2><p class="mt-2 text-sm leading-6 text-stone-600">Their account and access will be removed. This action cannot be undone.</p></div><div class="flex justify-end gap-3 border-t border-stone-200 bg-stone-50 px-6 py-4"><a href="{{ route('superadmin.users.index') }}" class="btn-secondary">Cancel</a><form action="{{ route('superadmin.users.destroy', $user) }}" method="POST">@csrf @method('DELETE')<button type="submit" class="inline-flex h-11 items-center justify-center rounded-xl bg-red-600 px-4 text-sm font-bold text-white transition hover:bg-red-700">Delete member</button></form></div></x-modal>@endif
+    @endforeach
 </x-superadmin-layout>

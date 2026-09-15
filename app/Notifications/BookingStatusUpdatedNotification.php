@@ -18,7 +18,7 @@ class BookingStatusUpdatedNotification extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return $notifiable->notify_booking_updates ? ['database'] : [];
     }
 
     public function toArray(object $notifiable): array
@@ -26,7 +26,7 @@ class BookingStatusUpdatedNotification extends Notification
         return [
             'type' => 'booking_status',
             'title' => 'Booking status updated',
-            'message' => "Booking #{$this->bookingId} changed from ".ucfirst($this->fromStatus)." to ".ucfirst($this->toStatus).'.',
+            'message' => 'Your booking changed from '.ucfirst($this->fromStatus).' to '.ucfirst($this->toStatus).'.',
             'booking_id' => $this->bookingId,
             'from_status' => $this->fromStatus,
             'to_status' => $this->toStatus,

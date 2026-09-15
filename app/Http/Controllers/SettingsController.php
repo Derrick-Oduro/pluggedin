@@ -11,20 +11,20 @@ class SettingsController extends Controller
         return view('settings.index');
     }
 
-    public function appearance()
-    {
-        return redirect()->route('settings.index', ['#appearance']);
-    }
-
-    public function updateAppearance(Request $request)
+    public function updateNotifications(Request $request)
     {
         $request->validate([
-            'theme' => 'required|in:light,dark,system',
+            'notify_order_updates' => ['nullable', 'boolean'],
+            'notify_booking_updates' => ['nullable', 'boolean'],
+            'notify_product_updates' => ['nullable', 'boolean'],
         ]);
 
-        // Store theme preference in session
-        session(['theme' => $request->theme]);
+        $request->user()->update([
+            'notify_order_updates' => $request->boolean('notify_order_updates'),
+            'notify_booking_updates' => $request->boolean('notify_booking_updates'),
+            'notify_product_updates' => $request->boolean('notify_product_updates'),
+        ]);
 
-        return back()->with('success', 'Appearance settings updated successfully!');
+        return back()->with('success', 'Notification preferences updated.');
     }
 }

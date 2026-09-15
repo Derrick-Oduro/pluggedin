@@ -9,12 +9,15 @@ export default {
         './resources/views/**/*.blade.php',
     ],
 
+    // The product intentionally ships with one considered light theme. Keeping
+    // class-based variants available prevents legacy utility classes from
+    // becoming system-theme rules while the remaining templates are refined.
     darkMode: 'class',
 
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                sans: ['Manrope', ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 'dark': {
@@ -26,22 +29,22 @@ export default {
                     secondary: '#F5F5F5',
                 },
                 'brand': {
-                    DEFAULT: '#B02F00',
-                    deep: '#8F2500',
-                    light: '#FF5722',
-                    tint: '#FFF4EE',
-                    soft: '#FFE7DB',
+                    DEFAULT: '#B7481F',
+                    deep: '#7A2B12',
+                    light: '#D96035',
+                    tint: '#FFF8F4',
+                    soft: '#FCE4D8',
                 },
                 'orange': {
-                    DEFAULT: '#B02F00',
-                    dark: '#8F2500',
-                    light: '#FF5722',
-                    tint: '#FFF4EE',
-                    soft: '#FFE7DB',
+                    DEFAULT: '#B7481F',
+                    dark: '#7A2B12',
+                    light: '#D96035',
+                    tint: '#FFF8F4',
+                    soft: '#FCE4D8',
                 },
                 'text': {
-                    primary: '#FFFFFF',
-                    secondary: '#BDBDBD',
+                    primary: '#1C1917',
+                    secondary: '#57534E',
                 },
             },
         },

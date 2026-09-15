@@ -25,7 +25,7 @@ class CategoryManagementController extends Controller
      */
     public function create()
     {
-        return view('superadmin.categories.create');
+        return redirect()->route('superadmin.categories.index', ['modal' => 'create-category']);
     }
 
     /**
@@ -55,7 +55,7 @@ class CategoryManagementController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('superadmin.categories.edit', compact('category'));
+        return redirect()->route('superadmin.categories.index', ['modal' => 'edit-category-' . $category->id]);
     }
 
     /**
@@ -83,7 +83,7 @@ class CategoryManagementController extends Controller
     /**
      * Remove the specified category from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Request $request, Category $category)
     {
         // Check if category has products
         if ($category->products()->count() > 0) {
@@ -102,4 +102,3 @@ class CategoryManagementController extends Controller
         return redirect()->route('superadmin.categories.index')->with('success', 'Category deleted successfully!');
     }
 }
-

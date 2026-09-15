@@ -16,7 +16,7 @@ class UserManagementController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('created_at', 'desc')->paginate(20);
+        $users = User::with('roles')->orderBy('created_at', 'desc')->paginate(20);
 
         return view('superadmin.users.index', compact('users'));
     }
@@ -26,7 +26,7 @@ class UserManagementController extends Controller
      */
     public function create()
     {
-        return view('superadmin.users.create');
+        return redirect()->route('superadmin.users.index', ['modal' => 'create-user']);
     }
 
     /**
@@ -62,7 +62,7 @@ class UserManagementController extends Controller
      */
     public function edit(User $user)
     {
-        return view('superadmin.users.edit', compact('user'));
+        return redirect()->route('superadmin.users.index', ['modal' => 'edit-user-' . $user->id]);
     }
 
     /**
@@ -119,4 +119,3 @@ class UserManagementController extends Controller
         return redirect()->route('superadmin.users.index')->with('success', 'User deleted successfully!');
     }
 }
-

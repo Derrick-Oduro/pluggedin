@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\SuperAdminDashboardController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
@@ -41,6 +42,7 @@ Route::get('/services/{service}', [ServiceController::class, 'show'])->name('ser
 // About & Contact (static pages for now)
 Route::view('/about', 'about')->name('about');
 Route::view('/contact', 'contact')->name('contact');
+Route::post('/contact', [ContactMessageController::class, 'store'])->middleware('throttle:6,1')->name('contact.store');
 Route::get('/search', [GlobalSearchController::class, 'index'])->name('search.global');
 
 // Authenticated User Routes
@@ -95,12 +97,12 @@ Route::middleware('auth')->group(function () {
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{notificationId}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::delete('/notifications/{notificationId}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
-    Route::get('/settings/appearance', [SettingsController::class, 'appearance'])->name('settings.appearance');
-    Route::post('/settings/appearance', [SettingsController::class, 'updateAppearance'])->name('settings.appearance.update');
+    Route::patch('/settings/notifications', [SettingsController::class, 'updateNotifications'])->name('settings.notifications.update');
 
     // Dashboard (redirects based on role)
     Route::get('/dashboard', function () {
@@ -146,6 +148,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
 Route::prefix('superadmin')->middleware(['auth', 'superadmin'])->name('superadmin.')->group(function () {
     Route::get('/dashboard', [SuperAdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/audit-logs', [SuperAdminDashboardController::class, 'auditLogs'])->name('audit-logs.index');
+    Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
 
     // User Management
     Route::resource('users', UserManagementController::class)->except(['show']);
@@ -156,6 +159,8 @@ Route::prefix('superadmin')->middleware(['auth', 'superadmin'])->name('superadmi
     // Marketing and Homepage Controls
     Route::get('/marketing', [SuperAdminMarketingController::class, 'index'])->name('marketing.index');
     Route::post('/marketing/slides', [SuperAdminMarketingController::class, 'storeSlide'])->name('marketing.slides.store');
+    Route::post('/marketing/slides/select-live', [SuperAdminMarketingController::class, 'selectLiveSlide'])->name('marketing.slides.select-live');
+    Route::post('/marketing/slides/{slide}/make-live', [SuperAdminMarketingController::class, 'makeSlideLive'])->name('marketing.slides.make-live');
     Route::patch('/marketing/slides/{slide}', [SuperAdminMarketingController::class, 'updateSlide'])->name('marketing.slides.update');
     Route::delete('/marketing/slides/{slide}', [SuperAdminMarketingController::class, 'destroySlide'])->name('marketing.slides.destroy');
     Route::post('/marketing/slides/{id}/restore', [SuperAdminMarketingController::class, 'restoreSlide'])->name('marketing.slides.restore');

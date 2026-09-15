@@ -12,7 +12,7 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-5 sm:-my-px sm:ms-8 sm:flex">
+                <div class="hidden space-x-5 lg:-my-px lg:ms-8 lg:flex">
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
@@ -32,7 +32,7 @@
             </div>
 
             <!-- Right Side -->
-            <div class="hidden sm:flex sm:items-center sm:gap-4">
+            <div class="hidden lg:flex lg:items-center lg:gap-4">
                 @auth
                     @php($unreadNotificationsCount = auth()->user()->unreadNotifications()->count())
                     @php($cartItemsCount = auth()->user()->cartItems()->count())
@@ -60,9 +60,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.73 21a2 2 0 01-3.46 0" />
                         </svg>
                         @if($unreadNotificationsCount > 0)
-                            <span class="absolute -top-2 -right-4 min-w-[18px] h-[18px] px-1 rounded-full bg-orange text-white text-[10px] leading-[18px] text-center font-bold">
-                                {{ $unreadNotificationsCount }}
-                            </span>
+                            <span class="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-brand"></span>
                         @endif
                     </a>
 
@@ -152,7 +150,7 @@
             </div>
 
             <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
+            <div class="-me-2 flex items-center lg:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-900 dark:text-text-primary hover:text-orange transition">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -164,7 +162,7 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-white/95 dark:bg-dark-secondary/95 border-t border-gray-200/70 dark:border-gray-800">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden lg:hidden bg-white/95 dark:bg-dark-secondary/95 border-t border-gray-200/70 dark:border-gray-800">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('Home') }}

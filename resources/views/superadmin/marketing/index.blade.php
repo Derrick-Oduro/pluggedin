@@ -1,263 +1,125 @@
-@section('page-title', 'Marketing Control')
-
 <x-superadmin-layout>
-    <div class="space-y-4">
-            <x-page-header
-                title="Homepage and Promotions"
-                subtitle="Cleaner workspace for hero slides and discount campaigns. Create on top, manage below."
-                :breadcrumbs="[
-                    ['label' => 'Dashboard', 'href' => route('superadmin.dashboard')],
-                    ['label' => 'Marketing'],
-                ]"
-            />
+    @php($liveSlide = $slides->firstWhere('is_active'))
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div id="slides-create" class="backend-card p-4 rounded-xl">
-                    <h2 class="text-lg font-semibold">Create Carousel Slide</h2>
-                    <p class="text-xs text-gray-500 dark:text-text-secondary mt-1 mb-3">Use short captions and keep sort order low for priority.</p>
-                    <form action="{{ route('superadmin.marketing.slides.store') }}" method="POST" enctype="multipart/form-data" class="space-y-3">
-                        @csrf
-                        <input name="title" placeholder="Slide title (optional)" class="backend-field">
-                        <textarea name="caption" rows="2" placeholder="Caption" class="backend-field"></textarea>
-                        <input name="image_url" placeholder="Image URL (optional if uploading a file)" class="backend-field">
-                        <input type="file" name="image_file" accept="image/*" class="backend-field">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <input name="alt_text" placeholder="Alt text" class="backend-field">
-                            <input type="number" name="sort_order" min="0" value="0" placeholder="Sort order" class="backend-field">
-                        </div>
-                        <div class="flex items-center justify-between gap-3">
-                            <label class="inline-flex items-center gap-2 text-sm">
-                                <input type="checkbox" name="is_active" value="1" checked>
-                                Active
-                            </label>
-                            <button class="backend-btn-primary">Add Slide</button>
-                        </div>
-                    </form>
-                </div>
+    <div class="mx-auto max-w-6xl space-y-8 py-4">
+        <header class="flex flex-col justify-between gap-5 border-b border-stone-200 pb-7 sm:flex-row sm:items-end">
+            <div>
+                <span class="brand-badge">Content studio</span>
+                <h1 class="mt-3 text-3xl font-extrabold tracking-[-0.045em] text-stone-950">Homepage & promotions</h1>
+                <p class="mt-2 max-w-xl text-sm leading-6 text-stone-600">Choose the image visitors see first and manage time-sensitive offers from one calm, focused workspace.</p>
+            </div>
+            <a href="{{ route('home') }}" target="_blank" class="btn-secondary shrink-0">Preview homepage ↗</a>
+        </header>
 
-                <div id="campaigns-create" class="backend-card p-4 rounded-xl">
-                    <h2 class="text-lg font-semibold">Create Discount Campaign</h2>
-                    <p class="text-xs text-gray-500 dark:text-text-secondary mt-1 mb-3">Set schedule and usage limit to avoid conflicts.</p>
-                    <form action="{{ route('superadmin.marketing.campaigns.store') }}" method="POST" class="space-y-3">
-                        @csrf
-                        <input name="name" required placeholder="Campaign name" class="backend-field">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <input name="code" placeholder="Code (optional)" class="backend-field">
-                            <input type="number" name="discount_percent" min="1" max="95" required placeholder="Discount %" class="backend-field">
-                        </div>
-                        <input type="number" name="max_uses" min="1" placeholder="Maximum uses (optional)" class="backend-field">
-                        <textarea name="description" rows="2" placeholder="Description" class="backend-field"></textarea>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div class="space-y-2">
-                                <label class="text-xs uppercase tracking-wide text-gray-500 dark:text-text-secondary">Start</label>
-                                <input type="date" name="starts_date" class="backend-field">
-                                <input type="time" name="starts_time" step="60" class="backend-field">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-xs uppercase tracking-wide text-gray-500 dark:text-text-secondary">End</label>
-                                <input type="date" name="ends_date" class="backend-field">
-                                <input type="time" name="ends_time" step="60" class="backend-field">
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between gap-3">
-                            <label class="inline-flex items-center gap-2 text-sm">
-                                <input type="checkbox" name="is_active" value="1" checked>
-                                Active
-                            </label>
-                            <button class="backend-btn-primary">Add Campaign</button>
-                        </div>
-                    </form>
-                </div>
+        <section>
+            <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
+                <div><h2 class="text-xl font-extrabold tracking-[-0.03em]">Homepage hero</h2><p class="mt-1 text-sm text-stone-600">One image is live at a time. Pick it from your image library below.</p></div>
+                <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-bold text-stone-600">{{ $slides->count() }} image{{ $slides->count() === 1 ? '' : 's' }} in library</span>
             </div>
 
-            <div id="slides-manage" class="backend-card p-4 rounded-xl">
-                <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-lg font-semibold">Manage Slides</h2>
-                    <span class="text-xs rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-1">{{ $slides->count() }} total</span>
-                </div>
-                <div class="space-y-3">
-                    @forelse($slides as $slide)
-                        <details class="rounded-lg border border-gray-200 p-3 dark:border-gray-700 group">
-                            <summary class="list-none cursor-pointer">
-                                <div class="flex flex-wrap items-center justify-between gap-2">
-                                    <div class="min-w-0">
-                                        <p class="text-sm font-semibold truncate">{{ $slide->title ?: 'Untitled Slide' }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-text-secondary">Sort: {{ $slide->sort_order }}</p>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xs px-2 py-1 rounded-full {{ $slide->is_active ? 'bg-green-500/20 text-green-500' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-text-secondary' }}">{{ $slide->is_active ? 'Active' : 'Inactive' }}</span>
-                                        <span class="text-xs text-gray-500 dark:text-text-secondary">Expand</span>
-                                    </div>
-                                </div>
-                            </summary>
+            <div class="grid gap-5 lg:grid-cols-5">
+                <article class="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-[0_16px_35px_-28px_rgba(41,30,23,0.34)] lg:col-span-3">
+                    <div class="relative h-64 bg-brand-tint sm:h-80">
+                        @if($liveSlide)
+                            <img src="{{ $liveSlide->image_url }}" alt="{{ $liveSlide->alt_text ?: $liveSlide->title ?: 'Live homepage hero image' }}" class="h-full w-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-stone-950/55 via-transparent to-transparent"></div>
+                            <div class="absolute bottom-5 left-5 right-5 text-white"><p class="text-xs font-bold uppercase tracking-[0.16em] text-white/70">Currently live</p><p class="mt-1 text-xl font-extrabold">{{ $liveSlide->title ?: 'Homepage hero image' }}</p></div>
+                        @else
+                            <div class="flex h-full flex-col items-center justify-center p-8 text-center"><div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft text-xl font-extrabold text-brand">+</div><p class="mt-4 font-extrabold text-stone-900">No hero image selected</p><p class="mt-1 max-w-xs text-sm leading-6 text-stone-600">Add an image below, then make it live when you are ready.</p></div>
+                        @endif
+                    </div>
+                </article>
 
-                            <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
-                                <div class="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                                    <img src="{{ $slide->image_url }}" alt="{{ $slide->alt_text ?: $slide->title ?: 'Carousel slide preview' }}" class="h-40 w-full object-cover">
-                                </div>
-                                <form action="{{ route('superadmin.marketing.slides.update', $slide) }}" method="POST" enctype="multipart/form-data" class="space-y-3">
-                                    @csrf
-                                    @method('PATCH')
-                                    <input name="title" value="{{ $slide->title }}" placeholder="Title" class="backend-field">
-                                    <textarea name="caption" rows="2" class="backend-field">{{ $slide->caption }}</textarea>
-                                    <input name="image_url" value="{{ $slide->image_url }}" class="backend-field">
+                <div class="rounded-2xl border border-brand-soft bg-brand-tint p-6 lg:col-span-2">
+                    <p class="text-xs font-bold uppercase tracking-[0.15em] text-brand-deep">Change homepage image</p>
+                    <p class="mt-2 text-sm leading-6 text-stone-700">Choose the image you want visitors to see. Saving this choice automatically turns off every other image.</p>
+                    @if($slides->isNotEmpty())
+                        <form action="{{ route('superadmin.marketing.slides.select-live') }}" method="POST" class="mt-5 space-y-3">
+                            @csrf
+                            <label for="homepage-image" class="text-sm font-bold text-stone-900">Homepage image</label>
+                            <select id="homepage-image" name="slide_id" class="backend-field">
+                                @foreach($slides as $slide)
+                                    <option value="{{ $slide->id }}" @selected($slide->is_active)>{{ $slide->title ?: 'Untitled image #'.$slide->id }}</option>
+                                @endforeach
+                            </select>
+                            <button class="backend-btn-primary w-full">Set as homepage image</button>
+                        </form>
+                    @else
+                        <p class="mt-5 rounded-xl border border-brand-soft bg-white/70 p-3 text-sm text-stone-600">Add an image to your library, then you can select it here.</p>
+                    @endif
+                </div>
+            </div>
+        </section>
+
+        <section class="rounded-2xl border border-stone-200 bg-white p-5 shadow-[0_16px_35px_-28px_rgba(41,30,23,0.25)] sm:p-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div><h2 class="text-xl font-extrabold tracking-[-0.03em]">Hero image library</h2><p class="mt-1 text-sm text-stone-600">Select one image to put on the homepage. Edit details only when you need them.</p></div>
+                <details class="group relative">
+                    <summary class="btn-primary cursor-pointer list-none">Add image <span class="ml-1 text-lg leading-none">+</span></summary>
+                    <div class="absolute right-0 z-20 mt-3 w-[min(26rem,calc(100vw-3rem))] rounded-2xl border border-stone-200 bg-white p-5 shadow-2xl">
+                        <h3 class="text-base font-extrabold">Add a new hero image</h3><p class="mt-1 text-xs leading-5 text-stone-500">Upload a JPG, PNG, or WebP (up to 5 MB), or paste a hosted image URL.</p>
+                        <form action="{{ route('superadmin.marketing.slides.store') }}" method="POST" enctype="multipart/form-data" class="mt-4 space-y-3">
+                            @csrf
+                            <input name="title" placeholder="Short title (optional)" class="backend-field">
+                            <textarea name="caption" rows="2" placeholder="Short supporting text (optional)" class="backend-field"></textarea>
+                            <input type="file" name="image_file" accept="image/*" class="backend-field">
+                            <p class="text-center text-xs font-semibold text-stone-400">or</p>
+                            <input name="image_url" placeholder="https://example.com/image.jpg" class="backend-field">
+                            <input name="alt_text" placeholder="Image description for accessibility" class="backend-field">
+                            <input type="hidden" name="sort_order" value="999">
+                            <input type="hidden" name="is_active" value="0">
+                            <button class="backend-btn-primary w-full">Add to library</button>
+                        </form>
+                    </div>
+                </details>
+            </div>
+
+            <div class="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                @forelse($slides as $slide)
+                    <article class="overflow-hidden rounded-2xl border {{ $slide->is_active ? 'border-brand ring-2 ring-brand-soft' : 'border-stone-200' }} bg-white">
+                        <img src="{{ $slide->image_url }}" alt="{{ $slide->alt_text ?: $slide->title ?: 'Hero image preview' }}" class="h-44 w-full object-cover">
+                        <div class="p-4">
+                            <div class="flex items-start justify-between gap-3"><div class="min-w-0"><h3 class="truncate font-extrabold text-stone-950">{{ $slide->title ?: 'Untitled image' }}</h3><p class="mt-1 line-clamp-2 text-xs leading-5 text-stone-500">{{ $slide->caption ?: 'No supporting text added.' }}</p></div><span class="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold {{ $slide->is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-100 text-stone-500' }}">{{ $slide->is_active ? 'LIVE' : 'SAVED' }}</span></div>
+
+                            @if($slide->is_active)
+                                <div class="mt-4 rounded-xl bg-emerald-50 px-3 py-2.5 text-center text-sm font-bold text-emerald-800">This image is on the homepage.</div>
+                            @else
+                                <p class="mt-4 rounded-xl bg-stone-50 px-3 py-2.5 text-center text-sm font-semibold text-stone-500">Select this from the Homepage Image picker above.</p>
+                            @endif
+
+                            <details class="mt-3 border-t border-stone-100 pt-3">
+                                <summary class="cursor-pointer text-sm font-bold text-stone-600 hover:text-brand">Edit image details</summary>
+                                <form action="{{ route('superadmin.marketing.slides.update', $slide) }}" method="POST" enctype="multipart/form-data" class="mt-4 space-y-3">
+                                    @csrf @method('PATCH')
+                                    <input name="title" value="{{ $slide->title }}" placeholder="Short title" class="backend-field">
+                                    <textarea name="caption" rows="2" placeholder="Supporting text" class="backend-field">{{ $slide->caption }}</textarea>
+                                    <input name="image_url" value="{{ $slide->image_url }}" placeholder="Image URL" class="backend-field">
                                     <input type="file" name="image_file" accept="image/*" class="backend-field">
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        <input name="alt_text" value="{{ $slide->alt_text }}" placeholder="Alt text" class="backend-field">
-                                        <input type="number" name="sort_order" min="0" value="{{ $slide->sort_order }}" class="backend-field">
-                                    </div>
-                                    <div class="flex items-center justify-between gap-3">
-                                        <label class="inline-flex items-center gap-2 text-sm">
-                                            <input type="checkbox" name="is_active" value="1" {{ $slide->is_active ? 'checked' : '' }}>
-                                            Active
-                                        </label>
-                                        <button class="backend-btn-muted">Save Changes</button>
-                                    </div>
+                                    <input name="alt_text" value="{{ $slide->alt_text }}" placeholder="Image description" class="backend-field">
+                                    <input type="hidden" name="sort_order" value="{{ $slide->sort_order }}"><input type="hidden" name="is_active" value="{{ $slide->is_active ? 1 : 0 }}">
+                                    <button class="backend-btn-muted w-full">Save changes</button>
                                 </form>
-                                <form action="{{ route('superadmin.marketing.slides.destroy', $slide) }}" method="POST" onsubmit="return confirm('Delete this slide?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Delete Slide</button>
-                                </form>
-                            </div>
-                        </details>
-                    @empty
-                        <div class="rounded-lg border border-dashed border-gray-300 p-4 text-sm text-gray-600 dark:border-gray-700 dark:text-text-secondary">
-                            No slides yet. The homepage hero can run without carousel images, so you can remove all existing slides and add new ones anytime.
+                                <form action="{{ route('superadmin.marketing.slides.destroy', $slide) }}" method="POST" class="mt-3" onsubmit="return confirm('Remove this image from your library?')">@csrf @method('DELETE')<button class="w-full rounded-xl border border-red-200 px-4 py-2.5 text-sm font-bold text-red-700 hover:bg-red-50">Remove image</button></form>
+                            </details>
                         </div>
-                    @endforelse
-                </div>
+                    </article>
+                @empty
+                    <div class="col-span-full rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-10 text-center"><p class="font-extrabold text-stone-900">Your image library is empty.</p><p class="mt-1 text-sm text-stone-600">Use “Add image” above to get started.</p></div>
+                @endforelse
             </div>
+        </section>
 
-            <div id="campaigns-manage" class="backend-card p-4 rounded-xl">
-                <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-lg font-semibold">Manage Campaigns</h2>
-                    <div class="flex items-center gap-2">
-                        <a href="{{ route('superadmin.marketing.index') }}#campaigns-manage" class="text-xs px-2 py-1 rounded-full border border-gray-200 dark:border-gray-700 {{ ($scope ?? '') === '' ? 'bg-orange/15 text-orange border-orange/30' : 'text-gray-600 dark:text-text-secondary' }}">All</a>
-                        <a href="{{ route('superadmin.marketing.index', ['scope' => 'live']) }}#campaigns-manage" class="text-xs px-2 py-1 rounded-full border border-gray-200 dark:border-gray-700 {{ ($scope ?? '') === 'live' ? 'bg-orange/15 text-orange border-orange/30' : 'text-gray-600 dark:text-text-secondary' }}">Live only</a>
-                        <span class="text-xs rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-1">{{ $campaigns->count() }} shown</span>
-                    </div>
-                </div>
-                <div class="space-y-3">
-                    @forelse($campaigns as $campaign)
-                        @php
-                            $now = now();
-                            $isScheduled = $campaign->starts_at && $campaign->starts_at->gt($now);
-                            $isExpired = $campaign->ends_at && $campaign->ends_at->lt($now);
-                            $isLive = $campaign->is_active && ! $isScheduled && ! $isExpired;
-                        @endphp
+        <section class="border-t border-stone-200 pt-8">
+            <div class="flex flex-wrap items-end justify-between gap-4"><div><span class="brand-badge">Promotions</span><h2 class="mt-3 text-xl font-extrabold tracking-[-0.03em]">Discount campaigns</h2><p class="mt-1 text-sm text-stone-600">Create and maintain offers without mixing them into homepage content.</p></div><details class="group relative"><summary class="btn-secondary cursor-pointer list-none">Create campaign +</summary><div class="absolute right-0 z-20 mt-3 w-[min(28rem,calc(100vw-3rem))] rounded-2xl border border-stone-200 bg-white p-5 shadow-2xl"><form action="{{ route('superadmin.marketing.campaigns.store') }}" method="POST" class="space-y-3">@csrf <input name="name" required placeholder="Campaign name" class="backend-field"><div class="grid grid-cols-2 gap-3"><input name="code" placeholder="Code (optional)" class="backend-field"><input type="number" name="discount_percent" min="1" max="95" required placeholder="Discount %" class="backend-field"></div><textarea name="description" rows="2" placeholder="Description (optional)" class="backend-field"></textarea><div class="grid grid-cols-2 gap-3"><input type="date" name="starts_date" class="backend-field"><input type="date" name="ends_date" class="backend-field"></div><input type="hidden" name="is_active" value="1"><button class="backend-btn-primary w-full">Create campaign</button></form></div></details></div>
 
-                        <details class="rounded-lg border border-gray-200 p-3 dark:border-gray-700 group">
-                            <summary class="list-none cursor-pointer">
-                                <div class="flex flex-wrap items-center justify-between gap-2">
-                                    <div class="min-w-0">
-                                        <p class="text-sm font-semibold truncate">{{ $campaign->name }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-text-secondary">{{ $campaign->discount_percent }}% off{{ $campaign->code ? ' • '.$campaign->code : '' }}</p>
-                                    </div>
-                                    <div class="flex flex-wrap items-center gap-2 text-xs">
-                                        <span class="px-2 py-1 rounded-full {{ $isLive ? 'bg-green-500/20 text-green-500' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-text-secondary' }}">{{ $isLive ? 'Live' : 'Not live' }}</span>
-                                        @if($isScheduled)
-                                            <span class="px-2 py-1 rounded-full bg-blue-500/20 text-blue-500">Scheduled</span>
-                                        @endif
-                                        @if($isExpired)
-                                            <span class="px-2 py-1 rounded-full bg-red-500/20 text-red-500">Expired</span>
-                                        @endif
-                                        <span class="px-2 py-1 rounded-full bg-orange/20 text-orange">Used {{ $campaign->used_count }}{{ $campaign->max_uses ? '/'.$campaign->max_uses : '' }}</span>
-                                        <span class="text-gray-500 dark:text-text-secondary">Expand</span>
-                                    </div>
-                                </div>
-                            </summary>
-
-                            <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
-                                <form action="{{ route('superadmin.marketing.campaigns.update', $campaign) }}" method="POST" class="space-y-3">
-                                    @csrf
-                                    @method('PATCH')
-                                    <input name="name" value="{{ $campaign->name }}" required class="backend-field">
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        <input name="code" value="{{ $campaign->code }}" placeholder="Code" class="backend-field">
-                                        <input type="number" name="discount_percent" min="1" max="95" value="{{ $campaign->discount_percent }}" required class="backend-field">
-                                    </div>
-                                    <input type="number" name="max_uses" min="1" value="{{ $campaign->max_uses }}" placeholder="Maximum uses" class="backend-field">
-                                    <textarea name="description" rows="2" class="backend-field">{{ $campaign->description }}</textarea>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        <div class="space-y-2">
-                                            <label class="text-xs uppercase tracking-wide text-gray-500 dark:text-text-secondary">Start</label>
-                                            <input type="date" name="starts_date" value="{{ optional($campaign->starts_at)->format('Y-m-d') }}" class="backend-field">
-                                            <input type="time" name="starts_time" value="{{ optional($campaign->starts_at)->format('H:i') }}" step="60" class="backend-field">
-                                        </div>
-                                        <div class="space-y-2">
-                                            <label class="text-xs uppercase tracking-wide text-gray-500 dark:text-text-secondary">End</label>
-                                            <input type="date" name="ends_date" value="{{ optional($campaign->ends_at)->format('Y-m-d') }}" class="backend-field">
-                                            <input type="time" name="ends_time" value="{{ optional($campaign->ends_at)->format('H:i') }}" step="60" class="backend-field">
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center justify-between gap-3">
-                                        <label class="inline-flex items-center gap-2 text-sm">
-                                            <input type="checkbox" name="is_active" value="1" {{ $campaign->is_active ? 'checked' : '' }}>
-                                            Active
-                                        </label>
-                                        <button class="backend-btn-muted">Save Changes</button>
-                                    </div>
-                                </form>
-                                <form action="{{ route('superadmin.marketing.campaigns.destroy', $campaign) }}" method="POST" onsubmit="return confirm('Delete this campaign?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Delete Campaign</button>
-                                </form>
-                            </div>
-                        </details>
-                    @empty
-                        <div class="rounded-lg border border-dashed border-gray-300 p-4 text-sm text-gray-600 dark:border-gray-700 dark:text-text-secondary">
-                            No campaigns yet. Create one above to start discount scheduling.
-                        </div>
-                    @endforelse
-                </div>
+            <div class="mt-5 grid gap-4 md:grid-cols-2">
+                @forelse($campaigns as $campaign)
+                    @php($isLive = $campaign->is_active && (! $campaign->starts_at || $campaign->starts_at->lte(now())) && (! $campaign->ends_at || $campaign->ends_at->gte(now())))
+                    <details class="rounded-2xl border border-stone-200 bg-white p-5 shadow-[0_12px_30px_-26px_rgba(41,30,23,0.25)]"><summary class="flex cursor-pointer list-none items-start justify-between gap-4"><div><p class="font-extrabold text-stone-950">{{ $campaign->name }}</p><p class="mt-1 text-sm text-stone-600">{{ $campaign->discount_percent }}% off{{ $campaign->code ? ' · '.$campaign->code : '' }}</p></div><span class="rounded-full px-2.5 py-1 text-[11px] font-bold {{ $isLive ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-100 text-stone-500' }}">{{ $isLive ? 'LIVE' : 'NOT LIVE' }}</span></summary><form action="{{ route('superadmin.marketing.campaigns.update', $campaign) }}" method="POST" class="mt-5 space-y-3 border-t border-stone-100 pt-4">@csrf @method('PATCH')<input name="name" value="{{ $campaign->name }}" required class="backend-field"><div class="grid grid-cols-2 gap-3"><input name="code" value="{{ $campaign->code }}" placeholder="Code" class="backend-field"><input type="number" name="discount_percent" min="1" max="95" value="{{ $campaign->discount_percent }}" required class="backend-field"></div><textarea name="description" rows="2" class="backend-field">{{ $campaign->description }}</textarea><input type="hidden" name="is_active" value="{{ $campaign->is_active ? 1 : 0 }}"><button class="backend-btn-muted w-full">Save campaign</button></form></details>
+                @empty
+                    <div class="rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-8 text-center text-sm text-stone-600 md:col-span-2">No campaigns yet.</div>
+                @endforelse
             </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div class="backend-card p-4 rounded-xl">
-                    <div class="flex items-center justify-between mb-3">
-                        <h2 class="text-lg font-semibold">Archived Slides</h2>
-                        <span class="text-xs rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-1">{{ ($archivedSlides ?? collect())->count() }} archived</span>
-                    </div>
-
-                    <div class="space-y-2">
-                        @forelse(($archivedSlides ?? collect()) as $slide)
-                            <div class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2">
-                                <p class="text-sm font-semibold">{{ $slide->title ?: 'Untitled Slide' }}</p>
-                                <p class="text-xs text-gray-500 dark:text-text-secondary">Deleted {{ $slide->deleted_at?->format('M d, Y H:i') }}</p>
-                                <form action="{{ route('superadmin.marketing.slides.restore', $slide->id) }}" method="POST" class="mt-2">
-                                    @csrf
-                                    <button class="text-xs font-semibold text-orange hover:text-orange-light">Restore Slide</button>
-                                </form>
-                            </div>
-                        @empty
-                            <p class="text-sm text-gray-600 dark:text-text-secondary">No archived slides.</p>
-                        @endforelse
-                    </div>
-                </div>
-
-                <div class="backend-card p-4 rounded-xl">
-                    <div class="flex items-center justify-between mb-3">
-                        <h2 class="text-lg font-semibold">Archived Campaigns</h2>
-                        <span class="text-xs rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-1">{{ ($archivedCampaigns ?? collect())->count() }} archived</span>
-                    </div>
-
-                    <div class="space-y-2">
-                        @forelse(($archivedCampaigns ?? collect()) as $campaign)
-                            <div class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2">
-                                <p class="text-sm font-semibold">{{ $campaign->name }}</p>
-                                <p class="text-xs text-gray-500 dark:text-text-secondary">Deleted {{ $campaign->deleted_at?->format('M d, Y H:i') }}</p>
-                                <form action="{{ route('superadmin.marketing.campaigns.restore', $campaign->id) }}" method="POST" class="mt-2">
-                                    @csrf
-                                    <button class="text-xs font-semibold text-orange hover:text-orange-light">Restore Campaign</button>
-                                </form>
-                            </div>
-                        @empty
-                            <p class="text-sm text-gray-600 dark:text-text-secondary">No archived campaigns.</p>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-        </div>
+        </section>
+    </div>
 </x-superadmin-layout>

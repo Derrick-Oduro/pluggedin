@@ -9,6 +9,7 @@ use App\Support\AuditLogger;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class SuperAdminMarketingController extends Controller
 {
@@ -108,6 +109,43 @@ class SuperAdminMarketingController extends Controller
         ], request());
 
         return redirect()->route('superadmin.marketing.index')->with('success', 'Carousel slide removed.');
+    }
+
+    public function makeSlideLive(HeroSlide $slide)
+    {
+        $this->setLiveSlide($slide);
+
+        return redirect()->route('superadmin.marketing.index')->with('success', 'Homepage hero image updated.');
+    }
+
+    public function selectLiveSlide(Request $request)
+    {
+        $data = $request->validate([
+            'slide_id' => ['required', 'integer', 'exists:hero_slides,id'],
+        ]);
+
+        $slide = HeroSlide::findOrFail($data['slide_id']);
+        $this->setLiveSlide($slide);
+
+        return redirect()->route('superadmin.marketing.index')->with('success', 'Homepage hero image updated.');
+    }
+
+    private function setLiveSlide(HeroSlide $slide): void
+    {
+        DB::transaction(function () use ($slide) {
+            HeroSlide::query()
+                ->whereKeyNot($slide->id)
+                ->update(['is_active' => false]);
+
+            $slide->update([
+                'is_active' => true,
+                'sort_order' => 0,
+            ]);
+        });
+
+        AuditLogger::log('superadmin.hero_image.made_live', HeroSlide::class, $slide->id, [
+            'title' => $slide->title,
+        ], request());
     }
 
     public function restoreSlide(int $id)

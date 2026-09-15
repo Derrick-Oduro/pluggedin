@@ -18,7 +18,7 @@ class OrderStatusUpdatedNotification extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return $notifiable->notify_order_updates ? ['database'] : [];
     }
 
     public function toArray(object $notifiable): array
@@ -28,7 +28,7 @@ class OrderStatusUpdatedNotification extends Notification
         return [
             'type' => 'order_status',
             'title' => 'Order status updated',
-            'message' => "Order #{$this->orderId} changed from {$statusLabel($this->fromStatus)} to {$statusLabel($this->toStatus)}.",
+            'message' => "Your order changed from {$statusLabel($this->fromStatus)} to {$statusLabel($this->toStatus)}.",
             'order_id' => $this->orderId,
             'from_status' => $this->fromStatus,
             'to_status' => $this->toStatus,

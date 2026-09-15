@@ -15,24 +15,19 @@ class HomeController extends Controller
         $featuredProducts = Product::approved()->with('category')->latest()->take(6)->get();
         $services = Service::all();
 
-        $heroSlides = HeroSlide::active()
+        // The premium hero displays one deliberate image rather than rotating
+        // through a carousel. Super Admin selects it by making it active and
+        // giving it the lowest sort order.
+        $heroSlide = HeroSlide::active()
             ->orderBy('sort_order')
             ->orderBy('id')
-            ->get(['image_url as src', 'alt_text as alt', 'caption'])
-            ->map(function ($slide) {
-                return [
-                    'src' => $slide->src,
-                    'alt' => $slide->alt ?: 'Homepage carousel image',
-                    'caption' => $slide->caption ?: 'Upgrade. Repair. Perform better.',
-                ];
-            })
-            ->values();
+            ->first();
 
         $activeCampaign = DiscountCampaign::active()
             ->orderByDesc('discount_percent')
             ->orderByDesc('starts_at')
             ->first();
 
-        return view('home', compact('featuredProducts', 'services', 'heroSlides', 'activeCampaign'));
+        return view('home', compact('featuredProducts', 'services', 'heroSlide', 'activeCampaign'));
     }
 }

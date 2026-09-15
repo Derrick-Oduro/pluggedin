@@ -4,24 +4,25 @@
 
 @layer base {
 	:root {
-		--brand: #b02f00;
-		--brand-deep: #8f2500;
-		--brand-light: #ff5722;
-		--brand-tint: #fff4ee;
-		--brand-soft: #ffe7db;
+		--brand: #b7481f;
+		--brand-deep: #7a2b12;
+		--brand-light: #d96035;
+		--brand-tint: #fff8f4;
+		--brand-soft: #fce4d8;
 	}
 
 	body {
-		@apply bg-white text-gray-900 antialiased dark:bg-dark dark:text-text-primary;
-		background-image: radial-gradient(circle at 15% 8%, rgba(176, 47, 0, 0.1), transparent 34%),
-			radial-gradient(circle at 85% 90%, rgba(255, 87, 34, 0.08), transparent 30%);
-		background-attachment: fixed;
+		@apply bg-stone-50 text-stone-950 antialiased;
+		background-image: radial-gradient(circle at 8% 0%, rgba(252, 228, 216, 0.7), transparent 28%),
+			radial-gradient(circle at 95% 70%, rgba(255, 248, 244, 0.95), transparent 24%);
 	}
+
+	::selection { @apply bg-brand-soft text-brand-deep; }
 }
 
 @layer components {
 	.page-shell {
-		@apply relative overflow-hidden py-8 sm:py-10;
+		@apply relative overflow-hidden py-10 sm:py-14;
 	}
 
 	.content-wrap {
@@ -29,11 +30,11 @@
 	}
 
 	.section-title {
-		@apply text-2xl sm:text-3xl font-bold tracking-tight;
+		@apply text-3xl sm:text-4xl font-extrabold tracking-[-0.04em] text-stone-950;
 	}
 
 	.section-subtitle {
-		@apply text-sm text-gray-600 dark:text-text-secondary;
+		@apply text-sm leading-6 text-stone-600;
 	}
 
 	.page-shell::before {
@@ -41,16 +42,15 @@
 		position: absolute;
 		inset: 0;
 		pointer-events: none;
-		background: radial-gradient(circle at 80% 5%, rgba(176, 47, 0, 0.12), transparent 30%),
-			radial-gradient(circle at 10% 90%, rgba(255, 87, 34, 0.1), transparent 35%);
+		background: radial-gradient(circle at 80% 5%, rgba(252, 228, 216, 0.55), transparent 30%);
 	}
 
 	.glass-panel {
-		@apply rounded-xl border border-gray-200/70 bg-white/90 shadow-sm backdrop-blur dark:border-gray-800 dark:bg-dark-secondary/90;
+		@apply rounded-2xl border border-stone-200/90 bg-white shadow-[0_12px_35px_-22px_rgba(41,30,23,0.28)];
 	}
 
 	.brand-badge {
-		@apply inline-flex items-center rounded-full border border-brand-tint bg-brand-soft px-3 py-1 text-xs font-semibold text-brand-deep shadow-sm;
+		@apply inline-flex items-center rounded-full border border-brand-soft bg-brand-tint px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-deep;
 	}
 
 	.brand-highlight {
@@ -58,31 +58,31 @@
 	}
 
 	.btn-primary {
-		@apply inline-flex h-10 items-center justify-center rounded-lg bg-gradient-to-r from-brand to-brand-light px-4 text-sm font-semibold text-white shadow-lg shadow-brand/20 transition hover:from-brand-light hover:to-brand focus:outline-none focus:ring-2 focus:ring-brand-light/70 focus:ring-offset-2 dark:focus:ring-offset-dark;
+		@apply inline-flex h-11 items-center justify-center rounded-xl bg-brand px-5 text-sm font-bold text-white shadow-[0_10px_20px_-12px_rgba(122,43,18,0.65)] transition hover:-translate-y-0.5 hover:bg-brand-deep focus:outline-none focus:ring-2 focus:ring-brand-light/50 focus:ring-offset-2;
 	}
 
 	.btn-secondary {
-		@apply inline-flex h-10 items-center justify-center rounded-lg border border-gray-300 bg-white px-4 text-sm font-semibold text-gray-700 transition hover:border-brand hover:text-brand-deep focus:outline-none focus:ring-2 focus:ring-brand-light/60 focus:ring-offset-2 dark:border-gray-700 dark:bg-dark dark:text-text-secondary dark:hover:border-brand-light dark:hover:text-brand-light dark:focus:ring-offset-dark;
+		@apply inline-flex h-11 items-center justify-center rounded-xl border border-stone-300 bg-white px-5 text-sm font-bold text-stone-700 transition hover:-translate-y-0.5 hover:border-brand hover:text-brand-deep focus:outline-none focus:ring-2 focus:ring-brand-light/50 focus:ring-offset-2;
 	}
 
 	.backend-sidebar {
-		@apply rounded-xl border border-gray-200 bg-white p-2.5 dark:border-gray-800 dark:bg-dark-secondary;
+		@apply rounded-2xl border border-stone-200 bg-white p-2.5 shadow-[0_12px_35px_-24px_rgba(41,30,23,0.24)];
 	}
 
 	.backend-tab {
-		@apply block rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:text-text-secondary dark:hover:bg-gray-800 dark:hover:text-text-primary;
+		@apply block rounded-xl px-3 py-2.5 text-sm font-semibold text-stone-600 transition hover:bg-stone-100 hover:text-stone-950;
 	}
 
 	.backend-tab-active {
-		@apply bg-brand-tint text-brand-deep hover:bg-brand-soft hover:text-brand-deep dark:bg-brand/20 dark:text-brand-light;
+		@apply bg-brand-tint text-brand-deep hover:bg-brand-soft hover:text-brand-deep;
 	}
 
 	.backend-card {
-		@apply rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-dark-secondary;
+		@apply rounded-2xl border border-stone-200 bg-white p-5 shadow-[0_12px_35px_-26px_rgba(41,30,23,0.22)];
 	}
 
 	.backend-table-wrap {
-		@apply overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-dark-secondary;
+		@apply overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-[0_12px_35px_-26px_rgba(41,30,23,0.22)];
 	}
 
 	.backend-table {
@@ -90,26 +90,26 @@
 	}
 
 	.backend-th {
-		@apply p-2 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-600 dark:text-text-secondary;
+		@apply bg-stone-50 p-3 text-left text-[11px] font-bold uppercase tracking-[0.12em] text-stone-500;
 	}
 
 	.backend-td {
-		@apply p-2 align-top text-sm;
+		@apply p-3 align-top text-sm text-stone-700;
 	}
 
 	.backend-row {
-		@apply border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800;
+		@apply border-b border-stone-100 transition hover:bg-brand-tint/40;
 	}
 
 	.backend-field {
-		@apply w-full h-10 rounded-lg border border-gray-300 bg-white px-3 text-sm focus:border-brand-light focus:outline-none focus:ring-2 focus:ring-brand-light/35 dark:border-gray-700 dark:bg-dark;
+		@apply h-11 w-full rounded-xl border border-stone-300 bg-white px-3 text-sm text-stone-900 placeholder:text-stone-400 focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand-soft/60;
 	}
 
 	.backend-btn-primary {
-		@apply inline-flex h-10 items-center justify-center rounded-lg bg-gradient-to-r from-brand to-brand-light px-4 text-sm font-semibold text-white transition hover:from-brand-light hover:to-brand;
+		@apply inline-flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-white transition hover:bg-brand-deep;
 	}
 
 	.backend-btn-muted {
-		@apply inline-flex h-10 items-center justify-center rounded-lg bg-gray-700 px-4 text-sm font-semibold text-white transition hover:bg-gray-600;
+		@apply inline-flex h-11 items-center justify-center rounded-xl bg-stone-800 px-4 text-sm font-bold text-white transition hover:bg-stone-700;
 	}
 }

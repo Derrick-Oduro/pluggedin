@@ -26,7 +26,10 @@ class User extends Authenticatable
         'password',
         'role',
         'is_super_admin',
-        'points_balance',
+            'points_balance',
+            'notify_order_updates',
+            'notify_booking_updates',
+            'notify_product_updates',
     ];
 
     /**
@@ -49,6 +52,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'notify_order_updates' => 'boolean',
+            'notify_booking_updates' => 'boolean',
+            'notify_product_updates' => 'boolean',
         ];
     }
 

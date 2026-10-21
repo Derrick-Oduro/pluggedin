@@ -9,6 +9,10 @@
             <form action="{{ route('orders.store') }}" method="POST" class="space-y-6">
                 @csrf
 
+                @error('payment')
+                    <div class="rounded-lg border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm text-red-600">{{ $message }}</div>
+                @enderror
+
                 <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
                     <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
                     @foreach($cartItems as $item)
@@ -87,7 +91,7 @@
                 </div>
 
                 <button type="submit" class="w-full bg-orange hover:bg-orange-light text-white px-8 py-4 rounded-lg font-semibold transition">
-                    Place Order
+                    Continue to Paystack
                 </button>
             </form>
         </div>

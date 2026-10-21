@@ -230,6 +230,6 @@ class CatalogOrganizationFlowsTest extends TestCase
         $this->get(route('home'))
             ->assertOk()
             ->assertSee('Fresh carousel promo')
-            ->assertSee(str_replace('/', '\\/', $slide->image_url), false);
+            ->assertSee($slide->image_url, false);
     }
 }

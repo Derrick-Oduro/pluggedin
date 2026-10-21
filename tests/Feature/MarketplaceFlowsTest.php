@@ -7,11 +7,13 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PointsTransaction;
+use App\Models\PaymentTransaction;
 use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\ReferralLink;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -191,14 +193,34 @@ class MarketplaceFlowsTest extends TestCase
             'quantity' => 1,
         ]);
 
+        Http::fake([
+            '*/transaction/initialize' => Http::response([
+                'status' => true,
+                'data' => ['authorization_url' => 'https://checkout.paystack.test/authorize', 'access_code' => 'access-test'],
+            ]),
+        ]);
+
         $response = $this->actingAs($buyer)
             ->withSession(['referrals' => [$product->id => $link->id]])
             ->post(route('orders.store'), [
+                'fulfilment_method' => 'delivery',
                 'delivery_address' => '12 Test Avenue',
                 'delivery_phone' => '1234567890',
             ]);
 
-        $response->assertRedirect(route('orders.index'));
+        $response->assertRedirect('https://checkout.paystack.test/authorize');
+
+        $payment = PaymentTransaction::firstOrFail();
+        Http::fake([
+            '*/transaction/verify/*' => Http::response([
+                'status' => true,
+                'data' => ['status' => 'success', 'amount' => 12000, 'reference' => $payment->reference],
+            ]),
+        ]);
+
+        $this->actingAs($buyer)
+            ->get(route('payments.paystack.callback', ['reference' => $payment->reference]))
+            ->assertRedirect(route('orders.show', $payment->order_id));
 
         $referrer->refresh();
         $link->refresh();

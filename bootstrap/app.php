@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\IsAdmin::class,
             'superadmin' => \App\Http\Middleware\IsSuperAdmin::class,
         ]);
+        $middleware->validateCsrfTokens(except: ['payments/paystack/webhook']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

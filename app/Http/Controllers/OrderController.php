@@ -6,6 +6,8 @@ use App\Models\DiscountCampaign;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatusHistory;
+use App\Models\PaymentTransaction;
+use App\Models\Product;
 use App\Models\PointsTransaction;
 use App\Models\ProductReview;
 use App\Models\ReferralLink;
@@ -13,6 +15,8 @@ use App\Notifications\PointsEarnedNotification;
 use App\Notifications\RedeemableThresholdReachedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
@@ -40,6 +44,21 @@ class OrderController extends Controller
         $canReviewOrder = in_array($order->status, ['confirmed', 'completed'], true);
 
         return view('orders.show', compact('order', 'userReviews', 'canReviewOrder'));
+    }
+
+    public function cancel(Request $request, Order $order)
+    {
+        abort_unless($order->user_id === auth()->id(), 403);
+
+        $request->validate([
+            'reason' => 'nullable|string|max:500',
+        ]);
+
+        abort_unless(in_array($order->status, ['pending', 'confirmed'], true), 422, 'This order can no longer be cancelled.');
+
+        $order->cancelAndRestoreInventory(auth()->id(), $request->input('reason'));
+
+        return redirect()->route('orders.show', $order)->with('success', 'Your order has been cancelled.');
     }
 
     public function checkout()
@@ -88,7 +107,7 @@ class OrderController extends Controller
 
         $promoCode = $request->filled('promo_code') ? strtoupper(trim((string) $request->input('promo_code'))) : null;
 
-        DB::transaction(function() use ($request, $cartItems, $promoCode) {
+        $order = DB::transaction(function() use ($request, $cartItems, $promoCode) {
             $subtotal = $cartItems->sum(function($item) {
                 return $item->product->price * $item->quantity;
             });
@@ -148,65 +167,27 @@ class OrderController extends Controller
                 'to_status' => 'pending',
             ]);
 
-            if ($campaign) {
-                $campaign->increment('used_count');
-            }
-
             foreach ($cartItems as $cartItem) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $cartItem->product_id,
-                    'quantity' => $cartItem->quantity,
-                    'price' => $cartItem->product->price
-                ]);
+                $product = Product::query()->lockForUpdate()->find($cartItem->product_id);
 
-                // Decrease stock
-                $cartItem->product->decrement('stock_quantity', $cartItem->quantity);
+                if (! $product || $product->stock_quantity < $cartItem->quantity) {
+                    throw ValidationException::withMessages([
+                        'cart' => "Insufficient stock for {$cartItem->product->name}.",
+                    ]);
+                }
 
                 $referrals = session('referrals', []);
                 $referralLinkId = $referrals[$cartItem->product_id] ?? null;
 
-                if (! $referralLinkId) {
-                    continue;
-                }
-
-                $referralLink = ReferralLink::where('id', $referralLinkId)
-                    ->where('product_id', $cartItem->product_id)
-                    ->first();
-
-                if (! $referralLink || $referralLink->user_id === auth()->id()) {
-                    continue;
-                }
-
-                $points = (int) config('marketplace.referral_points_per_purchase', 10);
-                $threshold = (int) config('marketplace.redeemable_points_threshold', 100);
-
-                $referrer = $referralLink->user;
-                $previousBalance = (int) $referrer->points_balance;
-                $newBalance = $previousBalance + $points;
-
-                $referrer->update(['points_balance' => $newBalance]);
-
-                PointsTransaction::create([
-                    'user_id' => $referrer->id,
-                    'points' => $points,
-                    'type' => 'referral_purchase',
-                    'description' => 'Referral conversion from a product purchase.',
-                    'meta' => [
-                        'order_id' => $order->id,
-                        'product_id' => $cartItem->product_id,
-                        'referral_link_id' => $referralLink->id,
-                        'buyer_user_id' => auth()->id(),
-                    ],
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $cartItem->product_id,
+                    'referral_link_id' => $referralLinkId,
+                    'quantity' => $cartItem->quantity,
+                    'price' => $product->price
                 ]);
 
-                $referralLink->increment('conversions');
-
-                $referrer->notify(new PointsEarnedNotification($points, 'A purchase was completed via your referral link.'));
-
-                if ($previousBalance < $threshold && $newBalance >= $threshold) {
-                    $referrer->notify(new RedeemableThresholdReachedNotification($threshold, $newBalance));
-                }
+                $product->decrement('stock_quantity', $cartItem->quantity);
             }
 
             // Clear cart
@@ -214,9 +195,140 @@ class OrderController extends Controller
 
             // Clear tracked referrals once checkout is complete.
             session()->forget('referrals');
+
+            return $order;
         });
 
-        return redirect()->route('orders.index')->with('success', 'Order placed successfully!');
+        $reference = 'PLUG-' . $order->id . '-' . Str::upper(Str::random(16));
+        $paymentResponse = Http::withToken(config('services.paystack.secret_key'))
+            ->acceptJson()
+            ->post(rtrim(config('services.paystack.base_url'), '/') . '/transaction/initialize', [
+                'amount' => (int) round(((float) $order->total_price) * 100),
+                'email' => auth()->user()->email,
+                'currency' => config('services.paystack.currency', 'GHS'),
+                'reference' => $reference,
+                'callback_url' => route('payments.paystack.callback'),
+                'metadata' => ['order_id' => $order->id],
+            ]);
+
+        if (! $paymentResponse->successful() || ! $paymentResponse->json('status')) {
+            $order->cancelAndRestoreInventory(auth()->id(), 'Paystack payment initialization failed.');
+
+            throw ValidationException::withMessages([
+                'payment' => 'We could not start the payment. Please try again.',
+            ]);
+        }
+
+        PaymentTransaction::create([
+            'order_id' => $order->id,
+            'reference' => $reference,
+            'access_code' => $paymentResponse->json('data.access_code'),
+            'status' => 'pending',
+            'amount' => $order->total_price,
+            'currency' => config('services.paystack.currency', 'GHS'),
+            'gateway_response' => $paymentResponse->json(),
+        ]);
+
+        return redirect()->away($paymentResponse->json('data.authorization_url'));
+    }
+
+    public function paystackCallback(Request $request)
+    {
+        $reference = $request->string('reference')->toString();
+        abort_unless($reference !== '', 400, 'Payment reference is missing.');
+
+        $payment = PaymentTransaction::where('reference', $reference)->firstOrFail();
+        abort_unless($payment->order->user_id === auth()->id(), 403);
+
+        $this->verifyAndCompletePaystackPayment($reference);
+
+        return redirect()->route('orders.show', $payment->order)->with('success', 'Payment confirmed. Your order is being prepared.');
+    }
+
+    public function paystackWebhook(Request $request)
+    {
+        $signature = $request->header('x-paystack-signature');
+        abort_unless($signature && hash_equals(hash_hmac('sha512', $request->getContent(), config('services.paystack.secret_key')), $signature), 401);
+
+        if ($request->input('event') === 'charge.success') {
+            $this->verifyAndCompletePaystackPayment((string) data_get($request->input('data'), 'reference'));
+        }
+
+        return response()->json(['received' => true]);
+    }
+
+    private function verifyAndCompletePaystackPayment(string $reference): void
+    {
+        $response = Http::withToken(config('services.paystack.secret_key'))
+            ->acceptJson()
+            ->get(rtrim(config('services.paystack.base_url'), '/') . '/transaction/verify/' . urlencode($reference));
+
+        abort_unless($response->successful() && $response->json('status') && $response->json('data.status') === 'success', 422, 'Payment could not be verified.');
+
+        DB::transaction(function () use ($reference, $response) {
+            $payment = PaymentTransaction::where('reference', $reference)->lockForUpdate()->firstOrFail();
+
+            if ($payment->status === 'paid') {
+                return;
+            }
+
+            $expectedAmount = (int) round(((float) $payment->amount) * 100);
+            abort_unless((int) $response->json('data.amount') === $expectedAmount, 422, 'Payment amount mismatch.');
+
+            $payment->update([
+                'status' => 'paid',
+                'paid_at' => now(),
+                'gateway_response' => $response->json(),
+            ]);
+
+            $order = $payment->order()->lockForUpdate()->firstOrFail();
+            if ($order->status === 'pending') {
+                $order->update(['status' => 'confirmed']);
+                OrderStatusHistory::create([
+                    'order_id' => $order->id,
+                    'changed_by' => null,
+                    'from_status' => 'pending',
+                    'to_status' => 'confirmed',
+                ]);
+
+                if ($order->discount_campaign_id) {
+                    DiscountCampaign::whereKey($order->discount_campaign_id)->increment('used_count');
+                }
+
+                $this->awardReferralPoints($order);
+            }
+        });
+    }
+
+    private function awardReferralPoints(Order $order): void
+    {
+        $threshold = (int) config('marketplace.redeemable_points_threshold', 100);
+        $points = (int) config('marketplace.referral_points_per_purchase', 10);
+
+        foreach ($order->items()->with('referralLink.user')->get() as $item) {
+            $referralLink = $item->referralLink;
+            if (! $referralLink || $referralLink->user_id === $order->user_id) {
+                continue;
+            }
+
+            $referrer = $referralLink->user;
+            $previousBalance = (int) $referrer->points_balance;
+            $newBalance = $previousBalance + $points;
+            $referrer->update(['points_balance' => $newBalance]);
+            PointsTransaction::create([
+                'user_id' => $referrer->id,
+                'points' => $points,
+                'type' => 'referral_purchase',
+                'description' => 'Referral conversion from a paid purchase.',
+                'meta' => ['order_id' => $order->id, 'product_id' => $item->product_id, 'referral_link_id' => $referralLink->id],
+            ]);
+            $referralLink->increment('conversions');
+            $referrer->notify(new PointsEarnedNotification($points, 'A purchase was completed via your referral link.'));
+
+            if ($previousBalance < $threshold && $newBalance >= $threshold) {
+                $referrer->notify(new RedeemableThresholdReachedNotification($threshold, $newBalance));
+            }
+        }
     }
 
     private function isCampaignCurrentlyActive(DiscountCampaign $campaign): bool

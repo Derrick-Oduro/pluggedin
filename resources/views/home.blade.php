@@ -14,6 +14,11 @@
                 <div class="relative overflow-hidden rounded-[2rem] border border-brand-soft bg-[#f7e6dc] shadow-[0_30px_70px_-38px_rgba(73,38,22,0.68)]">
                     @if($heroSlide)
                         <img src="{{ $heroSlide->image_url }}" alt="{{ $heroSlide->alt_text ?: $heroSlide->title ?: 'PluggedIn device upgrade service' }}" class="h-[360px] w-full object-cover sm:h-[480px]">
+                        @if($heroSlide->caption)
+                            <div class="absolute inset-x-0 bottom-0 bg-stone-950/75 px-5 py-4 text-white">
+                                <p class="text-sm font-semibold">{{ $heroSlide->caption }}</p>
+                            </div>
+                        @endif
                     @else
                         <div class="relative h-[360px] overflow-hidden bg-gradient-to-br from-[#ffece2] via-[#fffaf7] to-[#f5c9b7] sm:h-[480px]"><div class="absolute -right-14 -top-16 h-64 w-64 rounded-full bg-white/70"></div><div class="absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-brand/10"></div><div class="absolute left-[13%] top-[16%] h-[60%] w-[74%] rounded-[1.4rem] border-[10px] border-stone-900 bg-stone-800 p-3 shadow-2xl"><div class="h-full rounded-lg bg-[#fffaf7] p-5"><div class="flex justify-between"><span class="h-2.5 w-2.5 rounded-full bg-brand"></span><span class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-stone-500">System refresh</span></div><p class="mt-12 text-4xl font-extrabold tracking-[-0.08em] text-stone-900">Built to<br>last.</p><div class="mt-7 grid grid-cols-2 gap-2"><span class="rounded-lg bg-brand-tint p-2 text-[10px] font-bold text-brand-deep">FASTER BOOT</span><span class="rounded-lg bg-brand-tint p-2 text-[10px] font-bold text-brand-deep">MORE STORAGE</span></div></div></div><div class="absolute bottom-[11%] left-[7%] h-4 w-[86%] rounded-full bg-stone-900 shadow-xl"></div><div class="absolute -bottom-3 left-[26%] h-8 w-[48%] rounded-b-3xl bg-stone-700"></div></div>
                     @endif

@@ -19,6 +19,14 @@
                     </span>
                 </div>
                 <p class="text-gray-600 dark:text-text-secondary">Order Date: {{ $order->created_at->format('M d, Y H:i') }}</p>
+                @if(in_array($order->status, ['pending', 'confirmed'], true))
+                    <form action="{{ route('orders.cancel', $order) }}" method="POST" class="mt-4">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="reason" value="Cancelled by customer">
+                        <button type="submit" class="inline-flex rounded-lg border border-red-500 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-500 hover:text-white">Cancel order</button>
+                    </form>
+                @endif
             </div>
 
             <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 mb-6 border border-gray-200 dark:border-gray-800">
@@ -29,15 +37,15 @@
                     </div>
                 @endif
                 @php
-                    $statusRanks = ['pending' => 1, 'confirmed' => 2, 'completed' => 3];
+                    $statusRanks = ['pending' => 1, 'confirmed' => 2, 'processing' => 3, 'ready_for_pickup' => 4, 'shipped' => 4, 'completed' => 5];
                 @endphp
-                <div class="mb-5 grid grid-cols-3 gap-2">
-                    @foreach(['pending' => 'Order placed', 'confirmed' => 'Being prepared', 'completed' => $order->fulfilment_method === 'campus_pickup' ? 'Ready / collected' : 'Delivered'] as $step => $label)
+                <div class="mb-5 grid grid-cols-5 gap-2">
+                    @foreach(['pending' => 'Order placed', 'confirmed' => 'Confirmed', 'processing' => 'Preparing', 'shipped' => $order->fulfilment_method === 'campus_pickup' ? 'Ready for pickup' : 'Shipped', 'completed' => $order->fulfilment_method === 'campus_pickup' ? 'Collected' : 'Delivered'] as $step => $label)
                         <div class="h-1.5 rounded-full {{ ($statusRanks[$step] ?? 0) <= ($statusRanks[$order->status] ?? 0) ? 'bg-orange' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
                     @endforeach
                 </div>
                 <div class="space-y-3">
-                    @foreach(['pending' => 'Pending', 'confirmed' => 'Confirmed', 'completed' => 'Completed', 'cancelled' => 'Cancelled'] as $statusKey => $statusLabel)
+                    @foreach(['pending' => 'Pending', 'confirmed' => 'Confirmed', 'processing' => 'Processing', 'ready_for_pickup' => 'Ready for pickup', 'shipped' => 'Shipped', 'completed' => 'Completed', 'cancelled' => 'Cancelled', 'refunded' => 'Refunded'] as $statusKey => $statusLabel)
                         @php($timestamp = optional($order->statusHistories->firstWhere('to_status', $statusKey))->created_at)
                         <div class="rounded-xl border px-4 py-3 {{ ($statusRanks[$statusKey] ?? 0) <= ($statusRanks[$order->status] ?? 0) && $order->status !== 'cancelled' ? 'border-orange/30 bg-orange/5' : 'border-gray-200 dark:border-gray-700' }}">
                             <div class="flex flex-wrap items-center justify-between gap-2">

@@ -10,8 +10,12 @@
                     $statusLabels = [
                         'pending' => 'Pending',
                         'confirmed' => 'Confirmed',
+                        'processing' => 'Processing',
+                        'ready_for_pickup' => 'Ready for pickup',
+                        'shipped' => 'Shipped',
                         'completed' => 'Completed',
                         'cancelled' => 'Cancelled',
+                        'refunded' => 'Refunded',
                     ];
                     $statusTimes = $order->statusHistories
                         ->groupBy('to_status')
@@ -126,9 +130,18 @@
                             <select name="status" class="backend-field">
                                 <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Pending</option>
                                 <option value="confirmed" {{ $order->status === 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                                <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>Processing</option>
+                                <option value="ready_for_pickup" {{ $order->status === 'ready_for_pickup' ? 'selected' : '' }}>Ready for pickup</option>
+                                <option value="shipped" {{ $order->status === 'shipped' ? 'selected' : '' }}>Shipped</option>
                                 <option value="completed" {{ $order->status === 'completed' ? 'selected' : '' }}>Completed</option>
                                 <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                <option value="refunded" {{ $order->status === 'refunded' ? 'selected' : '' }}>Refunded</option>
                             </select>
+                        </div>
+
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium mb-1.5">Tracking number</label>
+                            <input type="text" name="tracking_number" value="{{ $order->tracking_number }}" class="backend-field" maxlength="160">
                         </div>
 
                         <button type="submit" class="backend-btn-primary">Update Status</button>

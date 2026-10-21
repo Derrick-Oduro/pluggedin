@@ -78,6 +78,8 @@ Route::middleware('auth')->group(function () {
     // Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::get('/payments/paystack/callback', [OrderController::class, 'paystackCallback'])->name('payments.paystack.callback');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
     Route::post('/checkout', [OrderController::class, 'store'])->name('orders.store');
 
@@ -140,6 +142,8 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('user.dashboard');
     })->name('dashboard');
 });
+
+Route::post('/payments/paystack/webhook', [OrderController::class, 'paystackWebhook'])->name('payments.paystack.webhook');
 
 // Admin Routes
 Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {

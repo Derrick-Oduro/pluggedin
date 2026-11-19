@@ -17,7 +17,7 @@
                                 @endif
                             </a>
                             <div class="flex flex-1 flex-col p-4">
-                                <p class="text-xs font-bold text-brand">{{ $item->product?->category?->name ?? 'Uncategorized' }}</p>
+                                <p class="text-xs font-bold text-brand-deep">{{ $item->product?->category?->name ?? 'Uncategorized' }}</p>
                                 <h2 class="mt-1 font-extrabold text-stone-950">{{ $item->product?->name ?? 'Product unavailable' }}</h2>
                                 @if($item->product)
                                     <p class="mt-2 text-lg font-extrabold text-stone-950">GH₵{{ number_format($item->product->price, 2) }}</p>

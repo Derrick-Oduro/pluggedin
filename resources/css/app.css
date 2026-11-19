@@ -4,17 +4,17 @@
 
 @layer base {
 	:root {
-		--brand: #b7481f;
-		--brand-deep: #7a2b12;
-		--brand-light: #d96035;
-		--brand-tint: #fff8f4;
-		--brand-soft: #fce4d8;
+		--brand: #f7931e;
+		--brand-deep: #a85500;
+		--brand-light: #ffb04d;
+		--brand-tint: #fff6ea;
+		--brand-soft: #ffe3bf;
 	}
 
 	body {
 		@apply bg-stone-50 text-stone-950 antialiased;
-		background-image: radial-gradient(circle at 8% 0%, rgba(252, 228, 216, 0.7), transparent 28%),
-			radial-gradient(circle at 95% 70%, rgba(255, 248, 244, 0.95), transparent 24%);
+		background-image: radial-gradient(circle at 8% 0%, rgba(255, 227, 191, 0.55), transparent 28%),
+			radial-gradient(circle at 95% 70%, rgba(255, 246, 234, 0.95), transparent 24%);
 	}
 
 	::selection { @apply bg-brand-soft text-brand-deep; }
@@ -30,7 +30,7 @@
 	}
 
 	.section-title {
-		@apply text-3xl sm:text-4xl font-extrabold tracking-[-0.04em] text-stone-950;
+		@apply font-display text-3xl font-normal tracking-normal text-stone-950 sm:text-4xl;
 	}
 
 	.section-subtitle {
@@ -42,7 +42,7 @@
 		position: absolute;
 		inset: 0;
 		pointer-events: none;
-		background: radial-gradient(circle at 80% 5%, rgba(252, 228, 216, 0.55), transparent 30%);
+		background: radial-gradient(circle at 80% 5%, rgba(255, 227, 191, 0.45), transparent 30%);
 	}
 
 	.glass-panel {
@@ -58,7 +58,7 @@
 	}
 
 	.btn-primary {
-		@apply inline-flex h-11 items-center justify-center rounded-xl bg-brand px-5 text-sm font-bold text-white shadow-[0_10px_20px_-12px_rgba(122,43,18,0.65)] transition hover:-translate-y-0.5 hover:bg-brand-deep focus:outline-none focus:ring-2 focus:ring-brand-light/50 focus:ring-offset-2;
+		@apply inline-flex h-11 items-center justify-center rounded-xl bg-brand px-5 text-sm font-extrabold text-stone-950 shadow-[0_10px_20px_-12px_rgba(168,85,0,0.7)] transition hover:-translate-y-0.5 hover:bg-stone-950 hover:text-white focus:outline-none focus:ring-2 focus:ring-brand-light/50 focus:ring-offset-2;
 	}
 
 	.btn-secondary {
@@ -106,7 +106,7 @@
 	}
 
 	.backend-btn-primary {
-		@apply inline-flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-white transition hover:bg-brand-deep;
+		@apply inline-flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-extrabold text-stone-950 transition hover:bg-stone-950 hover:text-white;
 	}
 
 	.btn-danger {
@@ -119,6 +119,42 @@
 
 	.backend-btn-muted {
 		@apply inline-flex h-11 items-center justify-center rounded-xl bg-stone-800 px-4 text-sm font-bold text-white transition hover:bg-stone-700;
+	}
+
+	/* ---- Flyer touches: black, orange stripes, torn paper, handwritten tagline ---- */
+	.display-heading {
+		@apply font-display font-normal tracking-normal;
+	}
+
+	.tagline {
+		@apply font-script font-bold text-brand;
+	}
+
+	.flyer-dark {
+		@apply relative overflow-hidden bg-stone-950 text-white;
+		background-image: radial-gradient(ellipse at 25% 35%, rgba(255, 255, 255, 0.06), transparent 55%),
+			radial-gradient(ellipse at 80% 90%, rgba(255, 255, 255, 0.05), transparent 45%);
+	}
+
+	/* Diagonal orange stripes like the flyer's backdrop circle. */
+	.flyer-stripes {
+		background: repeating-linear-gradient(-55deg, var(--brand) 0 22px, transparent 22px 40px);
+	}
+
+	/* Ragged "torn paper" bottom edge on dark sections. */
+	.torn-bottom {
+		-webkit-mask: linear-gradient(#000 0 0) top / 100% calc(100% - 22px) no-repeat,
+			conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 26px 22px repeat-x;
+		mask: linear-gradient(#000 0 0) top / 100% calc(100% - 22px) no-repeat,
+			conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 26px 22px repeat-x;
+	}
+
+	.orange-underline {
+		@apply underline decoration-brand decoration-[5px] underline-offset-[10px];
+	}
+
+	.social-dot {
+		@apply inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand text-stone-950 transition hover:-translate-y-0.5 hover:bg-white;
 	}
 }
 

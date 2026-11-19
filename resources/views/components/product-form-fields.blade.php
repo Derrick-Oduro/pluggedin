@@ -42,7 +42,7 @@
 
         <div class="grid gap-4 sm:grid-cols-2">
             <div>
-                <label for="pf-category" class="mb-1.5 block text-sm font-bold text-stone-800">Category <span class="text-brand">*</span></label>
+                <label for="pf-category" class="mb-1.5 block text-sm font-bold text-stone-800">Category <span class="text-brand-deep">*</span></label>
                 <select id="pf-category" name="category_id" x-model="category" required class="backend-field">
                     <option value="">Select category</option>
                     @foreach ($categories as $category)
@@ -53,7 +53,7 @@
             </div>
 
             <div>
-                <label for="pf-condition" class="mb-1.5 block text-sm font-bold text-stone-800">Condition <span class="text-brand">*</span></label>
+                <label for="pf-condition" class="mb-1.5 block text-sm font-bold text-stone-800">Condition <span class="text-brand-deep">*</span></label>
                 <select id="pf-condition" name="condition" required class="backend-field">
                     <option value="">Select condition</option>
                     @foreach ($conditions as $value => $label)
@@ -65,14 +65,14 @@
         </div>
 
         <div>
-            <label for="pf-name" class="mb-1.5 block text-sm font-bold text-stone-800">Listing title <span class="text-brand">*</span></label>
+            <label for="pf-name" class="mb-1.5 block text-sm font-bold text-stone-800">Listing title <span class="text-brand-deep">*</span></label>
             <input id="pf-name" type="text" name="name" value="{{ old('name', $product?->name) }}" required maxlength="255"
                    placeholder="e.g. HP EliteBook 840 G8 - i5, 16GB RAM, 512GB SSD" class="backend-field">
             @error('name') <p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label for="pf-description" class="mb-1.5 block text-sm font-bold text-stone-800">Description <span class="text-brand">*</span></label>
+            <label for="pf-description" class="mb-1.5 block text-sm font-bold text-stone-800">Description <span class="text-brand-deep">*</span></label>
             <textarea id="pf-description" name="description" rows="5" required class="backend-field h-auto py-3"
                       placeholder="Describe the item, how it has been used, and anything a buyer should know.">{{ old('description', $product?->description) }}</textarea>
             @error('description') <p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p> @enderror
@@ -80,12 +80,12 @@
 
         <div class="grid gap-4 sm:grid-cols-2">
             <div>
-                <label for="pf-price" class="mb-1.5 block text-sm font-bold text-stone-800">Price (GH₵) <span class="text-brand">*</span></label>
+                <label for="pf-price" class="mb-1.5 block text-sm font-bold text-stone-800">Price (GH₵) <span class="text-brand-deep">*</span></label>
                 <input id="pf-price" type="number" step="0.01" min="0" name="price" value="{{ old('price', $product?->price) }}" required class="backend-field">
                 @error('price') <p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label for="pf-stock" class="mb-1.5 block text-sm font-bold text-stone-800">Quantity in stock <span class="text-brand">*</span></label>
+                <label for="pf-stock" class="mb-1.5 block text-sm font-bold text-stone-800">Quantity in stock <span class="text-brand-deep">*</span></label>
                 <input id="pf-stock" type="number" min="0" name="stock_quantity" value="{{ old('stock_quantity', $product?->stock_quantity ?? $defaultStock) }}" required class="backend-field">
                 @error('stock_quantity') <p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p> @enderror
             </div>
@@ -99,7 +99,7 @@
                 <div class="flex flex-wrap items-start justify-between gap-2">
                     <div>
                         <h2 class="text-lg font-extrabold tracking-[-.02em] text-stone-950">{{ $template['label'] }} specifications</h2>
-                        <p class="section-subtitle">Fields marked <span class="font-bold text-brand">*</span> are required. Fill in as much as you can, because buyers filter and compare on these.</p>
+                        <p class="section-subtitle">Fields marked <span class="font-bold text-brand-deep">*</span> are required. Fill in as much as you can, because buyers filter and compare on these.</p>
                     </div>
                     <span class="brand-badge">{{ $template['label'] }}</span>
                 </div>
@@ -119,7 +119,7 @@
                                 <div @class(['sm:col-span-2 lg:col-span-3' => $field['type'] === 'textarea'])>
                                     <label for="{{ $id }}" class="mb-1.5 block text-sm font-bold text-stone-800">
                                         {{ $field['label'] }}@if(! empty($field['suffix']) && $field['type'] === 'number') <span class="font-semibold text-stone-500">({{ $field['suffix'] }})</span>@endif
-                                        @if($required)<span class="text-brand">*</span>@endif
+                                        @if($required)<span class="text-brand-deep">*</span>@endif
                                     </label>
 
                                     @if ($field['type'] === 'select')
@@ -176,7 +176,7 @@
                 <p class="mb-2 text-xs text-stone-500">Uploading new photos replaces the current ones.</p>
             @endif
             <input id="pf-images" type="file" name="images[]" multiple accept="image/*"
-                   class="block w-full rounded-xl border border-dashed border-stone-300 bg-stone-50 p-3 text-sm text-stone-600 file:mr-3 file:rounded-lg file:border-0 file:bg-brand file:px-3 file:py-2 file:text-sm file:font-bold file:text-white hover:file:bg-brand-deep">
+                   class="block w-full rounded-xl border border-dashed border-stone-300 bg-stone-50 p-3 text-sm text-stone-600 file:mr-3 file:rounded-lg file:border-0 file:bg-brand file:px-3 file:py-2 file:text-sm file:font-bold file:text-stone-950 hover:file:bg-brand-deep">
             @error('images') <p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p> @enderror
             @error('images.*') <p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p> @enderror
         </div>

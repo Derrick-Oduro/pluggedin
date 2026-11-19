@@ -31,7 +31,7 @@
                             <label class="flex cursor-pointer items-center justify-between gap-4 p-4 hover:bg-stone-50">
                                 <span><span class="block text-sm font-bold text-stone-900">{{ $label }}</span><span class="mt-0.5 block text-xs leading-5 text-stone-500">{{ $description }}</span></span>
                                 <input type="hidden" name="{{ $field }}" value="0">
-                                <input type="checkbox" name="{{ $field }}" value="1" @checked(auth()->user()->{$field}) class="h-5 w-5 rounded border-stone-300 text-brand focus:ring-brand">
+                                <input type="checkbox" name="{{ $field }}" value="1" @checked(auth()->user()->{$field}) class="h-5 w-5 rounded border-stone-300 text-brand-deep focus:ring-brand">
                             </label>
                         @endforeach
                     </div>

@@ -53,10 +53,10 @@
 
                 <section>
                     <h2>7. Changes and contact</h2>
-                    <p>We may update these terms; the date at the top shows the latest version. Questions? Email <a href="mailto:{{ $site['contact_email'] }}" class="font-bold text-brand">{{ $site['contact_email'] }}</a>@if($site['contact_phone']) or call {{ $site['contact_phone'] }}@endif.</p>
+                    <p>We may update these terms; the date at the top shows the latest version. Questions? Email <a href="mailto:{{ $site['contact_email'] }}" class="font-bold text-brand-deep">{{ $site['contact_email'] }}</a>@if($site['contact_phone']) or call {{ $site['contact_phone'] }}@endif.</p>
                 </section>
 
-                <p class="border-t border-stone-100 pt-4 text-xs text-stone-500">See also our <a href="{{ route('legal.privacy') }}" class="font-bold text-brand">Privacy policy</a>.</p>
+                <p class="border-t border-stone-100 pt-4 text-xs text-stone-500">See also our <a href="{{ route('legal.privacy') }}" class="font-bold text-brand-deep">Privacy policy</a>.</p>
             </article>
         </div>
     </section>

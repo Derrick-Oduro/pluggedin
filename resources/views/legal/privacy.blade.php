@@ -44,10 +44,10 @@
 
                 <section>
                     <h2>Your rights</h2>
-                    <p>You can ask to see, correct, or delete the personal data we hold about you, or object to how we use it. Email <a href="mailto:{{ $site['contact_email'] }}" class="font-bold text-brand">{{ $site['contact_email'] }}</a>. If you are not satisfied with our response, you can complain to Ghana's Data Protection Commission.</p>
+                    <p>You can ask to see, correct, or delete the personal data we hold about you, or object to how we use it. Email <a href="mailto:{{ $site['contact_email'] }}" class="font-bold text-brand-deep">{{ $site['contact_email'] }}</a>. If you are not satisfied with our response, you can complain to Ghana's Data Protection Commission.</p>
                 </section>
 
-                <p class="border-t border-stone-100 pt-4 text-xs text-stone-500">See also our <a href="{{ route('legal.terms') }}" class="font-bold text-brand">Terms of use</a>.</p>
+                <p class="border-t border-stone-100 pt-4 text-xs text-stone-500">See also our <a href="{{ route('legal.terms') }}" class="font-bold text-brand-deep">Terms of use</a>.</p>
             </article>
         </div>
     </section>

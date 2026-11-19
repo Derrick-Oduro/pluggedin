@@ -57,7 +57,7 @@
                     </div>
                     <div class="backend-card rounded-xl">
                         <p class="text-xs text-stone-500">Total</p>
-                        <p class="text-xl font-semibold mt-1 text-brand">GH₵{{ number_format($order->total_price, 2) }}</p>
+                        <p class="text-xl font-semibold mt-1 text-brand-deep">GH₵{{ number_format($order->total_price, 2) }}</p>
                     </div>
                 </div>
 
@@ -157,7 +157,7 @@
                                             </td>
                                             <td class="backend-td">{{ $item->quantity }}</td>
                                             <td class="backend-td">GH₵{{ number_format($item->price, 2) }}</td>
-                                            <td class="backend-td text-brand font-semibold">GH₵{{ number_format($item->price * $item->quantity, 2) }}</td>
+                                            <td class="backend-td text-brand-deep font-semibold">GH₵{{ number_format($item->price * $item->quantity, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -178,7 +178,7 @@
                         @endif
                         <div class="flex justify-between items-center pt-2 mt-2 border-t border-stone-200">
                             <span class="text-lg font-semibold">Final Total</span>
-                            <span class="text-2xl font-bold text-brand">GH₵{{ number_format($order->total_price, 2) }}</span>
+                            <span class="text-2xl font-bold text-brand-deep">GH₵{{ number_format($order->total_price, 2) }}</span>
                         </div>
                     </div>
                 </div>

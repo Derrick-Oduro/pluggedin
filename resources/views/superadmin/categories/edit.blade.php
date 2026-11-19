@@ -2,7 +2,7 @@
 
 <x-superadmin-layout>
     <div class="max-w-2xl space-y-4">
-        <h1 class="text-2xl font-bold">Edit Category</h1>
+        <h1 class="display-heading text-2xl">Edit Category</h1>
 
         <form action="{{ route('superadmin.categories.update', $category) }}" method="POST" class="backend-card rounded-xl space-y-4">
             @csrf

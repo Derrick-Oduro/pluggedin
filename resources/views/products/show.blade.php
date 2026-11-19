@@ -64,7 +64,7 @@
                         <x-status-badge :status="$product->condition === 'new' ? 'active' : 'confirmed'">{{ $conditionLabel }}</x-status-badge>
                     </div>
 
-                    <h1 class="mt-4 text-3xl font-extrabold leading-tight tracking-[-.05em] text-stone-950 sm:text-4xl">{{ $product->name }}</h1>
+                    <h1 class="display-heading mt-4 text-3xl leading-tight text-stone-950 sm:text-4xl">{{ $product->name }}</h1>
 
                     @if($avgRating)
                         <a href="#reviews" class="mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-stone-600 hover:text-brand-deep">
@@ -118,10 +118,10 @@
 
                     {{-- Delivery & payment --}}
                     <ul class="mt-6 space-y-2.5 text-sm text-stone-700">
-                        <li class="flex gap-3"><svg class="mt-0.5 h-5 w-5 shrink-0 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg><span><b class="text-stone-950">Delivery or campus pickup</b>, chosen at checkout.</span></li>
-                        <li class="flex gap-3"><svg class="mt-0.5 h-5 w-5 shrink-0 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg><span><b class="text-stone-950">Secure payment</b> with Paystack (card or mobile money).</span></li>
+                        <li class="flex gap-3"><svg class="mt-0.5 h-5 w-5 shrink-0 text-brand-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg><span><b class="text-stone-950">Delivery or campus pickup</b>, chosen at checkout.</span></li>
+                        <li class="flex gap-3"><svg class="mt-0.5 h-5 w-5 shrink-0 text-brand-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg><span><b class="text-stone-950">Secure payment</b> with Paystack (card or mobile money).</span></li>
                         @if(filled($specs['warranty'] ?? null))
-                            <li class="flex gap-3"><svg class="mt-0.5 h-5 w-5 shrink-0 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg><span><b class="text-stone-950">Warranty:</b> {{ $specs['warranty'] }}</span></li>
+                            <li class="flex gap-3"><svg class="mt-0.5 h-5 w-5 shrink-0 text-brand-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg><span><b class="text-stone-950">Warranty:</b> {{ $specs['warranty'] }}</span></li>
                         @endif
                     </ul>
 
@@ -287,7 +287,7 @@
                         @foreach($relatedProducts as $related)
                             <a href="{{ route('products.show', $related) }}" class="group overflow-hidden rounded-2xl border border-stone-200 bg-white transition hover:-translate-y-1 hover:shadow-[0_20px_40px_-28px_rgba(41,30,23,.4)]">
                                 <div class="h-36 bg-stone-100">@if($related->image_path)<img src="{{ asset('storage/'.$related->image_path) }}" alt="{{ $related->name }}" class="h-full w-full object-cover transition group-hover:scale-105">@endif</div>
-                                <div class="p-4"><p class="text-xs font-bold text-brand">{{ $related->category->name }}</p><h3 class="mt-1 font-extrabold text-stone-950">{{ $related->name }}</h3><p class="mt-3 font-extrabold text-stone-950">GH₵{{ number_format($related->price, 2) }}</p></div>
+                                <div class="p-4"><p class="text-xs font-bold text-brand-deep">{{ $related->category->name }}</p><h3 class="mt-1 font-extrabold text-stone-950">{{ $related->name }}</h3><p class="mt-3 font-extrabold text-stone-950">GH₵{{ number_format($related->price, 2) }}</p></div>
                             </a>
                         @endforeach
                     </div>

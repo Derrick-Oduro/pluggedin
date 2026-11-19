@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-6">
         <span class="brand-badge">New account</span>
-        <h1 class="mt-3 text-3xl font-extrabold tracking-[-.04em] text-stone-950">Create your PluggedIn profile</h1>
+        <h1 class="display-heading mt-3 text-3xl text-stone-950">Create your PluggedIn profile</h1>
         <p class="mt-2 text-sm text-stone-600">List services, track orders, and launch your first offer in minutes.</p>
     </div>
 
@@ -53,11 +53,11 @@
             {{ __('Create account') }}
         </x-primary-button>
 
-        <p class="text-center text-xs text-stone-500">By creating an account you agree to our <a href="{{ route('legal.terms') }}" class="font-bold text-stone-700 hover:text-brand">Terms</a> and <a href="{{ route('legal.privacy') }}" class="font-bold text-stone-700 hover:text-brand">Privacy policy</a>.</p>
+        <p class="text-center text-xs text-stone-500">By creating an account you agree to our <a href="{{ route('legal.terms') }}" class="font-bold text-stone-700 hover:text-brand-deep">Terms</a> and <a href="{{ route('legal.privacy') }}" class="font-bold text-stone-700 hover:text-brand-deep">Privacy policy</a>.</p>
 
         <div class="rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-600">
             <span class="text-stone-500">Already have an account?</span>
-            <a class="font-semibold text-stone-700 hover:text-brand" href="{{ route('login') }}">{{ __('Log in') }}</a>
+            <a class="font-semibold text-stone-700 hover:text-brand-deep" href="{{ route('login') }}">{{ __('Log in') }}</a>
         </div>
     </form>
 </x-guest-layout>

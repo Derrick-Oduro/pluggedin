@@ -18,6 +18,8 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Manrope', ...defaultTheme.fontFamily.sans],
+                display: ['"Lilita One"', 'Manrope', ...defaultTheme.fontFamily.sans],
+                script: ['Caveat', 'cursive'],
             },
             colors: {
                 'dark': {
@@ -29,18 +31,18 @@ export default {
                     secondary: '#F5F5F5',
                 },
                 'brand': {
-                    DEFAULT: '#B7481F',
-                    deep: '#7A2B12',
-                    light: '#D96035',
-                    tint: '#FFF8F4',
-                    soft: '#FCE4D8',
+                    DEFAULT: '#F7931E',
+                    deep: '#A85500',
+                    light: '#FFB04D',
+                    tint: '#FFF6EA',
+                    soft: '#FFE3BF',
                 },
                 'orange': {
-                    DEFAULT: '#B7481F',
-                    dark: '#7A2B12',
-                    light: '#D96035',
-                    tint: '#FFF8F4',
-                    soft: '#FCE4D8',
+                    DEFAULT: '#F7931E',
+                    dark: '#A85500',
+                    light: '#FFB04D',
+                    tint: '#FFF6EA',
+                    soft: '#FFE3BF',
                 },
                 'text': {
                     primary: '#1C1917',

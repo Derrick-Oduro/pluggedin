@@ -33,7 +33,7 @@
                             <div class="border border-stone-200 rounded-xl p-4">
                                 <div class="flex items-center justify-between gap-3">
                                     <p class="font-semibold text-lg">{{ $review->product?->name ?? 'Product removed' }}</p>
-                                    <span class="text-sm px-3 py-1 rounded-full bg-brand/15 text-brand font-semibold">{{ $review->rating }}/5</span>
+                                    <span class="text-sm px-3 py-1 rounded-full bg-brand/15 text-brand-deep font-semibold">{{ $review->rating }}/5</span>
                                 </div>
                                 @if($review->comment)
                                     <p class="text-stone-600 mt-3">{{ $review->comment }}</p>

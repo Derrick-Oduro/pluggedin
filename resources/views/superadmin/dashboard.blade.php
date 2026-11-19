@@ -75,7 +75,7 @@
                             <p class="font-semibold">{{ $upload->name }}</p>
                             <p class="text-xs text-stone-600">By {{ $upload->uploader?->name ?? 'N/A' }}</p>
                         </div>
-                        <a href="{{ route('admin.products.pending') }}" class="text-brand hover:text-brand-deep text-xs font-semibold">Review</a>
+                        <a href="{{ route('admin.products.pending') }}" class="text-brand-deep hover:text-brand-deep text-xs font-semibold">Review</a>
                     </div>
                 @empty
                     <p class="text-sm text-stone-600">No pending uploads right now.</p>
@@ -104,7 +104,7 @@
                                 @if($user->hasRole('super-admin'))
                                     <span class="text-xs px-2 py-1 rounded-full bg-red-500/20 text-red-500">Super Admin</span>
                                 @elseif($user->hasRole('admin'))
-                                    <span class="text-xs px-2 py-1 rounded-full bg-brand/20 text-brand">Admin</span>
+                                    <span class="text-xs px-2 py-1 rounded-full bg-brand/20 text-brand-deep">Admin</span>
                                 @else
                                     <x-status-badge status="user">User</x-status-badge>
                                 @endif
@@ -135,7 +135,7 @@
                         <tr class="border-b border-stone-300">
                             <td class="p-2">#{{ $order->id }}</td>
                             <td class="p-2">{{ $order->user->name }}</td>
-                            <td class="p-2 text-brand font-semibold">GH₵{{ number_format($order->total_price, 2) }}</td>
+                            <td class="p-2 text-brand-deep font-semibold">GH₵{{ number_format($order->total_price, 2) }}</td>
                             <td class="p-2">
                                 <x-status-badge :status="$order->status" />
                             </td>

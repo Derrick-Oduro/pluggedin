@@ -16,7 +16,7 @@
                         <div class="mt-4 grid gap-3 sm:grid-cols-2">
                             @foreach(['delivery' => ['Delivery', 'Send the order to your address.'], 'campus_pickup' => ['Campus pickup', 'Collect from the PluggedIn point on campus.']] as $value => [$label, $hint])
                                 <label class="flex cursor-pointer gap-3 rounded-xl border p-4 transition" x-bind:class="method === @js($value) ? 'border-brand bg-brand-tint' : 'border-stone-200 hover:border-stone-300'">
-                                    <input type="radio" name="fulfilment_method" value="{{ $value }}" x-model="method" class="mt-0.5 text-brand focus:ring-brand">
+                                    <input type="radio" name="fulfilment_method" value="{{ $value }}" x-model="method" class="mt-0.5 text-brand-deep focus:ring-brand">
                                     <span><span class="block font-extrabold text-stone-950">{{ $label }}</span><span class="mt-1 block text-sm text-stone-600">{{ $hint }}</span></span>
                                 </label>
                             @endforeach
@@ -34,7 +34,7 @@
                                 @error('delivery_address')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label for="delivery_phone" class="mb-1.5 block text-sm font-bold text-stone-800">Phone number <span class="text-brand">*</span></label>
+                                <label for="delivery_phone" class="mb-1.5 block text-sm font-bold text-stone-800">Phone number <span class="text-brand-deep">*</span></label>
                                 <input id="delivery_phone" type="tel" name="delivery_phone" value="{{ old('delivery_phone') }}" required class="backend-field">
                                 @error('delivery_phone')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
                             </div>

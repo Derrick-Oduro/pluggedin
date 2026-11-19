@@ -127,6 +127,25 @@ class LaunchSafetyTest extends TestCase
             ->assertDontSee('000 0000');
     }
 
+    public function test_social_links_from_settings_show_in_footer(): void
+    {
+        $owner = User::factory()->create();
+        $owner->assignRole('super-admin');
+
+        $this->actingAs($owner)->patch(route('superadmin.settings.update'), [
+            'site_title' => 'PluggedIn',
+            'contact_email' => 'hello@pluggedin.com.gh',
+            'contact_phone' => '0594042521',
+            'instagram_url' => 'https://instagram.com/pluggedin',
+        ])->assertSessionHasNoErrors();
+
+        $this->get('/about')
+            ->assertSee('https://wa.me/233594042521', false)
+            ->assertSee('https://instagram.com/pluggedin', false)
+            ->assertDontSee('aria-label="Facebook"', false)
+            ->assertSee('Your One-Stop Student Hub');
+    }
+
     public function test_checkout_is_rate_limited(): void
     {
         $user = User::factory()->create();

@@ -5,7 +5,7 @@
         <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
                 <p class="brand-badge">Catalogue</p>
-                <h1 class="mt-3 text-3xl font-extrabold tracking-[-0.04em] text-stone-950">Categories</h1>
+                <h1 class="display-heading mt-3 text-3xl text-stone-950">Categories</h1>
                 <p class="mt-1 text-sm text-stone-600">Keep product browsing clear with a simple, well-organised category list.</p>
             </div>
             <a href="{{ route('superadmin.categories.index', ['modal' => 'create-category']) }}" class="backend-btn-primary">
@@ -29,7 +29,7 @@
                                     <td class="backend-td"><span class="font-bold text-stone-950">{{ $category->name }}</span></td>
                                     <td class="backend-td text-stone-500">/{{ $category->slug }}</td><td class="backend-td"><span class="brand-badge">{{ \App\Support\ProductSpecs::templates()[$category->specTemplateKey()]['label'] }}</span>@unless($category->spec_template)<span class="ml-1 text-xs text-stone-400">auto</span>@endunless</td>
                                     <td class="backend-td"><span class="inline-flex rounded-full bg-brand-tint px-2.5 py-1 text-xs font-bold text-brand-deep">{{ $category->products_count }} {{ Str::plural('product', $category->products_count) }}</span></td>
-                                    <td class="backend-td"><div class="flex justify-end gap-3"><a class="text-sm font-bold text-brand hover:text-brand-deep" href="{{ route('superadmin.categories.index', ['modal' => 'edit-category-'.$category->id]) }}">Edit</a><a class="text-sm font-bold text-red-600 hover:text-red-800" href="{{ route('superadmin.categories.index', ['modal' => 'delete-category-'.$category->id]) }}">Delete</a></div></td>
+                                    <td class="backend-td"><div class="flex justify-end gap-3"><a class="text-sm font-bold text-brand-deep hover:text-brand-deep" href="{{ route('superadmin.categories.index', ['modal' => 'edit-category-'.$category->id]) }}">Edit</a><a class="text-sm font-bold text-red-600 hover:text-red-800" href="{{ route('superadmin.categories.index', ['modal' => 'delete-category-'.$category->id]) }}">Delete</a></div></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -38,7 +38,7 @@
             </div>
         @else
             <div class="backend-card py-14 text-center">
-                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-tint text-brand"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg></div>
+                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-tint text-brand-deep"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg></div>
                 <h2 class="mt-4 text-lg font-extrabold text-stone-950">Start your catalogue</h2><p class="mt-1 text-sm text-stone-600">Add a category to organise products for customers.</p>
                 <a href="{{ route('superadmin.categories.index', ['modal' => 'create-category']) }}" class="mt-5 backend-btn-primary">Add category</a>
             </div>

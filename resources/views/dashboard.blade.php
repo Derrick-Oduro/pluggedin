@@ -15,11 +15,11 @@
             </div>
             <div class="backend-card">
                 <p class="text-sm text-stone-600 mb-2">Uploads Remaining</p>
-                <p class="text-2xl font-bold text-brand">{{ $uploadsRemaining ?? 0 }}</p>
+                <p class="text-2xl font-bold text-brand-deep">{{ $uploadsRemaining ?? 0 }}</p>
             </div>
             <div class="backend-card">
                 <p class="text-sm text-stone-600 mb-2">Points Balance</p>
-                <p class="text-2xl font-bold text-brand">{{ number_format($pointsBalance ?? 0) }}</p>
+                <p class="text-2xl font-bold text-brand-deep">{{ number_format($pointsBalance ?? 0) }}</p>
             </div>
             <div class="backend-card">
                 <p class="text-sm text-stone-600 mb-2">Total Reviews</p>
@@ -60,7 +60,7 @@
                                 <span class="text-xs text-stone-500">{{ $update->created_at->format('M d, H:i') }}</span>
                             </div>
                             <p class="text-sm text-stone-600 mt-1">Updated by {{ $update->actor?->name ?? 'System' }}</p>
-                            <a href="{{ route('orders.show', $update->order_id) }}" class="inline-flex mt-2 text-sm font-semibold text-brand hover:text-brand-deep">View Order</a>
+                            <a href="{{ route('orders.show', $update->order_id) }}" class="inline-flex mt-2 text-sm font-semibold text-brand-deep hover:text-brand-deep">View Order</a>
                         </div>
                     @empty
                         <p class="text-stone-600">No order tracking updates yet.</p>
@@ -78,7 +78,7 @@
                                 <span class="text-xs text-stone-500">{{ $update->created_at->format('M d, H:i') }}</span>
                             </div>
                             <p class="text-sm text-stone-600 mt-1">Updated by {{ $update->actor?->name ?? 'System' }}</p>
-                            <a href="{{ route('bookings.show', $update->booking_id) }}" class="inline-flex mt-2 text-sm font-semibold text-brand hover:text-brand-deep">View Booking</a>
+                            <a href="{{ route('bookings.show', $update->booking_id) }}" class="inline-flex mt-2 text-sm font-semibold text-brand-deep hover:text-brand-deep">View Booking</a>
                         </div>
                     @empty
                         <p class="text-stone-600">No booking tracking updates yet.</p>
@@ -90,7 +90,7 @@
         <div class="glass-panel rounded-xl p-6 mb-8">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-extrabold text-stone-950">Reviews To Write</h2>
-                <a href="{{ route('reviews.index') }}" class="text-brand hover:text-brand-deep font-semibold">Open Review Center</a>
+                <a href="{{ route('reviews.index') }}" class="text-brand-deep hover:text-brand-deep font-semibold">Open Review Center</a>
             </div>
             <div class="space-y-3">
                 @forelse(($pendingReviewItems ?? collect()) as $item)
@@ -120,7 +120,7 @@
                                     <p class="text-xs text-stone-500 mt-1">Admin note: {{ $product->admin_review_comment }}</p>
                                 @endif
                             </div>
-                            <a href="{{ route('products.show', $product) }}" class="text-brand hover:text-brand-deep text-sm">View</a>
+                            <a href="{{ route('products.show', $product) }}" class="text-brand-deep hover:text-brand-deep text-sm">View</a>
                         </div>
                     @empty
                         <p class="text-stone-600">No uploaded products yet.</p>
@@ -167,7 +167,7 @@
                                 <p class="font-semibold">{{ $txn->description ?: ucfirst(str_replace('_', ' ', $txn->type)) }}</p>
                                 <p class="text-sm text-stone-600">{{ $txn->created_at->format('M d, Y H:i') }}</p>
                             </div>
-                            <span class="font-bold text-brand">+{{ $txn->points }}</span>
+                            <span class="font-bold text-brand-deep">+{{ $txn->points }}</span>
                         </div>
                     @empty
                         <p class="text-stone-600">No points activity yet.</p>

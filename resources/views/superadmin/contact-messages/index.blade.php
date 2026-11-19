@@ -11,7 +11,7 @@
             <tbody>
                 @forelse($messages as $message)
                     <tr class="backend-row">
-                        <td class="backend-td"><p class="font-bold text-stone-900">{{ $message->name }}</p><a href="mailto:{{ $message->email }}" class="text-xs text-brand hover:underline">{{ $message->email }}</a></td>
+                        <td class="backend-td"><p class="font-bold text-stone-900">{{ $message->name }}</p><a href="mailto:{{ $message->email }}" class="text-xs text-brand-deep hover:underline">{{ $message->email }}</a></td>
                         <td class="backend-td"><p class="font-bold text-stone-900">{{ $message->subject }}</p><p class="mt-1 max-w-2xl whitespace-pre-line text-sm leading-6 text-stone-600">{{ $message->message }}</p></td>
                         <td class="backend-td whitespace-nowrap text-stone-500">{{ $message->created_at->format('M j, Y') }}<br><span class="text-xs">{{ $message->created_at->format('g:i A') }}</span></td>
                     </tr>

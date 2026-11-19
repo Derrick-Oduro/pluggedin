@@ -65,7 +65,7 @@
                     <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
                         <div>
                             <label class="inline-flex items-center gap-2 mb-3 text-sm text-stone-600">
-                                <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" form="bulk-review-form" class="rounded border-stone-300 text-brand focus:ring-brand">
+                                <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" form="bulk-review-form" class="rounded border-stone-300 text-brand-deep focus:ring-brand">
                                 Select for bulk moderation
                             </label>
                             <h2 class="text-lg font-extrabold text-stone-950 mb-2">{{ $product->name }}</h2>

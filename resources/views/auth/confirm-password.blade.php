@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-6">
         <span class="brand-badge">Security Check</span>
-        <h1 class="mt-3 text-3xl font-extrabold tracking-[-.04em] text-stone-950">Confirm your password</h1>
+        <h1 class="display-heading mt-3 text-3xl text-stone-950">Confirm your password</h1>
     </div>
 
     <div class="mb-4 text-sm text-stone-600">

@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configureRateLimits();
 
         // Footer, contact and legal pages read the details edited in super admin Settings.
-        View::composer(['layouts.app', 'layouts.guest', 'contact', 'legal.*'], fn ($view) => $view->with('site', SiteSettings::all()));
+        View::composer(['layouts.app', 'layouts.guest', 'home', 'contact', 'legal.*'], fn ($view) => $view->with('site', SiteSettings::all()));
     }
 
     /** Named limits used as throttle:<name> in routes. */

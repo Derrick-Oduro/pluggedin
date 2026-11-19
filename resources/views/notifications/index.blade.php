@@ -76,11 +76,11 @@
 
                                 <div class="mt-4 flex flex-wrap items-center gap-4">
                                     @if (! empty($notification->data['order_id']))
-                                        <a href="{{ route('orders.show', $notification->data['order_id']) }}" class="text-sm font-extrabold text-brand hover:text-brand-deep">View order →</a>
+                                        <a href="{{ route('orders.show', $notification->data['order_id']) }}" class="text-sm font-extrabold text-brand-deep hover:text-brand-deep">View order →</a>
                                     @elseif (! empty($notification->data['booking_id']))
-                                        <a href="{{ route('bookings.show', $notification->data['booking_id']) }}" class="text-sm font-extrabold text-brand hover:text-brand-deep">View booking →</a>
+                                        <a href="{{ route('bookings.show', $notification->data['booking_id']) }}" class="text-sm font-extrabold text-brand-deep hover:text-brand-deep">View booking →</a>
                                     @elseif (! empty($notification->data['product_id']))
-                                        <a href="{{ route('products.upload.index') }}" class="text-sm font-extrabold text-brand hover:text-brand-deep">View my upload →</a>
+                                        <a href="{{ route('products.upload.index') }}" class="text-sm font-extrabold text-brand-deep hover:text-brand-deep">View my upload →</a>
                                     @endif
 
                                     @if (! $notification->read_at)

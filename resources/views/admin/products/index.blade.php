@@ -29,11 +29,11 @@
                             <td class="backend-td">
                                 <x-status-badge :status="$product->status" />
                             </td>
-                            <td class="backend-td text-brand font-semibold">GH₵{{ number_format($product->price, 2) }}</td>
+                            <td class="backend-td text-brand-deep font-semibold">GH₵{{ number_format($product->price, 2) }}</td>
                             <td class="backend-td">{{ $product->stock_quantity }}</td>
                             <td class="backend-td">
                                 <div class="flex gap-2">
-                                    <a href="{{ route('admin.products.edit', $product) }}" class="font-bold text-brand hover:text-brand-deep">
+                                    <a href="{{ route('admin.products.edit', $product) }}" class="font-bold text-brand-deep hover:text-brand-deep">
                                         Edit
                                     </a>
                                     <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Are you sure?')">

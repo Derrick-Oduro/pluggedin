@@ -4,7 +4,7 @@
         <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <div class="backend-card">
                 <p class="text-sm text-stone-600 mb-2">Total Links</p>
-                <p class="text-2xl font-bold text-brand">{{ $summary['links'] }}</p>
+                <p class="text-2xl font-bold text-brand-deep">{{ $summary['links'] }}</p>
             </div>
             <div class="backend-card">
                 <p class="text-sm text-stone-600 mb-2">Total Clicks</p>
@@ -16,7 +16,7 @@
             </div>
             <div class="backend-card">
                 <p class="text-sm text-stone-600 mb-2">Points Awarded</p>
-                <p class="text-2xl font-bold text-brand">{{ number_format($summary['points_awarded']) }}</p>
+                <p class="text-2xl font-bold text-brand-deep">{{ number_format($summary['points_awarded']) }}</p>
             </div>
         </div>
 
@@ -45,7 +45,7 @@
                                 <p class="font-semibold">{{ $referrer->name }}</p>
                                 <p class="text-sm text-stone-600">Points Balance: {{ number_format($referrer->points_balance) }}</p>
                             </div>
-                            <span class="text-sm font-semibold text-brand">{{ $referrer->referral_links_sum_conversions ?? 0 }} conversions</span>
+                            <span class="text-sm font-semibold text-brand-deep">{{ $referrer->referral_links_sum_conversions ?? 0 }} conversions</span>
                         </div>
                     @empty
                         <p class="text-stone-600">No referrer activity yet.</p>

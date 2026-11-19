@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-6">
         <span class="brand-badge">Email Verification</span>
-        <h1 class="mt-3 text-3xl font-extrabold tracking-[-.04em] text-stone-950">Confirm your email</h1>
+        <h1 class="display-heading mt-3 text-3xl text-stone-950">Confirm your email</h1>
     </div>
 
     <div class="mb-4 text-sm text-stone-600">
@@ -28,7 +28,7 @@
         <form method="POST" action="{{ route('logout') }}">
             @csrf
 
-            <button type="submit" class="text-sm font-medium text-stone-600 hover:text-brand rounded-md focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">
+            <button type="submit" class="text-sm font-medium text-stone-600 hover:text-brand-deep rounded-md focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">
                 {{ __('Log Out') }}
             </button>
         </form>

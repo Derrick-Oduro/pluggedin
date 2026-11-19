@@ -13,13 +13,13 @@
                 <input type="hidden" name="service_id" value="{{ $service->id }}">
 
                 <div>
-                    <label for="device_model" class="mb-1.5 block text-sm font-bold text-stone-800">Device model <span class="text-brand">*</span></label>
+                    <label for="device_model" class="mb-1.5 block text-sm font-bold text-stone-800">Device model <span class="text-brand-deep">*</span></label>
                     <input id="device_model" type="text" name="device_model" value="{{ old('device_model') }}" required placeholder="e.g. Dell Inspiron 15, MacBook Pro 2020" class="backend-field">
                     @error('device_model')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
-                    <label for="preferred_date" class="mb-1.5 block text-sm font-bold text-stone-800">Preferred date <span class="text-brand">*</span></label>
+                    <label for="preferred_date" class="mb-1.5 block text-sm font-bold text-stone-800">Preferred date <span class="text-brand-deep">*</span></label>
                     <input id="preferred_date" type="date" name="preferred_date" value="{{ old('preferred_date') }}" required min="{{ date('Y-m-d', strtotime('+1 day')) }}" class="backend-field">
                     @error('preferred_date')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
                 </div>

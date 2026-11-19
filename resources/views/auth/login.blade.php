@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-6">
         <span class="brand-badge">Member access</span>
-        <h1 class="mt-3 text-3xl font-extrabold tracking-[-.04em] text-stone-950">Sign in to PluggedIn</h1>
+        <h1 class="display-heading mt-3 text-3xl text-stone-950">Sign in to PluggedIn</h1>
         <p class="mt-2 text-sm text-stone-600">Welcome back. Jump into your dashboard and keep momentum going.</p>
     </div>
 
@@ -33,12 +33,12 @@
         <!-- Remember Me -->
         <div class="flex flex-col gap-3 text-sm text-stone-600 sm:flex-row sm:items-center sm:justify-between">
             <label for="remember_me" class="inline-flex items-center gap-2">
-                <input id="remember_me" type="checkbox" class="h-4 w-4 rounded border-stone-300 text-brand focus:ring-brand" name="remember">
+                <input id="remember_me" type="checkbox" class="h-4 w-4 rounded border-stone-300 text-brand-deep focus:ring-brand" name="remember">
                 <span>{{ __('Remember me') }}</span>
             </label>
 
             @if (Route::has('password.request'))
-                <a class="font-medium text-stone-600 hover:text-brand focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2" href="{{ route('password.request') }}">
+                <a class="font-medium text-stone-600 hover:text-brand-deep focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
                 </a>
             @endif
@@ -50,7 +50,7 @@
 
         <div class="rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-600">
             <span class="text-stone-500">New here?</span>
-            <a class="font-semibold text-stone-700 hover:text-brand" href="{{ route('register') }}">{{ __('Create an account') }}</a>
+            <a class="font-semibold text-stone-700 hover:text-brand-deep" href="{{ route('register') }}">{{ __('Create an account') }}</a>
         </div>
     </form>
 </x-guest-layout>

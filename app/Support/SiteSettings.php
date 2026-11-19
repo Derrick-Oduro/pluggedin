@@ -23,6 +23,10 @@ class SiteSettings
             'contact_phone' => '+233 594 042 521',
             'contact_address' => 'Accra, Ghana',
             'business_hours' => "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed",
+            'whatsapp_number' => '',
+            'facebook_url' => '',
+            'x_url' => '',
+            'instagram_url' => '',
         ];
     }
 

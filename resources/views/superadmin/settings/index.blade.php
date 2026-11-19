@@ -13,7 +13,7 @@
             <section class="backend-card space-y-4">
                 <h2 class="text-lg font-extrabold text-stone-950">Brand</h2>
                 <div>
-                    <label for="site_title" class="mb-1.5 block text-sm font-bold text-stone-800">Site name <span class="text-brand">*</span></label>
+                    <label for="site_title" class="mb-1.5 block text-sm font-bold text-stone-800">Site name <span class="text-brand-deep">*</span></label>
                     <input id="site_title" name="site_title" value="{{ $field('site_title') }}" required class="backend-field">
                     @error('site_title')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
                 </div>
@@ -28,7 +28,7 @@
                 <h2 class="text-lg font-extrabold text-stone-950">Contact details</h2>
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>
-                        <label for="contact_email" class="mb-1.5 block text-sm font-bold text-stone-800">Support email <span class="text-brand">*</span></label>
+                        <label for="contact_email" class="mb-1.5 block text-sm font-bold text-stone-800">Support email <span class="text-brand-deep">*</span></label>
                         <input id="contact_email" type="email" name="contact_email" value="{{ $field('contact_email') }}" required class="backend-field">
                         @error('contact_email')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
                     </div>
@@ -47,6 +47,33 @@
                     <label for="business_hours" class="mb-1.5 block text-sm font-bold text-stone-800">Business hours</label>
                     <textarea id="business_hours" name="business_hours" rows="3" class="backend-field h-auto py-3">{{ $field('business_hours') }}</textarea>
                     @error('business_hours')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-stone-950">Social links</h3>
+                    <p class="mt-1 text-xs text-stone-500">Shown as orange buttons in the footer. Leave one blank to hide it.</p>
+                    <div class="mt-3 grid gap-4 sm:grid-cols-2">
+                        <div>
+                            <label for="whatsapp_number" class="mb-1.5 block text-sm font-bold text-stone-800">WhatsApp number</label>
+                            <input id="whatsapp_number" name="whatsapp_number" value="{{ $field('whatsapp_number') }}" placeholder="0594042521" class="backend-field">
+                            <p class="mt-1 text-xs text-stone-500">Leave blank to use the phone number above.</p>
+                            @error('whatsapp_number')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label for="facebook_url" class="mb-1.5 block text-sm font-bold text-stone-800">Facebook page link</label>
+                            <input id="facebook_url" name="facebook_url" value="{{ $field('facebook_url') }}" placeholder="https://facebook.com/..." class="backend-field">
+                            @error('facebook_url')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label for="x_url" class="mb-1.5 block text-sm font-bold text-stone-800">X (Twitter) link</label>
+                            <input id="x_url" name="x_url" value="{{ $field('x_url') }}" placeholder="https://x.com/..." class="backend-field">
+                            @error('x_url')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label for="instagram_url" class="mb-1.5 block text-sm font-bold text-stone-800">Instagram link</label>
+                            <input id="instagram_url" name="instagram_url" value="{{ $field('instagram_url') }}" placeholder="https://instagram.com/..." class="backend-field">
+                            @error('instagram_url')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
                 </div>
             </section>
 

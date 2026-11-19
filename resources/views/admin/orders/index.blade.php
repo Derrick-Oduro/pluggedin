@@ -19,13 +19,13 @@
                         <tr class="backend-row">
                             <td class="backend-td font-semibold">#{{ $order->id }}</td>
                             <td class="backend-td">{{ $order->user->name }}</td>
-                            <td class="backend-td text-brand font-semibold">GH₵{{ number_format($order->total_price, 2) }}</td>
+                            <td class="backend-td text-brand-deep font-semibold">GH₵{{ number_format($order->total_price, 2) }}</td>
                             <td class="backend-td">
                                 <x-status-badge :status="$order->status" />
                             </td>
                             <td class="backend-td text-stone-600">{{ $order->created_at->format('M d, Y') }}</td>
                             <td class="backend-td">
-                                <a href="{{ route('admin.orders.show', $order) }}" class="text-brand hover:text-brand-deep">
+                                <a href="{{ route('admin.orders.show', $order) }}" class="text-brand-deep hover:text-brand-deep">
                                     View Details
                                 </a>
                             </td>

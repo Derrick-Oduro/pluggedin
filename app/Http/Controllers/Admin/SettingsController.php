@@ -24,6 +24,10 @@ class SettingsController extends Controller
             'contact_phone' => 'nullable|string|max:40',
             'contact_address' => 'nullable|string|max:255',
             'business_hours' => 'nullable|string|max:500',
+            'whatsapp_number' => 'nullable|string|max:40',
+            'facebook_url' => 'nullable|url:https|max:255',
+            'x_url' => 'nullable|url:https|max:255',
+            'instagram_url' => 'nullable|url:https|max:255',
         ]);
 
         SiteSettings::save($data);

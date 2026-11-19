@@ -13,7 +13,7 @@
                 @endif
             </article>
             @empty
-                <div class="backend-card py-14 text-center"><p class="font-extrabold text-stone-950">No trade-in requests yet.</p><a href="{{ route('trade-ins.create') }}" class="mt-4 inline-flex text-sm font-bold text-brand">Start a request →</a></div>
+                <div class="backend-card py-14 text-center"><p class="font-extrabold text-stone-950">No trade-in requests yet.</p><a href="{{ route('trade-ins.create') }}" class="mt-4 inline-flex text-sm font-bold text-brand-deep">Start a request →</a></div>
             @endforelse
         </div><div class="mt-8">{{ $requests->links() }}</div>
     </div></section>

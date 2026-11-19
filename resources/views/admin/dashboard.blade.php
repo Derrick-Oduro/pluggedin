@@ -36,7 +36,7 @@
                                         <span class="text-xs text-stone-500">{{ $update->created_at->format('M d, H:i') }}</span>
                                     </div>
                                     <p class="text-xs text-stone-600">{{ $update->actor?->name ?? 'System' }} · {{ $update->order?->user?->name ?? 'Unknown customer' }}</p>
-                                    <a href="{{ route('admin.orders.show', $update->order_id) }}" class="text-xs text-brand hover:text-brand-deep font-semibold">View Order</a>
+                                    <a href="{{ route('admin.orders.show', $update->order_id) }}" class="text-xs text-brand-deep hover:text-brand-deep font-semibold">View Order</a>
                                 </div>
                             @empty
                                 <p class="text-sm text-stone-600">No order status updates yet.</p>
@@ -54,7 +54,7 @@
                                         <span class="text-xs text-stone-500">{{ $update->created_at->format('M d, H:i') }}</span>
                                     </div>
                                     <p class="text-xs text-stone-600">{{ $update->actor?->name ?? 'System' }} · {{ $update->booking?->user?->name ?? 'Unknown customer' }}</p>
-                                    <a href="{{ route('admin.bookings.show', $update->booking_id) }}" class="text-xs text-brand hover:text-brand-deep font-semibold">View Booking</a>
+                                    <a href="{{ route('admin.bookings.show', $update->booking_id) }}" class="text-xs text-brand-deep hover:text-brand-deep font-semibold">View Booking</a>
                                 </div>
                             @empty
                                 <p class="text-sm text-stone-600">No booking status updates yet.</p>
@@ -75,7 +75,7 @@
                                     <p class="text-xs text-stone-600">{{ $order->user->name }}</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="font-bold text-brand">GH₵{{ number_format($order->total_price, 2) }}</p>
+                                    <p class="font-bold text-brand-deep">GH₵{{ number_format($order->total_price, 2) }}</p>
                                     <x-status-badge :status="$order->status" />
                                 </div>
                             </div>
@@ -84,7 +84,7 @@
                         <p class="text-stone-600">No orders yet</p>
                     @endforelse
                 </div>
-                <a href="{{ route('admin.orders.index') }}" class="block text-center mt-3 text-sm text-brand hover:text-brand-deep">
+                <a href="{{ route('admin.orders.index') }}" class="block text-center mt-3 text-sm text-brand-deep hover:text-brand-deep">
                     View all orders
                 </a>
             </div>
@@ -107,7 +107,7 @@
                         <p class="text-stone-600">No bookings yet</p>
                     @endforelse
                 </div>
-                <a href="{{ route('admin.bookings.index') }}" class="block text-center mt-3 text-sm text-brand hover:text-brand-deep">
+                <a href="{{ route('admin.bookings.index') }}" class="block text-center mt-3 text-sm text-brand-deep hover:text-brand-deep">
                     View all bookings
                 </a>
             </div>

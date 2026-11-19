@@ -27,7 +27,7 @@
                                 <x-status-badge :status="$booking->status" />
                             </td>
                             <td class="backend-td">
-                                <a href="{{ route('admin.bookings.show', $booking) }}" class="text-brand hover:text-brand-deep">
+                                <a href="{{ route('admin.bookings.show', $booking) }}" class="text-brand-deep hover:text-brand-deep">
                                     View Details
                                 </a>
                             </td>

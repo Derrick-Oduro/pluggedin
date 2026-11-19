@@ -5,7 +5,7 @@
         <header class="flex flex-col justify-between gap-5 border-b border-stone-200 pb-7 sm:flex-row sm:items-end">
             <div>
                 <span class="brand-badge">Content studio</span>
-                <h1 class="mt-3 text-3xl font-extrabold tracking-[-0.045em] text-stone-950">Homepage & promotions</h1>
+                <h1 class="display-heading mt-3 text-3xl text-stone-950">Homepage & promotions</h1>
                 <p class="mt-2 max-w-xl text-sm leading-6 text-stone-600">Choose the image visitors see first and manage time-sensitive offers from one calm, focused workspace.</p>
             </div>
             <a href="{{ route('home') }}" target="_blank" class="btn-secondary shrink-0">Preview homepage ↗</a>
@@ -25,7 +25,7 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-stone-950/55 via-transparent to-transparent"></div>
                             <div class="absolute bottom-5 left-5 right-5 text-white"><p class="text-xs font-bold uppercase tracking-[0.16em] text-white/70">Currently live</p><p class="mt-1 text-xl font-extrabold">{{ $liveSlide->title ?: 'Homepage hero image' }}</p></div>
                         @else
-                            <div class="flex h-full flex-col items-center justify-center p-8 text-center"><div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft text-xl font-extrabold text-brand">+</div><p class="mt-4 font-extrabold text-stone-900">No hero image selected</p><p class="mt-1 max-w-xs text-sm leading-6 text-stone-600">Add an image below, then make it live when you are ready.</p></div>
+                            <div class="flex h-full flex-col items-center justify-center p-8 text-center"><div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft text-xl font-extrabold text-brand-deep">+</div><p class="mt-4 font-extrabold text-stone-900">No hero image selected</p><p class="mt-1 max-w-xs text-sm leading-6 text-stone-600">Add an image below, then make it live when you are ready.</p></div>
                         @endif
                     </div>
                 </article>
@@ -88,7 +88,7 @@
                             @endif
 
                             <details class="mt-3 border-t border-stone-100 pt-3">
-                                <summary class="cursor-pointer text-sm font-bold text-stone-600 hover:text-brand">Edit image details</summary>
+                                <summary class="cursor-pointer text-sm font-bold text-stone-600 hover:text-brand-deep">Edit image details</summary>
                                 <form action="{{ route('superadmin.marketing.slides.update', $slide) }}" method="POST" enctype="multipart/form-data" class="mt-4 space-y-3">
                                     @csrf @method('PATCH')
                                     <input name="title" value="{{ $slide->title }}" placeholder="Short title" class="backend-field">

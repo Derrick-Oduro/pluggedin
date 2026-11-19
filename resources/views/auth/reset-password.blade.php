@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-6">
         <span class="brand-badge">Set New Password</span>
-        <h1 class="mt-3 text-3xl font-extrabold tracking-[-.04em] text-stone-950">Choose a secure password</h1>
+        <h1 class="display-heading mt-3 text-3xl text-stone-950">Choose a secure password</h1>
     </div>
 
     <form method="POST" action="{{ route('password.store') }}">

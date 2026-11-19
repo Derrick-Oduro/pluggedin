@@ -10,31 +10,31 @@
 
                         <div class="space-y-5">
                             <div class="flex items-start gap-4">
-                                <div class="h-11 w-11 rounded-xl bg-brand/15 text-brand flex items-center justify-center shrink-0 mt-0.5">
+                                <div class="h-11 w-11 rounded-xl bg-brand/15 text-brand-deep flex items-center justify-center shrink-0 mt-0.5">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 7.5v9a2.25 2.25 0 0 1-2.25 2.25h-15A2.25 2.25 0 0 1 2.25 16.5v-9m19.5 0A2.25 2.25 0 0 0 19.5 5.25h-15A2.25 2.25 0 0 0 2.25 7.5m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.91l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 9.653a2.25 2.25 0 0 1-1.07-1.91V7.5" />
                                     </svg>
                                 </div>
                                 <div>
                                     <h3 class="font-semibold mb-1">Email</h3>
-                                    <a href="mailto:{{ $site['contact_email'] }}" class="text-brand hover:text-brand-deep font-medium">{{ $site['contact_email'] }}</a>
+                                    <a href="mailto:{{ $site['contact_email'] }}" class="text-brand-deep hover:text-brand-deep font-medium">{{ $site['contact_email'] }}</a>
                                 </div>
                             </div>
 
                             <div class="flex items-start gap-4">
-                                <div class="h-11 w-11 rounded-xl bg-brand/15 text-brand flex items-center justify-center shrink-0 mt-0.5">
+                                <div class="h-11 w-11 rounded-xl bg-brand/15 text-brand-deep flex items-center justify-center shrink-0 mt-0.5">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 4.5A2.25 2.25 0 0 1 4.5 2.25h3A2.25 2.25 0 0 1 9.75 4.5v2.068a2.25 2.25 0 0 1-1.318 2.048l-1.17.52a11.035 11.035 0 0 0 7.602 7.602l.52-1.17a2.25 2.25 0 0 1 2.048-1.318H19.5a2.25 2.25 0 0 1 2.25 2.25v3A2.25 2.25 0 0 1 19.5 21.75h-1.5C9.302 21.75 2.25 14.698 2.25 6V4.5Z" />
                                     </svg>
                                 </div>
                                 <div>
                                     <h3 class="font-semibold mb-1">Phone / WhatsApp</h3>
-                                    <a href="tel:{{ preg_replace('/[^0-9+]/', '', $site['contact_phone']) }}" class="text-brand hover:text-brand-deep font-medium">{{ $site['contact_phone'] }}</a>
+                                    <a href="tel:{{ preg_replace('/[^0-9+]/', '', $site['contact_phone']) }}" class="text-brand-deep hover:text-brand-deep font-medium">{{ $site['contact_phone'] }}</a>
                                 </div>
                             </div>
 
                             <div class="flex items-start gap-4">
-                                <div class="h-11 w-11 rounded-xl bg-brand/15 text-brand flex items-center justify-center shrink-0 mt-0.5">
+                                <div class="h-11 w-11 rounded-xl bg-brand/15 text-brand-deep flex items-center justify-center shrink-0 mt-0.5">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m6.75 0A9.75 9.75 0 1 1 3.25 12a9.75 9.75 0 0 1 19.5 0Z" />
                                     </svg>

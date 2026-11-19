@@ -81,6 +81,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::post('/orders/{order}/pay', [OrderController::class, 'pay'])->middleware('throttle:checkout')->name('orders.pay');
     Route::get('/payments/paystack/callback', [OrderController::class, 'paystackCallback'])->name('payments.paystack.callback');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
     Route::post('/checkout', [OrderController::class, 'store'])->middleware('throttle:checkout')->name('orders.store');

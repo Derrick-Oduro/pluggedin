@@ -24,21 +24,31 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1'
         ]);
 
+        if ($product->status !== 'approved' || $product->listing_state !== 'active') {
+            return redirect()->back()->with('error', 'This item is not available to buy right now.');
+        }
+
+        if ($product->stock_quantity < 1) {
+            return redirect()->back()->with('error', "{$product->name} is sold out.");
+        }
+
         $cartItem = CartItem::where('user_id', auth()->id())
             ->where('product_id', $product->id)
             ->first();
 
-        if ($cartItem) {
-            $cartItem->increment('quantity', $request->quantity);
-        } else {
-            CartItem::create([
-                'user_id' => auth()->id(),
-                'product_id' => $product->id,
-                'quantity' => $request->quantity
-            ]);
+        $wanted = ($cartItem?->quantity ?? 0) + (int) $request->quantity;
+        $quantity = min($wanted, $product->stock_quantity);
+
+        CartItem::updateOrCreate(
+            ['user_id' => auth()->id(), 'product_id' => $product->id],
+            ['quantity' => $quantity]
+        );
+
+        if ($quantity < $wanted) {
+            return redirect()->back()->with('success', "Added to cart. Only {$product->stock_quantity} available, so your cart has {$quantity}.");
         }
 
-        return redirect()->back()->with('success', 'Product added to cart!');
+        return redirect()->back()->with('success', 'Added to cart.');
     }
 
     public function update(Request $request, CartItem $cartItem)
@@ -51,9 +61,15 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1'
         ]);
 
-        $cartItem->update(['quantity' => $request->quantity]);
+        $available = (int) $cartItem->product->stock_quantity;
+        $quantity = min((int) $request->quantity, max($available, 1));
+        $cartItem->update(['quantity' => $quantity]);
 
-        return redirect()->back()->with('success', 'Cart updated!');
+        if ($quantity < (int) $request->quantity) {
+            return redirect()->back()->with('success', "Only {$available} available, so your cart has {$quantity}.");
+        }
+
+        return redirect()->back()->with('success', 'Cart updated.');
     }
 
     public function remove(CartItem $cartItem)
@@ -64,6 +80,6 @@ class CartController extends Controller
 
         $cartItem->delete();
 
-        return redirect()->back()->with('success', 'Item removed from cart!');
+        return redirect()->back()->with('success', 'Item removed from cart.');
     }
 }

@@ -172,9 +172,17 @@ class OrderController extends Controller
             foreach ($cartItems as $cartItem) {
                 $product = Product::query()->lockForUpdate()->find($cartItem->product_id);
 
-                if (! $product || $product->stock_quantity < $cartItem->quantity) {
+                if (! $product || $product->status !== 'approved' || $product->listing_state !== 'active') {
                     throw ValidationException::withMessages([
-                        'cart' => "Insufficient stock for {$cartItem->product->name}.",
+                        'cart' => "{$cartItem->product->name} is no longer available. Remove it from your cart to continue.",
+                    ]);
+                }
+
+                if ($product->stock_quantity < $cartItem->quantity) {
+                    throw ValidationException::withMessages([
+                        'cart' => $product->stock_quantity > 0
+                            ? "Only {$product->stock_quantity} of {$product->name} left. Lower the quantity in your cart to continue."
+                            : "{$product->name} has just sold out. Remove it from your cart to continue.",
                     ]);
                 }
 
@@ -192,59 +200,70 @@ class OrderController extends Controller
                 $product->decrement('stock_quantity', $cartItem->quantity);
             }
 
-            // Clear cart
-            auth()->user()->cartItems()->delete();
-
-            // Clear tracked referrals once checkout is complete.
-            session()->forget('referrals');
-
             return $order;
         });
 
-        $reference = 'PLUG-' . $order->id . '-' . Str::upper(Str::random(16));
-        $paymentResponse = Http::withToken(config('services.paystack.secret_key'))
-            ->acceptJson()
-            ->post(rtrim(config('services.paystack.base_url'), '/') . '/transaction/initialize', [
-                'amount' => (int) round(((float) $order->total_price) * 100),
-                'email' => auth()->user()->email,
-                'currency' => config('services.paystack.currency', 'GHS'),
-                'reference' => $reference,
-                'callback_url' => route('payments.paystack.callback'),
-                'metadata' => ['order_id' => $order->id],
-            ]);
+        $paymentUrl = app(PaystackPayments::class)->initialize($order, auth()->user()->email);
 
-        if (! $paymentResponse->successful() || ! $paymentResponse->json('status')) {
-            $order->cancelAndRestoreInventory(auth()->id(), 'Paystack payment initialization failed.');
+        if (! $paymentUrl) {
+            // Release the stock and keep the cart so the customer can simply try again.
+            $order->cancelAndRestoreInventory(auth()->id(), 'Paystack payment could not be started.');
 
-            throw ValidationException::withMessages([
-                'payment' => 'We could not start the payment. Please try again.',
+            return redirect()->route('checkout')->withInput()->withErrors([
+                'payment' => 'We could not reach Paystack to start your payment. Nothing was charged and your cart is saved. Please try again in a moment.',
             ]);
         }
 
-        PaymentTransaction::create([
-            'order_id' => $order->id,
-            'reference' => $reference,
-            'access_code' => $paymentResponse->json('data.access_code'),
-            'status' => 'pending',
-            'amount' => $order->total_price,
-            'currency' => config('services.paystack.currency', 'GHS'),
-            'gateway_response' => $paymentResponse->json(),
-        ]);
+        // Paystack accepted the order: the cart has become this order.
+        auth()->user()->cartItems()->delete();
+        session()->forget('referrals');
 
-        return redirect()->away($paymentResponse->json('data.authorization_url'));
+        return redirect()->away($paymentUrl);
     }
 
-    public function paystackCallback(Request $request)
+    /** Retry payment for an order the customer left unpaid (closed Paystack, card declined, etc.). */
+    public function pay(Order $order)
     {
-        $reference = $request->string('reference')->toString();
-        abort_unless($reference !== '', 400, 'Payment reference is missing.');
+        abort_unless($order->user_id === auth()->id(), 403);
+
+        if ($order->status !== 'pending') {
+            return redirect()->route('orders.show', $order)->with('error', 'This order is no longer waiting for payment.');
+        }
+
+        $paymentUrl = app(PaystackPayments::class)->initialize($order, auth()->user()->email);
+
+        if (! $paymentUrl) {
+            return redirect()->route('orders.show', $order)->with('error', 'We could not reach Paystack just now. Nothing was charged. Please try again in a moment.');
+        }
+
+        return redirect()->away($paymentUrl);
+    }
+
+    public function paystackCallback(Request $request, PaystackPayments $paystack)
+    {
+        $reference = $request->string('reference')->toString() ?: $request->string('trxref')->toString();
+
+        if ($reference === '') {
+            return redirect()->route('orders.index')->with('error', 'We could not tell which payment you were returning from. Check your order below.');
+        }
 
         $payment = PaymentTransaction::where('reference', $reference)->firstOrFail();
-        abort_unless($payment->order->user_id === auth()->id(), 403);
+        $order = $payment->order;
+        abort_unless($order->user_id === auth()->id(), 403);
 
-        app(PaystackPayments::class)->verifyAndComplete($reference);
+        $data = $paystack->lookup($reference);
 
-        return redirect()->route('orders.show', $payment->order)->with('success', 'Payment confirmed. Your order is being prepared.');
+        if (($data['status'] ?? null) === 'success') {
+            $paystack->complete($reference, $data);
+
+            return redirect()->route('orders.show', $order)->with('success', 'Payment confirmed. Your order is being prepared.');
+        }
+
+        if ($data === null) {
+            return redirect()->route('orders.show', $order)->with('error', 'We could not confirm your payment with Paystack yet. If you were charged, your order will update automatically within a few minutes.');
+        }
+
+        return redirect()->route('orders.show', $order)->with('error', 'Your payment was not completed, so nothing was charged. Use "Pay now" to try again, or cancel the order.');
     }
 
     public function paystackWebhook(Request $request)

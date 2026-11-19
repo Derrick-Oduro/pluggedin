@@ -18,7 +18,17 @@
                                         <div class="min-w-0">
                                             <h3 class="truncate font-extrabold text-stone-950">{{ $item->product->name }}</h3>
                                             <p class="mt-1 text-sm text-stone-600">GH₵{{ number_format($item->product->price, 2) }} each</p>
-                                            <p class="text-xs text-stone-500">{{ $item->product->stock_quantity }} in stock</p>
+                                            @php
+                                                $p = $item->product;
+                                                $problem = ($p->status !== 'approved' || $p->listing_state !== 'active') ? 'No longer available. Please remove it.'
+                                                    : ($p->stock_quantity < 1 ? 'Sold out. Please remove it.'
+                                                    : ($item->quantity > $p->stock_quantity ? "Only {$p->stock_quantity} left. Lower the quantity." : null));
+                                            @endphp
+                                            @if($problem)
+                                                <p class="mt-1 text-xs font-bold text-red-600">{{ $problem }}</p>
+                                            @else
+                                                <p class="text-xs text-stone-500">{{ $p->stock_quantity }} in stock</p>
+                                            @endif
                                         </div>
                                     </a>
 
@@ -56,7 +66,15 @@
                                 <span class="font-extrabold text-stone-950">Total</span>
                                 <span class="text-2xl font-extrabold tracking-[-.04em] text-stone-950">GH₵{{ number_format($total, 2) }}</span>
                             </div>
-                            <a href="{{ route('checkout') }}" class="btn-primary mt-5 w-full">Proceed to checkout</a>
+                            @php
+                                $cartBlocked = $cartItems->contains(fn ($i) => $i->product->status !== 'approved' || $i->product->listing_state !== 'active' || $i->quantity > $i->product->stock_quantity);
+                            @endphp
+                            @if($cartBlocked)
+                                <p class="mt-5 rounded-xl bg-red-50 px-3 py-2 text-xs font-bold text-red-700">Fix the items marked in red to check out.</p>
+                                <span class="btn-primary mt-3 w-full cursor-not-allowed opacity-50" aria-disabled="true">Proceed to checkout</span>
+                            @else
+                                <a href="{{ route('checkout') }}" class="btn-primary mt-5 w-full">Proceed to checkout</a>
+                            @endif
                             <a href="{{ route('products.index') }}" class="btn-secondary mt-2 w-full">Continue shopping</a>
                         </div>
                     </aside>

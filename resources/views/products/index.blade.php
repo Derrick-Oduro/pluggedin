@@ -7,9 +7,9 @@
     <section class="page-shell">
         <div class="content-wrap relative z-10">
             <header class="max-w-3xl">
-                <span class="brand-badge">Upgrade catalog</span>
-                <h1 class="section-title mt-4 text-4xl sm:text-5xl">Parts chosen to make your setup better.</h1>
-                <p class="section-subtitle mt-4 max-w-2xl text-base">Explore reliable components for faster starts, more room to work, and a computer that keeps up with your day.</p>
+                <span class="brand-badge">Marketplace</span>
+                <h1 class="section-title mt-4 text-4xl sm:text-5xl">Laptops, phones, parts and more.</h1>
+                <p class="section-subtitle mt-4 max-w-2xl text-base">Every listing is checked before it goes live. Pay securely with Paystack and get free delivery on campus.</p>
             </header>
 
             <div class="mt-10 flex flex-wrap gap-2 border-b border-stone-200 pb-5">

@@ -24,6 +24,10 @@
                 <x-slot:actions>
                     <x-status-badge :status="$order->status" />
                     @if($order->status === 'pending')
+                        <form action="{{ route('orders.pay', $order) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn-primary">Pay now · GH₵{{ number_format($order->total_price, 2) }}</button>
+                        </form>
                         <form action="{{ route('orders.cancel', $order) }}" method="POST" onsubmit="return confirm('Cancel this order?')">
                             @csrf
                             @method('PATCH')
@@ -35,6 +39,13 @@
                     @endif
                 </x-slot:actions>
             </x-page-header>
+
+            @if($order->status === 'pending')
+                <div class="mb-6 rounded-xl border border-brand-soft bg-brand-tint px-4 py-3 text-sm text-stone-800">
+                    <b class="text-stone-950">Waiting for payment.</b>
+                    We're holding these items for you until {{ $order->created_at->addHour()->format('H:i') }}. If you don't pay by then, the order is cancelled automatically and nothing is charged.
+                </div>
+            @endif
 
             <div class="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
                 <div class="space-y-6">

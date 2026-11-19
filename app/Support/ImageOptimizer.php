@@ -38,6 +38,44 @@ class ImageOptimizer
         return $path;
     }
 
+    /**
+     * GD needs roughly 5 bytes per pixel for the photo plus its resized copy. Running
+     * out of memory is a fatal error that can't be caught, so make room up front
+     * (up to 512 MB) or report that this image should be stored as-is.
+     */
+    private static function ensureMemoryFor(int $pixels): bool
+    {
+        $needed = memory_get_usage(true) + $pixels * 5 + 32 * 1024 * 1024;
+        $limit = self::bytes((string) ini_get('memory_limit'));
+
+        if ($limit < 0 || $needed <= $limit) {
+            return true;
+        }
+
+        if ($needed > 512 * 1024 * 1024) {
+            return false;
+        }
+
+        return @ini_set('memory_limit', (string) (int) ceil($needed / 1024 / 1024).'M') !== false;
+    }
+
+    private static function bytes(string $value): int
+    {
+        $value = trim($value);
+        if ($value === '' || $value === '-1') {
+            return -1;
+        }
+
+        $number = (int) $value;
+
+        return match (strtolower(substr($value, -1))) {
+            'g' => $number * 1024 ** 3,
+            'm' => $number * 1024 ** 2,
+            'k' => $number * 1024,
+            default => $number,
+        };
+    }
+
     /** @return array{0: string, 1: string}|null [bytes, extension] */
     private static function encode(UploadedFile $file, int $maxSide, int $quality): ?array
     {
@@ -47,7 +85,7 @@ class ImageOptimizer
 
         // Decoding needs ~4 bytes per pixel. Skip giant images rather than exhaust PHP memory.
         $size = @getimagesize($file->getRealPath());
-        if (! $size || $size[0] * $size[1] > 40_000_000) {
+        if (! $size || $size[0] * $size[1] > 40_000_000 || ! self::ensureMemoryFor($size[0] * $size[1])) {
             return null;
         }
 

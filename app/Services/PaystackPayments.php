@@ -12,6 +12,7 @@ use App\Notifications\RedeemableThresholdReachedNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /**
  * Verifies Paystack transactions and applies a successful payment to its order.
@@ -19,6 +20,51 @@ use Illuminate\Support\Facades\Log;
  */
 class PaystackPayments
 {
+    /**
+     * Start a Paystack checkout for a pending order and record the transaction.
+     * Returns the URL to send the customer to, or null if Paystack could not start it.
+     */
+    public function initialize(Order $order, string $email): ?string
+    {
+        $reference = 'PLUG-'.$order->id.'-'.Str::upper(Str::random(16));
+
+        try {
+            $response = Http::withToken(config('services.paystack.secret_key'))
+                ->acceptJson()
+                ->timeout(20)
+                ->post(rtrim(config('services.paystack.base_url'), '/').'/transaction/initialize', [
+                    'amount' => (int) round(((float) $order->total_price) * 100),
+                    'email' => $email,
+                    'currency' => config('services.paystack.currency', 'GHS'),
+                    'reference' => $reference,
+                    'callback_url' => route('payments.paystack.callback'),
+                    'metadata' => ['order_id' => $order->id],
+                ]);
+        } catch (\Throwable $e) {
+            Log::warning('Paystack initialize request failed', ['order_id' => $order->id, 'error' => $e->getMessage()]);
+
+            return null;
+        }
+
+        if (! $response->successful() || ! $response->json('status') || ! $response->json('data.authorization_url')) {
+            Log::warning('Paystack initialize was refused', ['order_id' => $order->id, 'status' => $response->status(), 'message' => $response->json('message')]);
+
+            return null;
+        }
+
+        PaymentTransaction::create([
+            'order_id' => $order->id,
+            'reference' => $reference,
+            'access_code' => $response->json('data.access_code'),
+            'status' => 'pending',
+            'amount' => $order->total_price,
+            'currency' => config('services.paystack.currency', 'GHS'),
+            'gateway_response' => $response->json(),
+        ]);
+
+        return $response->json('data.authorization_url');
+    }
+
     /**
      * Ask Paystack for the transaction. Returns its "data" payload, or null when
      * Paystack could not be reached or does not know the reference.

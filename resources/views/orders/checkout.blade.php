@@ -7,9 +7,14 @@
                 @csrf
 
                 <div class="space-y-6">
-                    @error('payment')
-                        <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{{ $message }}</div>
-                    @enderror
+                    @foreach(['cart', 'payment'] as $problem)
+                        @error($problem)
+                            <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                                {{ $message }}
+                                @if($problem === 'cart')<a href="{{ route('cart.index') }}" class="ml-1 underline">Go to cart</a>@endif
+                            </div>
+                        @enderror
+                    @endforeach
 
                     <section class="backend-card">
                         <h2 class="text-lg font-extrabold text-stone-950">How would you like to receive it?</h2>

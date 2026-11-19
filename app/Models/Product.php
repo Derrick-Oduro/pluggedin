@@ -25,6 +25,9 @@ class Product extends Model
         'reviewed_at',
         'is_user_uploaded',
         'images',
+        'condition',
+        'specs',
+        'whats_included',
     ];
 
     protected $casts = [
@@ -32,11 +35,25 @@ class Product extends Model
         'reviewed_at' => 'datetime',
         'is_user_uploaded' => 'boolean',
         'images' => 'array',
+        'specs' => 'array',
     ];
 
     public function scopeApproved(Builder $query): Builder
     {
         return $query->where('status', 'approved')->where('listing_state', 'active');
+    }
+
+    /** All image paths, falling back to the single legacy image_path. */
+    public function galleryImages(): array
+    {
+        $images = array_values(array_filter($this->images ?: []));
+
+        return $images ?: array_values(array_filter([$this->image_path]));
+    }
+
+    public function conditionLabel(): ?string
+    {
+        return \App\Support\ProductSpecs::conditionLabel($this->condition);
     }
 
     public function category(): BelongsTo

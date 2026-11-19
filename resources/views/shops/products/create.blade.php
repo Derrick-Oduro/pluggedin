@@ -1,1 +1,10 @@
-<x-app-layout><section class="page-shell"><div class="content-wrap relative z-10 max-w-3xl"><a href="{{ route('shops.dashboard') }}" class="text-sm font-bold text-stone-600 hover:text-brand-deep">← Back to My Shop</a><p class="brand-badge mt-6">{{ $shop->name }}</p><h1 class="section-title mt-4 text-4xl">Add shop inventory</h1><p class="section-subtitle mt-3">New shop products are reviewed before they appear in your public storefront.</p><form method="POST" action="{{ route('shops.products.store') }}" enctype="multipart/form-data" class="backend-card mt-8 space-y-5">@csrf<div><label class="mb-2 block text-sm font-bold">Product name</label><input class="backend-field" name="name" value="{{ old('name') }}" required></div><div><label class="mb-2 block text-sm font-bold">Description</label><textarea class="backend-field h-auto py-3" name="description" rows="5" required>{{ old('description') }}</textarea></div><div class="grid gap-4 sm:grid-cols-3"><div><label class="mb-2 block text-sm font-bold">Price</label><input class="backend-field" name="price" type="number" step="0.01" min="0" value="{{ old('price') }}" required></div><div><label class="mb-2 block text-sm font-bold">Stock</label><input class="backend-field" name="stock_quantity" type="number" min="0" value="{{ old('stock_quantity', 1) }}" required></div><div><label class="mb-2 block text-sm font-bold">Category</label><select class="backend-field" name="category_id" required><option value="">Choose one</option>@foreach($categories as $category)<option value="{{ $category->id }}">{{ $category->name }}</option>@endforeach</select></div></div><div><label class="mb-2 block text-sm font-bold">Product image</label><input class="backend-field" name="image" type="file" accept="image/*"></div><button class="backend-btn-primary">Submit for review</button></form></div></section></x-app-layout>
+<x-product-form-page
+    title="Add shop inventory"
+    subtitle="New shop products are reviewed before they appear in your public storefront."
+    :badge="$shop->name"
+    :back-href="route('shops.dashboard')"
+    back-label="Back to My Shop"
+    :action="route('shops.products.store')"
+    submit-label="Submit for review"
+    :categories="$categories"
+/>

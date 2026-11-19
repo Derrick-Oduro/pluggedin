@@ -7,6 +7,8 @@ use App\Models\Category;
 use App\Support\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use App\Support\ProductSpecs;
 
 class CategoryManagementController extends Controller
 {
@@ -35,11 +37,13 @@ class CategoryManagementController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:categories',
+            'spec_template' => ['nullable', Rule::in(array_keys(ProductSpecs::templates()))],
         ]);
 
         $category = Category::create([
             'name' => $request->name,
             'slug' => Str::slug($request->name),
+            'spec_template' => $request->spec_template ?: null,
         ]);
 
         AuditLogger::log('superadmin.category.created', Category::class, $category->id, [
@@ -65,11 +69,13 @@ class CategoryManagementController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+            'spec_template' => ['nullable', Rule::in(array_keys(ProductSpecs::templates()))],
         ]);
 
         $category->update([
             'name' => $request->name,
             'slug' => Str::slug($request->name),
+            'spec_template' => $request->spec_template ?: null,
         ]);
 
         AuditLogger::log('superadmin.category.updated', Category::class, $category->id, [

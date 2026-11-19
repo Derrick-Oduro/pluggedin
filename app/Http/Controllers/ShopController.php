@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 use App\Models\Shop;
 use App\Models\Category;
 use App\Models\Product;
+use App\Http\Requests\ProductFormRequest;
+use App\Support\ProductImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -12,6 +14,6 @@ class ShopController extends Controller {
  public function show(Shop $shop) { abort_unless($shop->status === 'approved', 404); $products=$shop->products()->approved()->with('category')->latest()->paginate(12); return view('shops.show', compact('shop','products')); }
  public function dashboard(Request $request) { $shop = Shop::withCount('products')->where('owner_id', $request->user()->id)->first(); $products = $shop ? $shop->products()->with('category')->latest()->get() : collect(); return view('shops.dashboard', compact('shop', 'products')); }
  public function createProduct(Request $request) { $shop = $this->approvedShop($request); return view('shops.products.create', ['shop' => $shop, 'categories' => Category::orderBy('name')->get()]); }
- public function storeProduct(Request $request) { $shop = $this->approvedShop($request); $data = $request->validate(['name'=>'required|string|max:255','description'=>'required|string|max:3000','price'=>'required|numeric|min:0','category_id'=>'required|exists:categories,id','stock_quantity'=>'required|integer|min:0','image'=>'nullable|image|max:4096']); if ($request->hasFile('image')) { $data['image_path'] = $request->file('image')->store('products', 'public'); } $data['uploaded_by'] = $request->user()->id; $data['shop_id'] = $shop->id; $data['is_user_uploaded'] = true; $data['status'] = 'pending'; Product::create($data); return redirect()->route('shops.dashboard')->with('success', 'Shop product submitted for moderation.'); }
+ public function storeProduct(ProductFormRequest $request) { $shop = $this->approvedShop($request); Product::create(array_merge($request->productData(), ProductImages::fromRequest($request), ['uploaded_by' => $request->user()->id, 'shop_id' => $shop->id, 'is_user_uploaded' => true, 'status' => 'pending'])); return redirect()->route('shops.dashboard')->with('success', 'Shop product submitted for moderation.'); }
  private function approvedShop(Request $request): Shop { $shop = Shop::where('owner_id', $request->user()->id)->firstOrFail(); abort_unless($shop->status === 'approved', 403); return $shop; }
 }

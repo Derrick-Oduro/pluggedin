@@ -46,6 +46,19 @@ class MarketplaceFlowsTest extends TestCase
             'price' => 500,
             'category_id' => $category->id,
             'stock_quantity' => 3,
+            'condition' => 'good',
+            'specs' => [
+                'brand' => 'HP',
+                'model' => 'EliteBook 840 G8',
+                'processor' => 'Intel Core i5-1135G7',
+                'ram_size' => '16',
+                'storage_size' => '512 GB',
+                'storage_type' => 'NVMe SSD',
+                'graphics' => 'Intel Iris Xe',
+                'screen_size' => '14',
+                'charger_included' => 'Yes, original',
+                'operating_system' => 'Windows 11',
+            ],
         ]);
 
         $response->assertRedirect(route('user.dashboard'));

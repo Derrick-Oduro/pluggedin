@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductFormRequest;
+use App\Support\ProductImages;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
@@ -128,7 +130,7 @@ class AdminProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
+        $categories = Category::orderBy('name')->get();
 
         return view('admin.products.create', compact('categories'));
     }
@@ -136,28 +138,13 @@ class AdminProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductFormRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'stock_quantity' => 'required|integer|min:0',
-            'image' => 'nullable|image|max:2048'
-        ]);
-
-        $data = $request->except('image');
-
-        if ($request->hasFile('image')) {
-            $data['image_path'] = $request->file('image')->store('products', 'public');
-        }
-
-        $data['status'] = 'approved';
-        $data['reviewed_by'] = auth()->id();
-        $data['reviewed_at'] = now();
-
-        Product::create($data);
+        Product::create(array_merge($request->productData(), ProductImages::fromRequest($request), [
+            'status' => 'approved',
+            'reviewed_by' => auth()->id(),
+            'reviewed_at' => now(),
+        ]));
 
         return redirect()->route('admin.products.index')->with('success', 'Product created successfully!');
     }
@@ -177,7 +164,7 @@ class AdminProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $categories = Category::all();
+        $categories = Category::orderBy('name')->get();
 
         return view('admin.products.edit', compact('product', 'categories'));
     }
@@ -185,27 +172,9 @@ class AdminProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(ProductFormRequest $request, Product $product)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'stock_quantity' => 'required|integer|min:0',
-            'image' => 'nullable|image|max:2048'
-        ]);
-
-        $data = $request->except('image');
-
-        if ($request->hasFile('image')) {
-            if ($product->image_path) {
-                Storage::disk('public')->delete($product->image_path);
-            }
-            $data['image_path'] = $request->file('image')->store('products', 'public');
-        }
-
-        $product->update($data);
+        $product->update(array_merge($request->productData(), ProductImages::fromRequest($request, $product)));
 
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully!');
     }
@@ -215,9 +184,7 @@ class AdminProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        if ($product->image_path) {
-            Storage::disk('public')->delete($product->image_path);
-        }
+        ProductImages::delete($product);
 
         $product->delete();
 

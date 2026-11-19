@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductFormRequest;
 use App\Models\Category;
+use App\Support\ProductImages;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class UserProductController extends Controller
 {
@@ -44,42 +45,20 @@ class UserProductController extends Controller
     {
         $user = auth()->user();
 
+        // Check the limit before validating, so blocked sellers aren't asked to fix fields first.
         if ($user->hasRole('user') && $user->remainingMonthlyUploads() <= 0) {
             return redirect()
                 ->route('products.upload.create')
                 ->with('error', 'You have reached your monthly upload limit.');
         }
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'stock_quantity' => 'required|integer|min:0',
-            'images' => 'nullable|array|max:5',
-            'images.*' => 'image|max:3072',
-        ]);
+        $request = app(ProductFormRequest::class); // runs validation
 
-        $imagePaths = [];
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $file) {
-                $imagePaths[] = $file->store('products', 'public');
-            }
-        }
-
-        Product::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'price' => $request->price,
-            'category_id' => $request->category_id,
-            'stock_quantity' => $request->stock_quantity,
+        Product::create(array_merge($request->productData(), ProductImages::fromRequest($request), [
             'uploaded_by' => $user->id,
             'is_user_uploaded' => true,
             'status' => 'pending',
-            'image_path' => $imagePaths[0] ?? null,
-            'images' => $imagePaths ?: null,
-        ]);
+        ]));
 
         return redirect()
             ->route('user.dashboard')
@@ -99,7 +78,7 @@ class UserProductController extends Controller
         return view('products.edit-upload', compact('product', 'categories'));
     }
 
-    public function update(Request $request, Product $product)
+    public function update(ProductFormRequest $request, Product $product)
     {
         $user = auth()->user();
 
@@ -107,42 +86,7 @@ class UserProductController extends Controller
             abort(403);
         }
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'stock_quantity' => 'required|integer|min:0',
-            'images' => 'nullable|array|max:5',
-            'images.*' => 'image|max:3072',
-        ]);
-
-        $data = $request->only([
-            'name',
-            'description',
-            'price',
-            'category_id',
-            'stock_quantity',
-        ]);
-
-        if ($request->hasFile('images')) {
-            $oldImages = $product->images ?: [];
-            foreach ($oldImages as $oldImage) {
-                Storage::disk('public')->delete($oldImage);
-            }
-
-            if ($product->image_path) {
-                Storage::disk('public')->delete($product->image_path);
-            }
-
-            $imagePaths = [];
-            foreach ($request->file('images') as $file) {
-                $imagePaths[] = $file->store('products', 'public');
-            }
-
-            $data['images'] = $imagePaths;
-            $data['image_path'] = $imagePaths[0] ?? null;
-        }
+        $data = array_merge($request->productData(), ProductImages::fromRequest($request, $product));
 
         // Any user update returns the product to moderation queue.
         $data['status'] = 'pending';
@@ -169,8 +113,7 @@ class UserProductController extends Controller
     public function destroy(Product $product)
     {
         abort_unless((int) $product->uploaded_by === (int) auth()->id() && $product->is_user_uploaded, 403);
-        foreach ($product->images ?: [] as $image) { Storage::disk('public')->delete($image); }
-        if ($product->image_path) { Storage::disk('public')->delete($product->image_path); }
+        ProductImages::delete($product);
         $product->delete();
         return back()->with('success', 'Listing removed.');
     }

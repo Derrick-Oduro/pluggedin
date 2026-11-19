@@ -1,59 +1,40 @@
 <x-app-layout>
-    <section class="relative overflow-hidden py-20 bg-gradient-to-b from-white via-orange-50/40 to-white dark:from-dark dark:via-dark-secondary dark:to-dark">
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-10">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange mb-3">Orders</p>
-                <h1 class="text-5xl sm:text-6xl font-bold">My Orders</h1>
-            </div>
+    <section class="page-shell">
+        <div class="content-wrap relative z-10">
+            <x-page-header badge="Orders" title="My orders" subtitle="Track delivery or pickup progress and review what you bought." />
 
             @if($orders->count() > 0)
                 <div class="space-y-4">
                     @foreach($orders as $order)
-                        <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
-                            <div class="flex justify-between items-start mb-4">
+                        <article class="backend-card">
+                            <div class="flex flex-wrap items-start justify-between gap-3">
                                 <div>
-                                    <h3 class="text-xl font-bold mb-1">Order #{{ $order->id }}</h3>
-                                    <p class="text-gray-600 dark:text-text-secondary text-sm">{{ $order->created_at->format('M d, Y H:i') }}</p>
+                                    <h3 class="text-lg font-extrabold text-stone-950">Order #{{ $order->id }}</h3>
+                                    <p class="text-sm text-stone-500">{{ $order->created_at->format('M d, Y · H:i') }}</p>
                                 </div>
-                                <span class="text-xs px-3 py-1 rounded-full
-                                    @if($order->status === 'pending') bg-yellow-500/20 text-yellow-500
-                                    @elseif($order->status === 'confirmed') bg-blue-500/20 text-blue-500
-                                    @elseif($order->status === 'completed') bg-green-500/20 text-green-500
-                                    @else bg-red-500/20 text-red-500
-                                    @endif">
-                                    {{ ucfirst($order->status) }}
-                                </span>
+                                <x-status-badge :status="$order->status" />
                             </div>
 
-                            <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
+                            <ul class="mt-4 divide-y divide-stone-100 border-y border-stone-100">
                                 @foreach($order->items as $item)
-                                    <div class="flex justify-between py-2 text-sm">
-                                        <span>{{ $item->product->name }} x {{ $item->quantity }}</span>
-                                        <span class="text-orange font-medium">GH₵{{ number_format($item->price * $item->quantity, 2) }}</span>
-                                    </div>
+                                    <li class="flex justify-between gap-4 py-2.5 text-sm">
+                                        <span class="text-stone-700">{{ $item->product->name }} <span class="text-stone-400">× {{ $item->quantity }}</span></span>
+                                        <span class="font-bold text-stone-950">GH₵{{ number_format($item->price * $item->quantity, 2) }}</span>
+                                    </li>
                                 @endforeach
-                            </div>
+                            </ul>
 
-                            <div class="flex justify-between items-center">
-                                <span class="text-xl font-bold">Total: <span class="text-orange">GH₵{{ number_format($order->total_price, 2) }}</span></span>
-                                <a href="{{ route('orders.show', $order) }}" class="text-orange hover:text-orange-light font-semibold">
-                                    View Details
-                                </a>
+                            <div class="mt-4 flex items-center justify-between">
+                                <p class="text-sm text-stone-600">Total <span class="ml-1 text-lg font-extrabold text-stone-950">GH₵{{ number_format($order->total_price, 2) }}</span></p>
+                                <a href="{{ route('orders.show', $order) }}" class="btn-link">View details →</a>
                             </div>
-                        </div>
+                        </article>
                     @endforeach
                 </div>
 
-                <div class="mt-6 bg-white dark:bg-dark-secondary rounded-xl border border-gray-200 dark:border-gray-800 p-4">
-                    {{ $orders->links() }}
-                </div>
+                <div class="mt-8">{{ $orders->links() }}</div>
             @else
-                <div class="bg-white dark:bg-dark-secondary rounded-2xl border border-gray-200 dark:border-gray-800 text-center py-14 px-6">
-                    <p class="text-gray-600 dark:text-text-secondary text-xl mb-6">You haven't placed any orders yet</p>
-                    <a href="{{ route('products.index') }}" class="inline-block bg-orange hover:bg-orange-light text-white px-8 py-3 rounded-lg font-semibold transition">
-                        Start Shopping
-                    </a>
-                </div>
+                <x-empty-state title="No orders yet" message="When you buy something, it will show up here with its tracking status." action-label="Start shopping" :action-href="route('products.index')" />
             @endif
         </div>
     </section>

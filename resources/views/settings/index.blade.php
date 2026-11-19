@@ -7,9 +7,6 @@
                 <p class="section-subtitle mt-3">Manage your account and choose the updates that are useful to you. PluggedIn uses one considered light appearance across the entire experience.</p>
             </div>
 
-            @if(session('success'))
-                <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">{{ session('success') }}</div>
-            @endif
 
             <div class="grid gap-6 md:grid-cols-5">
                 <article class="glass-panel p-6 md:col-span-2">

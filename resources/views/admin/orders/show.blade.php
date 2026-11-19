@@ -1,11 +1,4 @@
-<x-app-layout>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-            <aside class="xl:col-span-3">
-                @include('admin._tabs')
-            </aside>
-
-            <div class="xl:col-span-9 space-y-4">
+<x-admin-layout>
                 @php
                     $statusLabels = [
                         'pending' => 'Pending',
@@ -23,29 +16,14 @@
                     $isCancelled = $order->status === 'cancelled';
                 @endphp
 
-                <div class="backend-card rounded-xl p-5">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <div>
-                            <p class="text-xs uppercase tracking-[0.15em] text-gray-500 dark:text-text-secondary">Order Details</p>
-                            <h1 class="text-2xl font-bold mt-1">Order #{{ $order->id }}</h1>
-                            <p class="text-sm text-gray-600 dark:text-text-secondary mt-1">Placed on {{ $order->created_at->format('M d, Y H:i') }}</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs px-3 py-1 rounded-full
-                                @if($order->status === 'pending') bg-yellow-500/20 text-yellow-500
-                                @elseif($order->status === 'confirmed') bg-blue-500/20 text-blue-500
-                                @elseif($order->status === 'completed') bg-green-500/20 text-green-500
-                                @else bg-red-500/20 text-red-500
-                                @endif">
-                                {{ ucfirst($order->status) }}
-                            </span>
-                            <a href="{{ route('admin.orders.index') }}" class="backend-btn-muted">Back to Orders</a>
-                        </div>
-                    </div>
-                </div>
+                <x-page-header badge="Admin" :title="'Order #'.$order->id" :subtitle="'Placed '.$order->created_at->format('M d, Y · H:i')" :back-href="route('admin.orders.index')" back-label="Back to orders">
+                    <x-slot:actions>
+                        <x-status-badge :status="$order->status" />
+                    </x-slot:actions>
+                </x-page-header>
 
                 <div class="backend-card rounded-xl p-5">
-                    <h2 class="text-lg font-semibold mb-3">Order Tracking</h2>
+                    <h2 class="text-lg font-extrabold text-stone-950 mb-3">Order Tracking</h2>
                     @if($isCancelled)
                         <div class="mb-3 rounded-lg border border-red-500/50 bg-red-500/10 px-3 py-2 text-sm text-red-500">
                             This order was cancelled before completion.
@@ -53,11 +31,11 @@
                     @endif
                     <div class="space-y-2">
                         @foreach($statusLabels as $statusKey => $statusLabel)
-                            @php($timestamp = $statusTimes->get($statusKey))
-                            <div class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3">
+                            @php $timestamp = $statusTimes->get($statusKey); @endphp
+                            <div class="rounded-lg border border-stone-200 px-3 py-3">
                                 <div class="flex flex-wrap items-center justify-between gap-2">
                                     <p class="text-sm font-semibold">{{ $statusLabel }}</p>
-                                    <span class="text-xs text-gray-500 dark:text-text-secondary">{{ $timestamp ? $timestamp->format('M d, Y H:i') : 'Not reached yet' }}</span>
+                                    <span class="text-xs text-stone-500">{{ $timestamp ? $timestamp->format('M d, Y H:i') : 'Not reached yet' }}</span>
                                 </div>
                             </div>
                         @endforeach
@@ -66,52 +44,52 @@
 
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
                     <div class="backend-card rounded-xl">
-                        <p class="text-xs text-gray-500 dark:text-text-secondary">Items</p>
+                        <p class="text-xs text-stone-500">Items</p>
                         <p class="text-xl font-semibold mt-1">{{ $order->items->sum('quantity') }}</p>
                     </div>
                     <div class="backend-card rounded-xl">
-                        <p class="text-xs text-gray-500 dark:text-text-secondary">Subtotal</p>
+                        <p class="text-xs text-stone-500">Subtotal</p>
                         <p class="text-xl font-semibold mt-1">GH₵{{ number_format($order->subtotal_price ?: $order->total_price, 2) }}</p>
                     </div>
                     <div class="backend-card rounded-xl">
-                        <p class="text-xs text-gray-500 dark:text-text-secondary">Discount</p>
-                        <p class="text-xl font-semibold mt-1 text-green-600 dark:text-green-400">- GH₵{{ number_format($order->discount_amount ?? 0, 2) }}</p>
+                        <p class="text-xs text-stone-500">Discount</p>
+                        <p class="text-xl font-semibold mt-1 text-green-600">- GH₵{{ number_format($order->discount_amount ?? 0, 2) }}</p>
                     </div>
                     <div class="backend-card rounded-xl">
-                        <p class="text-xs text-gray-500 dark:text-text-secondary">Total</p>
-                        <p class="text-xl font-semibold mt-1 text-orange">GH₵{{ number_format($order->total_price, 2) }}</p>
+                        <p class="text-xs text-stone-500">Total</p>
+                        <p class="text-xl font-semibold mt-1 text-brand">GH₵{{ number_format($order->total_price, 2) }}</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="backend-card rounded-xl p-5">
-                        <h2 class="text-lg font-semibold mb-3">Customer Information</h2>
+                        <h2 class="text-lg font-extrabold text-stone-950 mb-3">Customer Information</h2>
                         <dl class="space-y-2 text-sm">
                             <div class="flex justify-between gap-3">
-                                <dt class="text-gray-500 dark:text-text-secondary">Name</dt>
+                                <dt class="text-stone-500">Name</dt>
                                 <dd class="font-medium text-right">{{ $order->user->name ?? 'N/A' }}</dd>
                             </div>
                             <div class="flex justify-between gap-3">
-                                <dt class="text-gray-500 dark:text-text-secondary">Email</dt>
+                                <dt class="text-stone-500">Email</dt>
                                 <dd class="font-medium text-right break-all">{{ $order->user->email ?? 'N/A' }}</dd>
                             </div>
                             <div class="flex justify-between gap-3">
-                                <dt class="text-gray-500 dark:text-text-secondary">Phone</dt>
+                                <dt class="text-stone-500">Phone</dt>
                                 <dd class="font-medium text-right">{{ $order->delivery_phone ?: 'N/A' }}</dd>
                             </div>
                         </dl>
                     </div>
 
                     <div class="backend-card rounded-xl p-5">
-                        <h2 class="text-lg font-semibold mb-3">Delivery Information</h2>
+                        <h2 class="text-lg font-extrabold text-stone-950 mb-3">Delivery Information</h2>
                         <div class="text-sm space-y-2">
-                            <p class="text-gray-500 dark:text-text-secondary">Address</p>
+                            <p class="text-stone-500">Address</p>
                             <p class="font-medium whitespace-pre-line">{{ $order->delivery_address ?: 'N/A' }}</p>
                         </div>
                         @if($order->discount_amount > 0)
-                            <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm">
-                                <p class="text-gray-500 dark:text-text-secondary">Applied discount</p>
-                                <p class="font-medium text-green-600 dark:text-green-400 mt-1">
+                            <div class="mt-4 pt-3 border-t border-stone-200 text-sm">
+                                <p class="text-stone-500">Applied discount</p>
+                                <p class="font-medium text-green-600 mt-1">
                                     {{ $order->applied_discount_code ?: 'Auto campaign' }}
                                 </p>
                             </div>
@@ -120,7 +98,7 @@
                 </div>
 
                 <div class="backend-card rounded-xl p-5">
-                    <h2 class="text-lg font-semibold mb-3">Update Order Status</h2>
+                    <h2 class="text-lg font-extrabold text-stone-950 mb-3">Update Order Status</h2>
                     <form action="{{ route('admin.orders.updateStatus', $order) }}" method="POST" class="flex flex-col sm:flex-row sm:items-end gap-3">
                         @csrf
                         @method('PATCH')
@@ -149,11 +127,11 @@
                 </div>
 
                 <div class="backend-card rounded-xl p-5">
-                    <h2 class="text-lg font-semibold mb-3">Order Items</h2>
+                    <h2 class="text-lg font-extrabold text-stone-950 mb-3">Order Items</h2>
                     <div class="backend-table-wrap">
                         <div class="overflow-x-auto">
                             <table class="backend-table">
-                                <thead class="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-dark">
+                                <thead class="border-b border-stone-200 bg-stone-50">
                                     <tr>
                                         <th class="backend-th">Product</th>
                                         <th class="backend-th">Qty</th>
@@ -169,17 +147,17 @@
                                                     @if(optional($item->product)->image_path)
                                                         <img src="{{ asset('storage/' . $item->product->image_path) }}" alt="{{ $item->product->name }}" class="h-12 w-12 rounded object-cover">
                                                     @else
-                                                        <div class="h-12 w-12 rounded bg-gray-200 dark:bg-gray-800"></div>
+                                                        <div class="h-12 w-12 rounded bg-stone-200"></div>
                                                     @endif
                                                     <div>
                                                         <p class="font-medium">{{ $item->product->name ?? 'Product removed' }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-text-secondary">Item ID: {{ $item->id }}</p>
+                                                        <p class="text-xs text-stone-500">Item ID: {{ $item->id }}</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td class="backend-td">{{ $item->quantity }}</td>
                                             <td class="backend-td">GH₵{{ number_format($item->price, 2) }}</td>
-                                            <td class="backend-td text-orange font-semibold">GH₵{{ number_format($item->price * $item->quantity, 2) }}</td>
+                                            <td class="backend-td text-brand font-semibold">GH₵{{ number_format($item->price * $item->quantity, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -187,24 +165,21 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-1.5 text-sm">
+                    <div class="mt-4 pt-4 border-t border-stone-200 space-y-1.5 text-sm">
                         <div class="flex justify-between">
-                            <span class="text-gray-600 dark:text-text-secondary">Subtotal</span>
+                            <span class="text-stone-600">Subtotal</span>
                             <span class="font-medium">GH₵{{ number_format($order->subtotal_price ?: $order->total_price, 2) }}</span>
                         </div>
                         @if($order->discount_amount > 0)
-                            <div class="flex justify-between text-green-600 dark:text-green-400">
+                            <div class="flex justify-between text-green-600">
                                 <span>Discount ({{ $order->applied_discount_code ?: 'Auto campaign' }})</span>
                                 <span>- GH₵{{ number_format($order->discount_amount, 2) }}</span>
                             </div>
                         @endif
-                        <div class="flex justify-between items-center pt-2 mt-2 border-t border-gray-200 dark:border-gray-700">
+                        <div class="flex justify-between items-center pt-2 mt-2 border-t border-stone-200">
                             <span class="text-lg font-semibold">Final Total</span>
-                            <span class="text-2xl font-bold text-orange">GH₵{{ number_format($order->total_price, 2) }}</span>
+                            <span class="text-2xl font-bold text-brand">GH₵{{ number_format($order->total_price, 2) }}</span>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+</x-admin-layout>

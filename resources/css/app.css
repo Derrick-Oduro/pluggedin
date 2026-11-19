@@ -109,6 +109,14 @@
 		@apply inline-flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-white transition hover:bg-brand-deep;
 	}
 
+	.btn-danger {
+		@apply inline-flex h-11 items-center justify-center rounded-xl bg-red-600 px-5 text-sm font-bold text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2;
+	}
+
+	.btn-link {
+		@apply inline-flex items-center gap-1 text-sm font-extrabold text-brand transition hover:text-brand-deep;
+	}
+
 	.backend-btn-muted {
 		@apply inline-flex h-11 items-center justify-center rounded-xl bg-stone-800 px-4 text-sm font-bold text-white transition hover:bg-stone-700;
 	}

@@ -1,15 +1,10 @@
-@props([
-    'title' => null,
-])
+@props(['title' => null])
 
-<div class="backend-table-wrap">
-    @if($title)
-        <div class="px-4 pt-4">
-            <h2 class="text-lg font-semibold">{{ $title }}</h2>
+<div {{ $attributes->merge(['class' => 'backend-table-wrap']) }}>
+    @if ($title)
+        <div class="border-b border-stone-100 px-5 py-4">
+            <h2 class="text-base font-extrabold text-stone-950">{{ $title }}</h2>
         </div>
     @endif
-
-    <div class="overflow-x-auto">
-        {{ $slot }}
-    </div>
+    <div class="overflow-x-auto">{{ $slot }}</div>
 </div>

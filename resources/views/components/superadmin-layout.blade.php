@@ -85,7 +85,7 @@
                         <span>Shops</span>
                     </a>
 
-                    <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
+                    <div class="border-t border-stone-200 my-3"></div>
 
                     <!-- Regular Admin -->
                           <a href="{{ route('admin.dashboard') }}"
@@ -106,7 +106,7 @@
                         <span>View Site</span>
                     </a>
 
-                    <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
+                    <div class="border-t border-stone-200 my-3"></div>
 
                     <!-- User Info -->
                     <div class="px-3 py-2">

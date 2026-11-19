@@ -1,10 +1,10 @@
 <x-guest-layout>
     <div class="mb-6">
-        <p class="text-xs uppercase tracking-[0.16em] text-orange font-semibold">Account Recovery</p>
-        <h1 class="text-3xl font-bold mt-1">Reset your password</h1>
+        <span class="brand-badge">Account Recovery</span>
+        <h1 class="mt-3 text-3xl font-extrabold tracking-[-.04em] text-stone-950">Reset your password</h1>
     </div>
 
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+    <div class="mb-4 text-sm text-stone-600">
         {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
     </div>
 
@@ -17,7 +17,7 @@
         <!-- Email Address -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+            <x-text-input id="email" class="mt-1" type="email" name="email" :value="old('email')" required autofocus />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 

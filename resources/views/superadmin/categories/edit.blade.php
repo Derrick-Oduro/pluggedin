@@ -10,16 +10,16 @@
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold mb-1.5">Category Name *</label>
+                    <label class="mb-1.5 block text-sm font-bold text-stone-800">Category Name *</label>
                     <input type="text" name="name" value="{{ old('name', $category->name) }}" required
                            class="backend-field">
                     @error('name')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        <p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>
                     @enderror
-                    <p class="text-gray-600 dark:text-text-secondary text-sm mt-1">Current slug: {{ $category->slug }}</p>
+                    <p class="text-stone-600 text-sm mt-1">Current slug: {{ $category->slug }}</p>
                 </div>
 
-                <div class="sticky bottom-3 z-10 flex gap-4 rounded-lg border border-gray-200 bg-white/95 p-3 backdrop-blur dark:border-gray-700 dark:bg-dark-secondary/95">
+                <div class="sticky bottom-3 z-10 flex gap-4 rounded-lg border border-stone-200 bg-white/95 p-3 backdrop-blur">
                     <button type="submit" class="backend-btn-primary">
                         Update Category
                     </button>

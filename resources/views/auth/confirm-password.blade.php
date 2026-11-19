@@ -1,10 +1,10 @@
 <x-guest-layout>
     <div class="mb-6">
-        <p class="text-xs uppercase tracking-[0.16em] text-orange font-semibold">Security Check</p>
-        <h1 class="text-3xl font-bold mt-1">Confirm your password</h1>
+        <span class="brand-badge">Security Check</span>
+        <h1 class="mt-3 text-3xl font-extrabold tracking-[-.04em] text-stone-950">Confirm your password</h1>
     </div>
 
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+    <div class="mb-4 text-sm text-stone-600">
         {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
     </div>
 
@@ -15,7 +15,7 @@
         <div>
             <x-input-label for="password" :value="__('Password')" />
 
-            <x-text-input id="password" class="block mt-1 w-full"
+            <x-text-input id="password" class="mt-1"
                             type="password"
                             name="password"
                             required autocomplete="current-password" />

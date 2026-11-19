@@ -1,32 +1,22 @@
 <x-app-layout>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 class="text-5xl font-bold mb-8 text-center">{{ $service->name }}</h1>
+    <section class="page-shell">
+        <div class="content-wrap relative z-10 max-w-3xl">
+            <x-page-header badge="Repairs & upgrades" :title="$service->name" :back-href="route('services.index')" back-label="All services" />
 
-        <div class="bg-white dark:bg-dark-secondary rounded-lg p-12 mb-8">
-            <p class="text-gray-600 dark:text-text-secondary text-lg leading-relaxed mb-8">
-                {{ $service->description }}
-            </p>
+            <div class="backend-card sm:p-8">
+                <p class="text-base leading-7 text-stone-600">{{ $service->description }}</p>
 
-            <div class="flex justify-between items-center mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
-                <span class="text-2xl font-bold">Service Price:</span>
-                <span class="text-4xl font-bold text-orange">GH₵{{ number_format($service->price, 2) }}</span>
+                <div class="mt-6 flex items-center justify-between border-t border-stone-200 pt-6">
+                    <span class="text-sm font-bold text-stone-500">Service price</span>
+                    <span class="text-3xl font-extrabold tracking-[-.04em] text-stone-950">GH₵{{ number_format($service->price, 2) }}</span>
+                </div>
+
+                @auth
+                    <a href="{{ route('bookings.create', $service) }}" class="btn-primary mt-6 w-full">Book this service</a>
+                @else
+                    <a href="{{ route('login') }}" class="btn-primary mt-6 w-full">Log in to book</a>
+                @endauth
             </div>
-
-            @auth
-                <a href="{{ route('bookings.create', $service) }}" class="block text-center bg-orange hover:bg-orange-light text-white px-8 py-4 rounded-lg font-semibold transition text-xl">
-                    Book This Service
-                </a>
-            @else
-                <a href="{{ route('login') }}" class="block text-center bg-orange hover:bg-orange-light text-white px-8 py-4 rounded-lg font-semibold transition text-xl">
-                    Login to Book
-                </a>
-            @endauth
         </div>
-
-        <div class="text-center">
-            <a href="{{ route('services.index') }}" class="text-orange hover:text-orange-light">
-                ← Back to All Services
-            </a>
-        </div>
-    </div>
+    </section>
 </x-app-layout>

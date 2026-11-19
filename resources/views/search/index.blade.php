@@ -1,13 +1,10 @@
 <x-app-layout>
     <section class="page-shell">
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-8">
-                <h1 class="text-4xl font-bold">Global Search</h1>
-                <p class="text-gray-600 dark:text-text-secondary mt-2">Search across products, services, orders, and users based on your role.</p>
-            </div>
+        <div class="content-wrap relative z-10">
+            <x-page-header badge="Search" title="Search" subtitle="Search products, services, orders and users, depending on your role." />
 
-            <form method="GET" action="{{ route('search.global') }}" class="glass-panel rounded-xl p-4 mb-6">
-                <label for="q" class="block text-sm font-medium mb-2">Search term</label>
+            <form method="GET" action="{{ route('search.global') }}" class="backend-card mb-6">
+                <label for="q" class="mb-1.5 block text-sm font-bold text-stone-800">Search term</label>
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2">
                     <input id="q" name="q" value="{{ $term }}" placeholder="Try: gpu, cleaning service, pending, john@example.com" class="backend-field h-10 text-sm" />
                     <select name="type" class="backend-field h-10 text-sm">
@@ -49,7 +46,7 @@
                         </select>
                     @endif
                     <div class="flex gap-2">
-                        <button class="h-10 bg-orange hover:bg-orange-light text-white px-5 rounded-lg text-sm font-semibold transition">Search</button>
+                        <button class="btn-primary h-10 text-sm">Search</button>
                         <a href="{{ route('search.global') }}" class="h-10 inline-flex items-center backend-btn-muted text-sm">Reset</a>
                     </div>
                 </div>
@@ -64,15 +61,15 @@
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
                     @if(in_array(($type ?? 'all'), ['all', 'products'], true))
                         <div class="backend-card p-5">
-                            <h2 class="text-lg font-semibold mb-3">Products</h2>
+                            <h2 class="text-lg font-extrabold text-stone-950 mb-3">Products</h2>
                             <div class="space-y-2">
                                 @forelse($products as $product)
-                                    <a href="{{ route('products.show', $product) }}" class="block rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 hover:border-orange transition">
+                                    <a href="{{ route('products.show', $product) }}" class="block rounded-lg border border-stone-200 px-3 py-2 hover:border-brand transition">
                                         <p class="font-semibold">{{ $product->name }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-text-secondary">{{ $product->category?->name ?? 'Uncategorized' }} · GH₵{{ number_format($product->price, 2) }}</p>
+                                        <p class="text-xs text-stone-500">{{ $product->category?->name ?? 'Uncategorized' }} · GH₵{{ number_format($product->price, 2) }}</p>
                                     </a>
                                 @empty
-                                    <p class="text-sm text-gray-600 dark:text-text-secondary">No products matched.</p>
+                                    <p class="text-sm text-stone-600">No products matched.</p>
                                 @endforelse
                             </div>
                         </div>
@@ -80,15 +77,15 @@
 
                     @if(in_array(($type ?? 'all'), ['all', 'services'], true))
                         <div class="backend-card p-5">
-                            <h2 class="text-lg font-semibold mb-3">Services</h2>
+                            <h2 class="text-lg font-extrabold text-stone-950 mb-3">Services</h2>
                             <div class="space-y-2">
                                 @forelse($services as $service)
-                                    <a href="{{ route('services.show', $service) }}" class="block rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 hover:border-orange transition">
+                                    <a href="{{ route('services.show', $service) }}" class="block rounded-lg border border-stone-200 px-3 py-2 hover:border-brand transition">
                                         <p class="font-semibold">{{ $service->name }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-text-secondary">GH₵{{ number_format($service->price, 2) }}</p>
+                                        <p class="text-xs text-stone-500">GH₵{{ number_format($service->price, 2) }}</p>
                                     </a>
                                 @empty
-                                    <p class="text-sm text-gray-600 dark:text-text-secondary">No services matched.</p>
+                                    <p class="text-sm text-stone-600">No services matched.</p>
                                 @endforelse
                             </div>
                         </div>
@@ -97,16 +94,16 @@
                     @auth
                         @if(in_array(($type ?? 'all'), ['all', 'orders'], true))
                         <div class="backend-card p-5">
-                            <h2 class="text-lg font-semibold mb-3">Orders</h2>
+                            <h2 class="text-lg font-extrabold text-stone-950 mb-3">Orders</h2>
                             <div class="space-y-2">
                                 @forelse($orders as $order)
                                     @php($orderRoute = auth()->user()->isAdmin() ? route('admin.orders.show', $order) : route('orders.show', $order))
-                                    <a href="{{ $orderRoute }}" class="block rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 hover:border-orange transition">
+                                    <a href="{{ $orderRoute }}" class="block rounded-lg border border-stone-200 px-3 py-2 hover:border-brand transition">
                                         <p class="font-semibold">Order #{{ $order->id }} · {{ ucfirst($order->status) }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-text-secondary">GH₵{{ number_format($order->total_price, 2) }} · {{ $order->created_at->format('M d, Y') }}</p>
+                                        <p class="text-xs text-stone-500">GH₵{{ number_format($order->total_price, 2) }} · {{ $order->created_at->format('M d, Y') }}</p>
                                     </a>
                                 @empty
-                                    <p class="text-sm text-gray-600 dark:text-text-secondary">No orders matched.</p>
+                                    <p class="text-sm text-stone-600">No orders matched.</p>
                                 @endforelse
                             </div>
                         </div>
@@ -114,15 +111,15 @@
 
                         @if(auth()->user()->isSuperAdmin() && in_array(($type ?? 'all'), ['all', 'users'], true))
                             <div class="backend-card p-5">
-                                <h2 class="text-lg font-semibold mb-3">Users</h2>
+                                <h2 class="text-lg font-extrabold text-stone-950 mb-3">Users</h2>
                                 <div class="space-y-2">
                                     @forelse($users as $matchedUser)
-                                        <a href="{{ route('superadmin.users.edit', $matchedUser) }}" class="block rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 hover:border-orange transition">
+                                        <a href="{{ route('superadmin.users.edit', $matchedUser) }}" class="block rounded-lg border border-stone-200 px-3 py-2 hover:border-brand transition">
                                             <p class="font-semibold">{{ $matchedUser->name }}</p>
-                                            <p class="text-xs text-gray-500 dark:text-text-secondary">{{ $matchedUser->email }}</p>
+                                            <p class="text-xs text-stone-500">{{ $matchedUser->email }}</p>
                                         </a>
                                     @empty
-                                        <p class="text-sm text-gray-600 dark:text-text-secondary">No users matched.</p>
+                                        <p class="text-sm text-stone-600">No users matched.</p>
                                     @endforelse
                                 </div>
                             </div>

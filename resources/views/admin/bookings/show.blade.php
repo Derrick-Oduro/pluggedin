@@ -1,12 +1,6 @@
-<x-app-layout>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-            <aside class="xl:col-span-3">
-                @include('admin._tabs')
-            </aside>
-
-            <div class="xl:col-span-9 space-y-4">
+<x-admin-layout>
         <x-page-header
+            badge="Admin"
             title="Booking #{{ $booking->id }}"
             subtitle="Review customer details and update booking status."
             :breadcrumbs="[
@@ -16,50 +10,50 @@
             ]"
         >
             <x-slot name="actions">
-                <a href="{{ route('admin.bookings.index') }}" class="backend-btn-muted">Back to Bookings</a>
+                <a href="{{ route('admin.bookings.index') }}" class="btn-secondary">Back to bookings</a>
             </x-slot>
         </x-page-header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Customer Info -->
             <div class="backend-card rounded-xl">
-                <h2 class="text-lg font-semibold mb-3">Customer Information</h2>
-                <div class="space-y-2 text-gray-600 dark:text-text-secondary">
-                    <p><span class="font-semibold text-text-primary">Name:</span> {{ $booking->user->name }}</p>
-                    <p><span class="font-semibold text-text-primary">Email:</span> {{ $booking->user->email }}</p>
+                <h2 class="text-lg font-extrabold text-stone-950 mb-3">Customer Information</h2>
+                <div class="space-y-2 text-stone-600">
+                    <p><span class="font-semibold text-stone-950">Name:</span> {{ $booking->user->name }}</p>
+                    <p><span class="font-semibold text-stone-950">Email:</span> {{ $booking->user->email }}</p>
                 </div>
             </div>
 
             <!-- Service Info -->
             <div class="backend-card rounded-xl">
-                <h2 class="text-lg font-semibold mb-3">Service Details</h2>
-                <div class="space-y-2 text-gray-600 dark:text-text-secondary">
-                    <p><span class="font-semibold text-text-primary">Service:</span> {{ $booking->service->name }}</p>
-                    <p><span class="font-semibold text-text-primary">Price:</span> <span class="text-orange font-bold">GH₵{{ number_format($booking->service->price, 2) }}</span></p>
-                    <p><span class="font-semibold text-text-primary">Device Model:</span> {{ $booking->device_model }}</p>
-                    <p><span class="font-semibold text-text-primary">Preferred Date:</span> {{ $booking->preferred_date->format('M d, Y') }}</p>
+                <h2 class="text-lg font-extrabold text-stone-950 mb-3">Service Details</h2>
+                <div class="space-y-2 text-stone-600">
+                    <p><span class="font-semibold text-stone-950">Service:</span> {{ $booking->service->name }}</p>
+                    <p><span class="font-semibold text-stone-950">Price:</span> <span class="text-brand font-bold">GH₵{{ number_format($booking->service->price, 2) }}</span></p>
+                    <p><span class="font-semibold text-stone-950">Device Model:</span> {{ $booking->device_model }}</p>
+                    <p><span class="font-semibold text-stone-950">Preferred Date:</span> {{ $booking->preferred_date->format('M d, Y') }}</p>
                 </div>
             </div>
         </div>
 
         <div class="backend-card rounded-xl">
-            <h2 class="text-lg font-semibold mb-3">Booking Tracking</h2>
+            <h2 class="text-lg font-extrabold text-stone-950 mb-3">Booking Tracking</h2>
             <div class="space-y-2">
                 @forelse($booking->statusHistories as $history)
-                    <div class="rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-3">
+                    <div class="rounded-lg border border-stone-200 px-3 py-3">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <p class="text-sm font-semibold">
                                 {{ ucfirst($history->to_status) }}
                                 @if($history->from_status)
-                                    <span class="text-gray-500 dark:text-text-secondary font-normal">from {{ ucfirst($history->from_status) }}</span>
+                                    <span class="text-stone-500 font-normal">from {{ ucfirst($history->from_status) }}</span>
                                 @endif
                             </p>
-                            <span class="text-xs text-gray-500 dark:text-text-secondary">{{ $history->created_at->format('M d, Y H:i') }}</span>
+                            <span class="text-xs text-stone-500">{{ $history->created_at->format('M d, Y H:i') }}</span>
                         </div>
-                        <p class="text-xs text-gray-600 dark:text-text-secondary mt-1">Updated by {{ $history->actor?->name ?? 'System' }}</p>
+                        <p class="text-xs text-stone-600 mt-1">Updated by {{ $history->actor?->name ?? 'System' }}</p>
                     </div>
                 @empty
-                    <p class="text-sm text-gray-600 dark:text-text-secondary">No tracking updates yet.</p>
+                    <p class="text-sm text-stone-600">No tracking updates yet.</p>
                 @endforelse
             </div>
         </div>
@@ -67,14 +61,14 @@
         <!-- Notes -->
         @if($booking->notes)
             <div class="backend-card rounded-xl">
-                <h2 class="text-lg font-semibold mb-3">Customer Notes</h2>
-                <p class="text-gray-600 dark:text-text-secondary">{{ $booking->notes }}</p>
+                <h2 class="text-lg font-extrabold text-stone-950 mb-3">Customer Notes</h2>
+                <p class="text-stone-600">{{ $booking->notes }}</p>
             </div>
         @endif
 
         <!-- Update Status -->
         <div class="backend-card rounded-xl">
-            <h2 class="text-lg font-semibold mb-3">Update Booking Status</h2>
+            <h2 class="text-lg font-extrabold text-stone-950 mb-3">Update Booking Status</h2>
             <form action="{{ route('admin.bookings.updateStatus', $booking) }}" method="POST" class="flex flex-col sm:flex-row sm:items-end gap-3">
                 @csrf
                 @method('PATCH')
@@ -94,7 +88,4 @@
                 </button>
             </form>
         </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+</x-admin-layout>

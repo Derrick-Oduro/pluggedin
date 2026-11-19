@@ -1,23 +1,15 @@
-<x-app-layout>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-            <aside class="xl:col-span-3">
-                @include('admin._tabs')
-            </aside>
-
-            <div class="xl:col-span-9 space-y-4">
-                <div class="flex justify-between items-center">
-                    <h1 class="text-2xl font-bold">Manage Products</h1>
-                    <div class="flex items-center gap-2">
-                        <a href="{{ route('admin.products.pending') }}" class="bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Pending Reviews</a>
-                        <a href="{{ route('admin.products.create') }}" class="bg-orange hover:bg-orange-light text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Add Product</a>
-                    </div>
-                </div>
+<x-admin-layout>
+                <x-page-header badge="Admin" title="Products" subtitle="Every catalog and community listing in the marketplace.">
+                    <x-slot:actions>
+                        <a href="{{ route('admin.products.pending') }}" class="btn-secondary">Moderation queue</a>
+                        <a href="{{ route('admin.products.create') }}" class="btn-primary">Add product</a>
+                    </x-slot:actions>
+                </x-page-header>
 
                 @if($products->count())
                     <div class="backend-table-wrap">
                         <table class="backend-table">
-                            <thead class="border-b border-gray-200 dark:border-gray-700">
+                            <thead class="border-b border-stone-200">
                                 <tr>
                                     <th class="backend-th">ID</th>
                                     <th class="backend-th">Name</th>
@@ -35,25 +27,19 @@
                             <td class="backend-td">{{ $product->name }}</td>
                             <td class="backend-td">{{ $product->category->name }}</td>
                             <td class="backend-td">
-                                <span class="text-xs px-3 py-1 rounded-full
-                                    @if($product->status === 'approved') bg-green-500/20 text-green-500
-                                    @elseif($product->status === 'pending') bg-yellow-500/20 text-yellow-500
-                                    @else bg-red-500/20 text-red-500
-                                    @endif">
-                                    {{ ucfirst($product->status) }}
-                                </span>
+                                <x-status-badge :status="$product->status" />
                             </td>
-                            <td class="backend-td text-orange font-semibold">GH₵{{ number_format($product->price, 2) }}</td>
+                            <td class="backend-td text-brand font-semibold">GH₵{{ number_format($product->price, 2) }}</td>
                             <td class="backend-td">{{ $product->stock_quantity }}</td>
                             <td class="backend-td">
                                 <div class="flex gap-2">
-                                    <a href="{{ route('admin.products.edit', $product) }}" class="text-blue-500 hover:text-blue-400">
+                                    <a href="{{ route('admin.products.edit', $product) }}" class="font-bold text-brand hover:text-brand-deep">
                                         Edit
                                     </a>
                                     <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Are you sure?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-500 hover:text-red-400">
+                                        <button type="submit" class="font-bold text-red-600 hover:text-red-700">
                                             Delete
                                         </button>
                                     </form>
@@ -76,7 +62,4 @@
                 <div class="mt-4">
                     {{ $products->links() }}
                 </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+</x-admin-layout>

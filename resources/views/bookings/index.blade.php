@@ -1,57 +1,37 @@
 <x-app-layout>
-    <section class="relative overflow-hidden py-20 bg-gradient-to-b from-white via-orange-50/40 to-white dark:from-dark dark:via-dark-secondary dark:to-dark">
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-10">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange mb-3">Bookings</p>
-                <h1 class="text-5xl sm:text-6xl font-bold">My Bookings</h1>
-            </div>
+    <section class="page-shell">
+        <div class="content-wrap relative z-10">
+            <x-page-header badge="Repairs" title="My bookings" subtitle="Repair and upgrade requests you've made with PluggedIn.">
+                <x-slot:actions>
+                    <a href="{{ route('services.index') }}" class="btn-primary">Book a service</a>
+                </x-slot:actions>
+            </x-page-header>
 
             @if($bookings->count() > 0)
                 <div class="space-y-4">
                     @foreach($bookings as $booking)
-                        <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
-                            <div class="flex justify-between items-start mb-4">
+                        <article class="backend-card">
+                            <div class="flex flex-wrap items-start justify-between gap-3">
                                 <div>
-                                    <h3 class="text-xl font-bold mb-1">{{ $booking->service->name }}</h3>
-                                    <p class="text-gray-600 dark:text-text-secondary text-sm">Device: {{ $booking->device_model }}</p>
-                                    <p class="text-gray-600 dark:text-text-secondary text-sm">Preferred Date: {{ $booking->preferred_date->format('M d, Y') }}</p>
-                                    <p class="text-gray-600 dark:text-text-secondary text-sm">Booked: {{ $booking->created_at->format('M d, Y') }}</p>
+                                    <h3 class="text-lg font-extrabold text-stone-950">{{ $booking->service->name }}</h3>
+                                    <p class="mt-1 text-sm text-stone-600">{{ $booking->device_model }} · Preferred {{ $booking->preferred_date->format('M d, Y') }}</p>
+                                    <p class="text-xs text-stone-500">Booked {{ $booking->created_at->format('M d, Y') }}</p>
                                 </div>
-                                <span class="text-xs px-3 py-1 rounded-full
-                                    @if($booking->status === 'pending') bg-yellow-500/20 text-yellow-500
-                                    @elseif($booking->status === 'approved') bg-blue-500/20 text-blue-500
-                                    @elseif($booking->status === 'completed') bg-green-500/20 text-green-500
-                                    @else bg-red-500/20 text-red-500
-                                    @endif">
-                                    {{ ucfirst($booking->status) }}
-                                </span>
+                                <x-status-badge :status="$booking->status" />
                             </div>
-
                             @if($booking->notes)
-                                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
-                                    <p class="text-gray-600 dark:text-text-secondary text-sm"><span class="font-semibold text-text-primary">Notes:</span> {{ $booking->notes }}</p>
-                                </div>
+                                <p class="mt-4 rounded-xl bg-stone-50 p-3 text-sm text-stone-600">{{ $booking->notes }}</p>
                             @endif
-
-                            <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
-                                <a href="{{ route('bookings.show', $booking) }}" class="text-orange hover:text-orange-light text-sm font-semibold">
-                                    View Details
-                                </a>
+                            <div class="mt-4 border-t border-stone-100 pt-4">
+                                <a href="{{ route('bookings.show', $booking) }}" class="btn-link">View details →</a>
                             </div>
-                        </div>
+                        </article>
                     @endforeach
                 </div>
 
-                <div class="mt-6 bg-white dark:bg-dark-secondary rounded-xl border border-gray-200 dark:border-gray-800 p-4">
-                    {{ $bookings->links() }}
-                </div>
+                <div class="mt-8">{{ $bookings->links() }}</div>
             @else
-                <div class="bg-white dark:bg-dark-secondary rounded-2xl border border-gray-200 dark:border-gray-800 text-center py-14 px-6">
-                    <p class="text-gray-600 dark:text-text-secondary text-xl mb-6">You haven't booked any services yet</p>
-                    <a href="{{ route('services.index') }}" class="inline-block bg-orange hover:bg-orange-light text-white px-8 py-3 rounded-lg font-semibold transition">
-                        View Services
-                    </a>
-                </div>
+                <x-empty-state title="No bookings yet" message="Need a repair or an upgrade? Book a service and we'll confirm within 24 hours." action-label="View services" :action-href="route('services.index')" />
             @endif
         </div>
     </section>

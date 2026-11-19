@@ -1,139 +1,133 @@
 <x-app-layout>
-    <section class="relative overflow-hidden py-20 bg-gradient-to-b from-white via-orange-50/40 to-white dark:from-dark dark:via-dark-secondary dark:to-dark">
-        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-8">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange mb-3">Order Detail</p>
-                <h1 class="text-5xl sm:text-6xl font-bold">Order #{{ $order->id }}</h1>
-            </div>
+    @php
+        $isPickup = $order->fulfilment_method === 'campus_pickup';
+        $statusRanks = ['pending' => 1, 'confirmed' => 2, 'processing' => 3, 'ready_for_pickup' => 4, 'shipped' => 4, 'completed' => 5];
+        $currentRank = $statusRanks[$order->status] ?? 0;
+        $steps = [
+            'pending' => ['Order placed', 'We received your order'],
+            'confirmed' => ['Confirmed', 'PluggedIn is preparing it'],
+            'processing' => ['Preparing', 'Your items are being packed'],
+            $isPickup ? 'ready_for_pickup' : 'shipped' => [$isPickup ? 'Ready for pickup' : 'Shipped', $isPickup ? 'Waiting at the campus pickup point' : 'On the way to you'],
+            'completed' => [$isPickup ? 'Collected' : 'Delivered', $isPickup ? 'Pickup completed' : 'Delivery completed'],
+        ];
+    @endphp
 
-            <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 mb-6 border border-gray-200 dark:border-gray-800">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold">Order Status</h2>
-                    <span class="text-xs px-3 py-1 rounded-full
-                        @if($order->status === 'pending') bg-yellow-500/20 text-yellow-500
-                        @elseif($order->status === 'confirmed') bg-blue-500/20 text-blue-500
-                        @elseif($order->status === 'completed') bg-green-500/20 text-green-500
-                        @else bg-red-500/20 text-red-500
-                        @endif">
-                        {{ ucfirst($order->status) }}
-                    </span>
-                </div>
-                <p class="text-gray-600 dark:text-text-secondary">Order Date: {{ $order->created_at->format('M d, Y H:i') }}</p>
-                @if(in_array($order->status, ['pending', 'confirmed'], true))
-                    <form action="{{ route('orders.cancel', $order) }}" method="POST" class="mt-4">
-                        @csrf
-                        @method('PATCH')
-                        <input type="hidden" name="reason" value="Cancelled by customer">
-                        <button type="submit" class="inline-flex rounded-lg border border-red-500 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-500 hover:text-white">Cancel order</button>
-                    </form>
-                @endif
-            </div>
+    <section class="page-shell">
+        <div class="content-wrap relative z-10 max-w-5xl">
+            <x-page-header
+                badge="Order detail"
+                :title="'Order #'.$order->id"
+                :subtitle="'Placed '.$order->created_at->format('M d, Y · H:i')"
+                :back-href="route('orders.index')"
+                back-label="Back to my orders"
+            >
+                <x-slot:actions>
+                    <x-status-badge :status="$order->status" />
+                    @if(in_array($order->status, ['pending', 'confirmed'], true))
+                        <form action="{{ route('orders.cancel', $order) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="reason" value="Cancelled by customer">
+                            <button type="submit" class="inline-flex h-11 items-center rounded-xl border border-red-200 bg-white px-4 text-sm font-bold text-red-600 transition hover:bg-red-50">Cancel order</button>
+                        </form>
+                    @endif
+                </x-slot:actions>
+            </x-page-header>
 
-            <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 mb-6 border border-gray-200 dark:border-gray-800">
-                <h2 class="text-xl font-bold mb-4">Order Tracking</h2>
-                @if($order->status === 'cancelled')
-                    <div class="mb-4 rounded-lg border border-red-500/50 bg-red-500/10 px-3 py-2 text-sm text-red-500">
-                        This order was cancelled before completion.
-                    </div>
-                @endif
-                @php
-                    $statusRanks = ['pending' => 1, 'confirmed' => 2, 'processing' => 3, 'ready_for_pickup' => 4, 'shipped' => 4, 'completed' => 5];
-                @endphp
-                <div class="mb-5 grid grid-cols-5 gap-2">
-                    @foreach(['pending' => 'Order placed', 'confirmed' => 'Confirmed', 'processing' => 'Preparing', 'shipped' => $order->fulfilment_method === 'campus_pickup' ? 'Ready for pickup' : 'Shipped', 'completed' => $order->fulfilment_method === 'campus_pickup' ? 'Collected' : 'Delivered'] as $step => $label)
-                        <div class="h-1.5 rounded-full {{ ($statusRanks[$step] ?? 0) <= ($statusRanks[$order->status] ?? 0) ? 'bg-orange' : 'bg-gray-200 dark:bg-gray-700' }}"></div>
-                    @endforeach
-                </div>
-                <div class="space-y-3">
-                    @foreach(['pending' => 'Pending', 'confirmed' => 'Confirmed', 'processing' => 'Processing', 'ready_for_pickup' => 'Ready for pickup', 'shipped' => 'Shipped', 'completed' => 'Completed', 'cancelled' => 'Cancelled', 'refunded' => 'Refunded'] as $statusKey => $statusLabel)
-                        @php($timestamp = optional($order->statusHistories->firstWhere('to_status', $statusKey))->created_at)
-                        <div class="rounded-xl border px-4 py-3 {{ ($statusRanks[$statusKey] ?? 0) <= ($statusRanks[$order->status] ?? 0) && $order->status !== 'cancelled' ? 'border-orange/30 bg-orange/5' : 'border-gray-200 dark:border-gray-700' }}">
-                            <div class="flex flex-wrap items-center justify-between gap-2">
-                                <p class="text-sm font-semibold">{{ $statusLabel }}@if($statusKey === 'pending') <span class="font-normal text-gray-500">— we received your order</span>@elseif($statusKey === 'confirmed') <span class="font-normal text-gray-500">— PluggedIn is preparing it</span>@elseif($statusKey === 'completed') <span class="font-normal text-gray-500">— {{ $order->fulfilment_method === 'campus_pickup' ? 'pickup completed' : 'delivery completed' }}</span>@endif</p>
-                                <span class="text-xs text-gray-500 dark:text-text-secondary">
-                                    {{ $timestamp ? $timestamp->format('M d, Y H:i') : 'Not reached yet' }}
-                                </span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 mb-6 border border-gray-200 dark:border-gray-800">
-                <h2 class="text-xl font-bold mb-4">Fulfilment</h2>
-                <p class="text-gray-600 dark:text-text-secondary mb-2"><span class="font-semibold text-gray-900 dark:text-text-primary">{{ $order->fulfilment_method === 'campus_pickup' ? 'Campus pickup' : 'Delivery' }}</span></p>
-                @if($order->fulfilment_method === 'campus_pickup')
-                    <p class="text-gray-600 dark:text-text-secondary mb-4">Pickup campus: {{ $order->pickup_campus }}</p>
-                @else
-                    <p class="text-gray-600 dark:text-text-secondary mb-4">{{ $order->delivery_address }}</p>
-                @endif
-                <p class="text-gray-600 dark:text-text-secondary"><span class="font-semibold text-gray-900 dark:text-text-primary">Phone:</span> {{ $order->delivery_phone }}</p>
-            </div>
-
-            <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
-                <h2 class="text-xl font-bold mb-4">Order Items</h2>
-
-                <div class="space-y-4">
-                    @foreach($order->items as $item)
-                        <div id="review-product-{{ $item->product->id }}" class="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
-                            <div class="flex justify-between items-center">
-                            <div class="flex gap-4">
-                                @if($item->product->image_path)
-                                    <img src="{{ asset('storage/' . $item->product->image_path) }}" alt="{{ $item->product->name }}" class="w-16 h-16 object-cover rounded-lg">
-                                @else
-                                    <div class="w-16 h-16 bg-gray-200 dark:bg-gray-800 rounded-lg"></div>
-                                @endif
-
-                                <div>
-                                    <h3 class="font-semibold">{{ $item->product->name }}</h3>
-                                    <p class="text-gray-600 dark:text-text-secondary text-sm">Quantity: {{ $item->quantity }}</p>
-                                </div>
-                            </div>
-
-                            <div class="text-right">
-                                <p class="text-gray-600 dark:text-text-secondary text-sm">GH₵{{ number_format($item->price, 2) }} each</p>
-                                <p class="text-orange font-bold">GH₵{{ number_format($item->price * $item->quantity, 2) }}</p>
-                            </div>
-                            </div>
-
-                            @if($canReviewOrder)
-                                @php($itemReview = $userReviews->get($item->product_id))
-                                <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                                    @if($itemReview)
-                                        <p class="font-semibold">Your review: {{ $itemReview->rating }}/5</p>
-                                        @if($itemReview->comment)
-                                            <p class="text-gray-600 dark:text-text-secondary mt-2">{{ $itemReview->comment }}</p>
-                                        @endif
-                                    @else
-                                        <form action="{{ route('products.reviews.store', $item->product) }}" method="POST" class="space-y-3">
-                                            @csrf
+            <div class="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+                <div class="space-y-6">
+                    <section class="backend-card">
+                        <h2 class="text-lg font-extrabold text-stone-950">Items</h2>
+                        <div class="mt-4 divide-y divide-stone-100">
+                            @foreach($order->items as $item)
+                                <div id="review-product-{{ $item->product->id }}" class="py-4 first:pt-0 last:pb-0">
+                                    <div class="flex items-center justify-between gap-4">
+                                        <div class="flex items-center gap-4">
+                                            @if($item->product->image_path)
+                                                <img src="{{ asset('storage/' . $item->product->image_path) }}" alt="{{ $item->product->name }}" class="h-16 w-16 rounded-xl object-cover">
+                                            @else
+                                                <div class="h-16 w-16 rounded-xl bg-stone-100"></div>
+                                            @endif
                                             <div>
-                                                <label class="block text-sm mb-2">Rate this item</label>
-                                                <select name="rating" class="w-full sm:w-56 bg-white dark:bg-dark-secondary border border-gray-300 dark:border-gray-700 rounded px-3 py-2" required>
-                                                    <option value="">Select rating</option>
-                                                    <option value="5">5 Stars</option>
-                                                    <option value="4">4 Stars</option>
-                                                    <option value="3">3 Stars</option>
-                                                    <option value="2">2 Stars</option>
-                                                    <option value="1">1 Star</option>
-                                                </select>
+                                                <h3 class="font-extrabold text-stone-950">{{ $item->product->name }}</h3>
+                                                <p class="text-sm text-stone-500">{{ $item->quantity }} × GH₵{{ number_format($item->price, 2) }}</p>
                                             </div>
-                                            <div>
-                                                <label class="block text-sm mb-2">Comment (optional)</label>
-                                                <textarea name="comment" rows="2" class="w-full bg-white dark:bg-dark-secondary border border-gray-300 dark:border-gray-700 rounded px-3 py-2"></textarea>
-                                            </div>
-                                            <button type="submit" class="inline-flex bg-orange hover:bg-orange-light text-white px-4 py-2 rounded-lg font-semibold transition">Submit Review</button>
-                                        </form>
+                                        </div>
+                                        <p class="font-extrabold text-stone-950">GH₵{{ number_format($item->price * $item->quantity, 2) }}</p>
+                                    </div>
+
+                                    @if($canReviewOrder)
+                                        @php $itemReview = $userReviews->get($item->product_id); @endphp
+                                        <div class="mt-4 rounded-xl bg-stone-50 p-4">
+                                            @if($itemReview)
+                                                <p class="text-sm font-bold text-stone-950">Your review: {{ $itemReview->rating }}/5</p>
+                                                @if($itemReview->comment)<p class="mt-1 text-sm text-stone-600">{{ $itemReview->comment }}</p>@endif
+                                            @else
+                                                <form action="{{ route('products.reviews.store', $item->product) }}" method="POST" class="grid gap-3 sm:grid-cols-[150px_1fr_auto]">
+                                                    @csrf
+                                                    <select name="rating" class="backend-field" required aria-label="Rating">
+                                                        <option value="">Your rating</option>
+                                                        @foreach([5, 4, 3, 2, 1] as $stars)
+                                                            <option value="{{ $stars }}">{{ $stars }} {{ \Illuminate\Support\Str::plural('star', $stars) }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <input name="comment" class="backend-field" placeholder="Share your experience (optional)" aria-label="Comment">
+                                                    <button type="submit" class="btn-primary">Post review</button>
+                                                </form>
+                                            @endif
+                                        </div>
                                     @endif
                                 </div>
-                            @endif
+                            @endforeach
                         </div>
-                    @endforeach
+                        <div class="mt-4 flex items-center justify-between border-t border-stone-200 pt-4">
+                            <span class="font-extrabold text-stone-950">Total</span>
+                            <span class="text-2xl font-extrabold tracking-[-.04em] text-stone-950">GH₵{{ number_format($order->total_price, 2) }}</span>
+                        </div>
+                    </section>
                 </div>
 
-                <div class="flex justify-between items-center pt-4 mt-4 border-t border-gray-300 dark:border-gray-700">
-                    <span class="text-2xl font-bold">Total:</span>
-                    <span class="text-3xl font-bold text-orange">GH₵{{ number_format($order->total_price, 2) }}</span>
+                <div class="space-y-6">
+                    <section class="backend-card">
+                        <h2 class="text-lg font-extrabold text-stone-950">Tracking</h2>
+                        @if($order->status === 'cancelled')
+                            <p class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">This order was cancelled before completion.</p>
+                        @elseif($order->status === 'refunded')
+                            <p class="mt-4 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-semibold text-stone-700">This order was refunded.</p>
+                        @endif
+                        <ol class="mt-5 space-y-0">
+                            @foreach($steps as $statusKey => [$label, $hint])
+                                @php
+                                    $reached = $order->status !== 'cancelled' && ($statusRanks[$statusKey] ?? 0) <= $currentRank;
+                                    $timestamp = optional($order->statusHistories->firstWhere('to_status', $statusKey))->created_at;
+                                @endphp
+                                <li class="relative flex gap-3 pb-5 last:pb-0">
+                                    @unless($loop->last)<span @class(['absolute left-[9px] top-6 h-full w-0.5', 'bg-brand' => $reached, 'bg-stone-200' => ! $reached])></span>@endunless
+                                    <span @class(['relative z-10 mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2', 'border-brand bg-brand' => $reached, 'border-stone-300 bg-white' => ! $reached])>
+                                        @if($reached)<svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>@endif
+                                    </span>
+                                    <div>
+                                        <p @class(['text-sm font-extrabold', 'text-stone-950' => $reached, 'text-stone-400' => ! $reached])>{{ $label }}</p>
+                                        <p class="text-xs text-stone-500">{{ $timestamp ? $timestamp->format('M d, Y · H:i') : $hint }}</p>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ol>
+                    </section>
+
+                    <section class="backend-card">
+                        <h2 class="text-lg font-extrabold text-stone-950">{{ $isPickup ? 'Campus pickup' : 'Delivery' }}</h2>
+                        <dl class="mt-4 space-y-3 text-sm">
+                            <div>
+                                <dt class="text-[11px] font-extrabold uppercase tracking-[.12em] text-stone-500">{{ $isPickup ? 'Pickup campus' : 'Address' }}</dt>
+                                <dd class="mt-1 whitespace-pre-line font-semibold text-stone-950">{{ $isPickup ? $order->pickup_campus : $order->delivery_address }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-[11px] font-extrabold uppercase tracking-[.12em] text-stone-500">Phone</dt>
+                                <dd class="mt-1 font-semibold text-stone-950">{{ $order->delivery_phone }}</dd>
+                            </div>
+                        </dl>
+                    </section>
                 </div>
             </div>
         </div>

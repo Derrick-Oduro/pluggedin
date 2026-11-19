@@ -1,98 +1,81 @@
 <x-app-layout>
-    <section class="relative overflow-hidden py-20 bg-gradient-to-b from-white via-orange-50/40 to-white dark:from-dark dark:via-dark-secondary dark:to-dark">
-        <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-10">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange mb-3">Checkout</p>
-                <h1 class="text-5xl sm:text-6xl font-bold">Place Your Order</h1>
-            </div>
+    <section class="page-shell">
+        <div class="content-wrap relative z-10 max-w-5xl">
+            <x-page-header badge="Checkout" title="Place your order" subtitle="Choose delivery or campus pickup, then pay securely with Paystack." :back-href="route('cart.index')" back-label="Back to cart" />
 
-            <form action="{{ route('orders.store') }}" method="POST" class="space-y-6">
+            <form action="{{ route('orders.store') }}" method="POST" x-data="{ method: @js(old('fulfilment_method', 'delivery')) }" class="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
                 @csrf
 
-                @error('payment')
-                    <div class="rounded-lg border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm text-red-600">{{ $message }}</div>
-                @enderror
+                <div class="space-y-6">
+                    @error('payment')
+                        <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{{ $message }}</div>
+                    @enderror
 
-                <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
-                    <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
-                    @foreach($cartItems as $item)
-                        <div class="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700 text-sm">
-                            <span>{{ $item->product->name }} x {{ $item->quantity }}</span>
-                            <span class="text-orange font-medium">GH₵{{ number_format($item->product->price * $item->quantity, 2) }}</span>
+                    <section class="backend-card">
+                        <h2 class="text-lg font-extrabold text-stone-950">How would you like to receive it?</h2>
+                        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                            @foreach(['delivery' => ['Delivery', 'Send the order to your address.'], 'campus_pickup' => ['Campus pickup', 'Collect from the PluggedIn point on campus.']] as $value => [$label, $hint])
+                                <label class="flex cursor-pointer gap-3 rounded-xl border p-4 transition" x-bind:class="method === @js($value) ? 'border-brand bg-brand-tint' : 'border-stone-200 hover:border-stone-300'">
+                                    <input type="radio" name="fulfilment_method" value="{{ $value }}" x-model="method" class="mt-0.5 text-brand focus:ring-brand">
+                                    <span><span class="block font-extrabold text-stone-950">{{ $label }}</span><span class="mt-1 block text-sm text-stone-600">{{ $hint }}</span></span>
+                                </label>
+                            @endforeach
                         </div>
-                    @endforeach
 
-                    <div class="flex justify-between py-2 text-sm border-t border-gray-200 dark:border-gray-700 mt-3 pt-3">
-                        <span>Subtotal</span>
-                        <span>GH₵{{ number_format($subtotal ?? $total, 2) }}</span>
-                    </div>
-
-                    @if(($discountAmount ?? 0) > 0)
-                        <div class="flex justify-between py-1 text-sm text-green-600 dark:text-green-400">
-                            <span>
-                                Discount
-                                @if($autoCampaign)
-                                    ({{ $autoCampaign->name }})
-                                @endif
-                            </span>
-                            <span>- GH₵{{ number_format($discountAmount, 2) }}</span>
+                        <div class="mt-5 space-y-4">
+                            <div x-show="method === 'campus_pickup'" x-cloak>
+                                <label for="pickup_campus" class="mb-1.5 block text-sm font-bold text-stone-800">Campus for pickup</label>
+                                <input id="pickup_campus" type="text" name="pickup_campus" value="{{ old('pickup_campus') }}" placeholder="e.g. University of Ghana" class="backend-field">
+                                @error('pickup_campus')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
+                            </div>
+                            <div x-show="method === 'delivery'">
+                                <label for="delivery_address" class="mb-1.5 block text-sm font-bold text-stone-800">Delivery address</label>
+                                <textarea id="delivery_address" name="delivery_address" rows="3" class="backend-field h-auto py-3" placeholder="Hall, room, landmark or full address">{{ old('delivery_address') }}</textarea>
+                                @error('delivery_address')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label for="delivery_phone" class="mb-1.5 block text-sm font-bold text-stone-800">Phone number <span class="text-brand">*</span></label>
+                                <input id="delivery_phone" type="tel" name="delivery_phone" value="{{ old('delivery_phone') }}" required class="backend-field">
+                                @error('delivery_phone')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
+                            </div>
                         </div>
-                    @endif
+                    </section>
 
-                    <div class="flex justify-between py-3 text-xl font-bold border-t border-gray-200 dark:border-gray-700 mt-2">
-                        <span>Total:</span>
-                        <span class="text-orange">GH₵{{ number_format($total, 2) }}</span>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
-                    <h2 class="text-2xl font-bold mb-4">Promotion</h2>
-                    <div>
-                        <label class="block text-sm mb-2">Promo Code (optional)</label>
-                        <input type="text" name="promo_code" value="{{ old('promo_code') }}" placeholder="Enter promo code"
-                               class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 focus:border-orange focus:ring-orange uppercase">
-                        @error('promo_code')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
+                    <section class="backend-card">
+                        <h2 class="text-lg font-extrabold text-stone-950">Promo code</h2>
+                        <input type="text" name="promo_code" value="{{ old('promo_code') }}" placeholder="Enter promo code (optional)" aria-label="Promo code" class="backend-field mt-4 uppercase">
+                        @error('promo_code')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
                         @if($autoCampaign)
-                            <p class="text-xs text-gray-600 dark:text-text-secondary mt-2">Active automatic discount: {{ $autoCampaign->name }} ({{ $autoCampaign->discount_percent }}% off)</p>
+                            <p class="mt-2 text-xs text-stone-600">Automatic discount applied: {{ $autoCampaign->name }} ({{ $autoCampaign->discount_percent }}% off)</p>
                         @endif
-                    </div>
+                    </section>
                 </div>
 
-                <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
-                    <h2 class="text-2xl font-bold mb-4">How would you like to receive this order?</h2>
-
-                    <div class="space-y-4">
-                        <label class="flex cursor-pointer gap-3 rounded-xl border border-gray-200 p-4"><input type="radio" name="fulfilment_method" value="delivery" {{ old('fulfilment_method', 'delivery') === 'delivery' ? 'checked' : '' }}><span><b>Delivery</b><span class="mt-1 block text-sm text-gray-600">Send the order to your preferred address.</span></span></label>
-                        <label class="flex cursor-pointer gap-3 rounded-xl border border-gray-200 p-4"><input type="radio" name="fulfilment_method" value="campus_pickup" {{ old('fulfilment_method') === 'campus_pickup' ? 'checked' : '' }}><span><b>Campus pickup</b><span class="mt-1 block text-sm text-gray-600">Collect from the PluggedIn pickup point on your campus.</span></span></label>
-                        <div>
-                            <label class="block text-sm mb-2">Campus for pickup</label>
-                            <input type="text" name="pickup_campus" value="{{ old('pickup_campus') }}" placeholder="e.g. University of Ghana" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5">
+                <aside>
+                    <div class="backend-card lg:sticky lg:top-24">
+                        <h2 class="text-lg font-extrabold text-stone-950">Order summary</h2>
+                        <ul class="mt-4 divide-y divide-stone-100 text-sm">
+                            @foreach($cartItems as $item)
+                                <li class="flex justify-between gap-4 py-2.5">
+                                    <span class="text-stone-700">{{ $item->product->name }} <span class="text-stone-400">× {{ $item->quantity }}</span></span>
+                                    <span class="font-bold text-stone-950">GH₵{{ number_format($item->product->price * $item->quantity, 2) }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                        <dl class="mt-3 space-y-2 border-t border-stone-200 pt-3 text-sm">
+                            <div class="flex justify-between"><dt class="text-stone-600">Subtotal</dt><dd class="font-bold">GH₵{{ number_format($subtotal ?? $total, 2) }}</dd></div>
+                            @if(($discountAmount ?? 0) > 0)
+                                <div class="flex justify-between text-emerald-700"><dt>Discount @if($autoCampaign)({{ $autoCampaign->name }})@endif</dt><dd class="font-bold">− GH₵{{ number_format($discountAmount, 2) }}</dd></div>
+                            @endif
+                        </dl>
+                        <div class="mt-3 flex items-center justify-between border-t border-stone-200 pt-3">
+                            <span class="font-extrabold text-stone-950">Total</span>
+                            <span class="text-2xl font-extrabold tracking-[-.04em] text-stone-950">GH₵{{ number_format($total, 2) }}</span>
                         </div>
-                        <div>
-                            <label class="block text-sm mb-2">Delivery Address</label>
-                            <textarea name="delivery_address" rows="3"
-                                      class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 focus:border-orange focus:ring-orange">{{ old('delivery_address') }}</textarea>
-                            @error('delivery_address')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-sm mb-2">Phone Number *</label>
-                            <input type="text" name="delivery_phone" value="{{ old('delivery_phone') }}" required
-                                   class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 focus:border-orange focus:ring-orange">
-                            @error('delivery_phone')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <button type="submit" class="btn-primary mt-5 w-full">Continue to Paystack</button>
+                        <p class="mt-3 text-center text-xs text-stone-500">You'll be redirected to Paystack to complete payment.</p>
                     </div>
-                </div>
-
-                <button type="submit" class="w-full bg-orange hover:bg-orange-light text-white px-8 py-4 rounded-lg font-semibold transition">
-                    Continue to Paystack
-                </button>
+                </aside>
             </form>
         </div>
     </section>

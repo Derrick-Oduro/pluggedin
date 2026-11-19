@@ -22,13 +22,13 @@
             @if (session('success') || session('error'))
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
                     @if (session('success'))
-                        <div class="glass-panel border-green-300/70 dark:border-green-500/30 bg-green-50/90 dark:bg-green-900/20 px-4 py-2.5 text-sm text-green-700 dark:text-green-300">
+                        <div class="glass-panel border-green-300/70 bg-green-50/90 px-4 py-2.5 text-sm text-green-700">
                             {{ session('success') }}
                         </div>
                     @endif
 
                     @if (session('error'))
-                        <div class="glass-panel border-red-300/70 dark:border-red-500/30 bg-red-50/90 dark:bg-red-900/20 px-4 py-2.5 text-sm text-red-700 dark:text-red-300 {{ session('success') ? 'mt-2' : '' }}">
+                        <div class="glass-panel border-red-300/70 bg-red-50/90 px-4 py-2.5 text-sm text-red-700 {{ session('success') ? 'mt-2' : '' }}">
                             {{ session('error') }}
                         </div>
                     @endif

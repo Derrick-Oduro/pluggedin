@@ -2,10 +2,8 @@
 
 @php
 $classes = ($active ?? false)
-            ? 'block w-full ps-3 pe-4 py-2 border-l-4 border-orange text-start text-base font-semibold text-orange bg-orange/10 focus:outline-none transition duration-150 ease-in-out'
-            : 'block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 dark:text-text-secondary hover:text-orange hover:bg-orange/5 hover:border-orange/40 focus:outline-none transition duration-150 ease-in-out';
+            ? 'block w-full border-l-4 border-brand bg-brand-tint py-2 pe-4 ps-3 text-start text-base font-bold text-brand-deep focus:outline-none'
+            : 'block w-full border-l-4 border-transparent py-2 pe-4 ps-3 text-start text-base font-semibold text-stone-600 transition hover:border-brand-soft hover:bg-stone-50 hover:text-stone-950 focus:outline-none';
 @endphp
 
-<a {{ $attributes->merge(['class' => $classes]) }}>
-    {{ $slot }}
-</a>
+<a {{ $attributes->merge(['class' => $classes]) }}>{{ $slot }}</a>

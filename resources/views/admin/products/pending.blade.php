@@ -1,26 +1,15 @@
-<x-app-layout>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-            <aside class="xl:col-span-3">
-                @include('admin._tabs')
-            </aside>
+<x-admin-layout>
+                <x-page-header badge="Admin" title="Moderation queue" subtitle="Approve or reject listings submitted by sellers and shops.">
+                    <x-slot:actions>
+                        <a href="{{ route('admin.products.index') }}" class="btn-secondary">All products</a>
+                    </x-slot:actions>
+                </x-page-header>
 
-            <div class="xl:col-span-9 space-y-4">
-                <div class="flex justify-between items-center">
-                    <h1 class="text-2xl font-bold">Pending Product Reviews</h1>
-                    <a href="{{ route('admin.products.index') }}" class="text-orange hover:text-orange-light font-semibold text-sm">All Products</a>
-                </div>
 
-        @if(session('success'))
-            <div class="bg-green-500/20 border border-green-500 text-green-500 rounded-lg p-4 mb-6">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <form method="GET" class="bg-white dark:bg-dark-secondary rounded-2xl p-4 border border-gray-200 dark:border-gray-800 mb-6 grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+        <form method="GET" class="backend-card grid gap-3 sm:grid-cols-2 xl:grid-cols-5 xl:items-end">
             <div>
-                <label class="text-sm block mb-2">Status</label>
-                <select name="status" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2">
+                <label class="mb-1.5 block text-sm font-bold text-stone-800">Status</label>
+                <select name="status" class="backend-field">
                     <option value="pending" {{ request('status', 'pending') === 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Rejected</option>
                     <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved</option>
@@ -28,8 +17,8 @@
                 </select>
             </div>
             <div>
-                <label class="text-sm block mb-2">Category</label>
-                <select name="category_id" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2">
+                <label class="mb-1.5 block text-sm font-bold text-stone-800">Category</label>
+                <select name="category_id" class="backend-field">
                     <option value="">All categories</option>
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}" {{ (string) request('category_id') === (string) $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
@@ -37,8 +26,8 @@
                 </select>
             </div>
             <div>
-                <label class="text-sm block mb-2">Uploader</label>
-                <select name="uploader_id" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2">
+                <label class="mb-1.5 block text-sm font-bold text-stone-800">Uploader</label>
+                <select name="uploader_id" class="backend-field">
                     <option value="">All uploaders</option>
                     @foreach($uploaders as $uploader)
                         <option value="{{ $uploader->id }}" {{ (string) request('uploader_id') === (string) $uploader->id ? 'selected' : '' }}>{{ $uploader->name }}</option>
@@ -46,44 +35,44 @@
                 </select>
             </div>
             <div>
-                <label class="text-sm block mb-2">Search</label>
-                <input name="search" value="{{ request('search') }}" placeholder="Product name" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2">
+                <label class="mb-1.5 block text-sm font-bold text-stone-800">Search</label>
+                <input name="search" value="{{ request('search') }}" placeholder="Product name" class="backend-field">
             </div>
-            <button class="bg-orange hover:bg-orange-light text-white px-4 py-2 rounded-lg font-semibold transition">Filter</button>
+            <button class="btn-primary">Filter</button>
         </form>
 
-        <form action="{{ route('admin.products.bulk-review') }}" method="POST" id="bulk-review-form" class="mb-6 bg-white dark:bg-dark-secondary rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
+        <form action="{{ route('admin.products.bulk-review') }}" method="POST" id="bulk-review-form" class="backend-card">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
                 <div>
-                    <label class="text-sm block mb-2">Bulk Status</label>
-                    <select name="status" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2" required>
+                    <label class="mb-1.5 block text-sm font-bold text-stone-800">Bulk Status</label>
+                    <select name="status" class="backend-field" required>
                         <option value="approved">Approve selected</option>
                         <option value="rejected">Reject selected</option>
                     </select>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="text-sm block mb-2">Comment</label>
-                    <input name="admin_review_comment" placeholder="Optional moderation comment" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2">
+                    <label class="mb-1.5 block text-sm font-bold text-stone-800">Comment</label>
+                    <input name="admin_review_comment" placeholder="Optional moderation comment" class="backend-field">
                 </div>
-                <button class="bg-gray-900 hover:bg-black dark:bg-gray-700 dark:hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold transition">Apply Bulk Action</button>
+                <button class="bg-stone-900 hover:bg-black text-white px-4 py-2 rounded-lg font-semibold transition">Apply Bulk Action</button>
             </div>
         </form>
 
         <div class="space-y-4">
             @forelse($products as $product)
-                <div class="bg-white dark:bg-dark-secondary rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                <div class="backend-card">
                     <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
                         <div>
-                            <label class="inline-flex items-center gap-2 mb-3 text-sm text-gray-600 dark:text-text-secondary">
-                                <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" form="bulk-review-form" class="rounded border-gray-300 text-orange focus:ring-orange">
+                            <label class="inline-flex items-center gap-2 mb-3 text-sm text-stone-600">
+                                <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" form="bulk-review-form" class="rounded border-stone-300 text-brand focus:ring-brand">
                                 Select for bulk moderation
                             </label>
-                            <h2 class="text-2xl font-bold mb-2">{{ $product->name }}</h2>
-                            <p class="text-sm text-gray-600 dark:text-text-secondary mb-2">Category: {{ $product->category->name }}</p>
-                            <p class="text-sm text-gray-600 dark:text-text-secondary mb-2">Uploaded by: {{ $product->uploader?->name ?? 'N/A' }}</p>
-                            <p class="text-sm text-gray-600 dark:text-text-secondary">Price: GH₵{{ number_format($product->price, 2) }} | Stock: {{ $product->stock_quantity }}</p>
-                            <p class="text-gray-600 dark:text-text-secondary mt-4">{{ $product->description }}</p>
+                            <h2 class="text-lg font-extrabold text-stone-950 mb-2">{{ $product->name }}</h2>
+                            <p class="text-sm text-stone-600 mb-2">Category: {{ $product->category->name }}</p>
+                            <p class="text-sm text-stone-600 mb-2">Uploaded by: {{ $product->uploader?->name ?? 'N/A' }}</p>
+                            <p class="text-sm text-stone-600">Price: GH₵{{ number_format($product->price, 2) }} | Stock: {{ $product->stock_quantity }}</p>
+                            <p class="text-stone-600 mt-4">{{ $product->description }}</p>
                         </div>
 
                         <div class="w-full md:w-96">
@@ -92,8 +81,8 @@
                                 @method('PATCH')
 
                                 <div>
-                                    <label class="block text-sm mb-2">Admin Comment</label>
-                                    <textarea name="admin_review_comment" rows="3" class="w-full bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded px-3 py-2">{{ old('admin_review_comment') }}</textarea>
+                                    <label class="mb-1.5 block text-sm font-bold text-stone-800">Admin Comment</label>
+                                    <textarea name="admin_review_comment" rows="3" class="backend-field">{{ old('admin_review_comment') }}</textarea>
                                 </div>
 
                                 <div class="flex gap-3">
@@ -105,7 +94,7 @@
                     </div>
                 </div>
             @empty
-                <div class="bg-white dark:bg-dark-secondary rounded-2xl p-10 text-center border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-text-secondary">
+                <div class="backend-card py-14 text-center text-stone-600">
                     No pending products at the moment.
                 </div>
             @endforelse
@@ -114,7 +103,4 @@
         <div class="mt-6">
             {{ $products->links() }}
         </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+</x-admin-layout>

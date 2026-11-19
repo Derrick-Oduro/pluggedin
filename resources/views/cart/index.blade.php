@@ -1,125 +1,68 @@
 <x-app-layout>
-    <section class="relative overflow-hidden py-20 bg-gradient-to-b from-white via-orange-50/40 to-white dark:from-dark dark:via-dark-secondary dark:to-dark">
-        <div class="absolute inset-0 pointer-events-none opacity-70">
-            <div class="absolute -top-20 left-1/4 h-64 w-64 rounded-full bg-orange/20 blur-3xl"></div>
-            <div class="absolute -bottom-16 right-1/4 h-64 w-64 rounded-full bg-orange/15 blur-3xl"></div>
-        </div>
-
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-8">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange mb-3">Cart</p>
-                <h1 class="text-4xl sm:text-5xl font-bold">Shopping Cart</h1>
-                <p class="text-gray-600 dark:text-text-secondary mt-2">Quickly adjust quantities, remove items, and checkout.</p>
-            </div>
-
-            @if(session('success'))
-                <div class="mb-4 rounded-lg border border-green-500/50 bg-green-500/10 px-4 py-3 text-sm text-green-600 dark:text-green-400">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="mb-4 rounded-lg border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
-                    {{ session('error') }}
-                </div>
-            @endif
+    <section class="page-shell">
+        <div class="content-wrap relative z-10">
+            <x-page-header badge="Cart" title="Shopping cart" subtitle="Adjust quantities, remove items, then check out." />
 
             @if($cartItems->count() > 0)
-                @php
-                    $lineItems = $cartItems->sum('quantity');
-                    $avgLine = $cartItems->count() ? $total / $cartItems->count() : 0;
-                @endphp
-
-                <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-                    <div class="xl:col-span-8 space-y-3">
+                <div class="grid gap-6 lg:grid-cols-12">
+                    <div class="space-y-3 lg:col-span-8">
                         @foreach($cartItems as $item)
-                            <div class="bg-white dark:bg-dark-secondary rounded-xl p-4 border border-gray-200 dark:border-gray-800">
-                                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                            <article class="backend-card">
+                                <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                                    <a href="{{ route('products.show', $item->product) }}" class="flex min-w-0 flex-1 items-center gap-4">
                                         @if($item->product->image_path)
-                                            <img src="{{ asset('storage/' . $item->product->image_path) }}" alt="{{ $item->product->name }}" class="w-16 h-16 object-cover rounded-lg shrink-0">
+                                            <img src="{{ asset('storage/' . $item->product->image_path) }}" alt="{{ $item->product->name }}" class="h-20 w-20 shrink-0 rounded-xl object-cover">
                                         @else
-                                            <div class="w-16 h-16 bg-gray-200 dark:bg-gray-800 rounded-lg shrink-0"></div>
+                                            <div class="h-20 w-20 shrink-0 rounded-xl bg-stone-100"></div>
                                         @endif
-
                                         <div class="min-w-0">
-                                            <h3 class="text-base font-semibold truncate">{{ $item->product->name }}</h3>
-                                            <p class="text-sm text-gray-600 dark:text-text-secondary">GH₵{{ number_format($item->product->price, 2) }} each</p>
-                                            <p class="text-xs text-gray-500 dark:text-text-secondary">Stock: {{ $item->product->stock_quantity }}</p>
+                                            <h3 class="truncate font-extrabold text-stone-950">{{ $item->product->name }}</h3>
+                                            <p class="mt-1 text-sm text-stone-600">GH₵{{ number_format($item->product->price, 2) }} each</p>
+                                            <p class="text-xs text-stone-500">{{ $item->product->stock_quantity }} in stock</p>
                                         </div>
-                                    </div>
+                                    </a>
 
-                                    <div class="flex items-center gap-2 sm:justify-end">
+                                    <div class="flex items-center gap-2">
                                         <form action="{{ route('cart.update', $item) }}" method="POST" class="flex items-center gap-2">
                                             @csrf
                                             @method('PATCH')
-                                            <input
-                                                type="number"
-                                                name="quantity"
-                                                value="{{ $item->quantity }}"
-                                                min="1"
-                                                max="{{ $item->product->stock_quantity }}"
-                                                class="w-16 h-9 bg-white dark:bg-dark border border-gray-300 dark:border-gray-700 rounded px-2 text-center text-sm"
-                                            >
-                                            <button type="submit" class="h-9 px-3 rounded-lg bg-orange hover:bg-orange-light text-white text-xs font-semibold transition">Update</button>
+                                            <label class="sr-only" for="qty-{{ $item->id }}">Quantity</label>
+                                            <input id="qty-{{ $item->id }}" type="number" name="quantity" value="{{ $item->quantity }}" min="1" max="{{ $item->product->stock_quantity }}" class="backend-field w-20 text-center">
+                                            <button type="submit" class="btn-secondary px-4">Update</button>
                                         </form>
-
                                         <form action="{{ route('cart.remove', $item) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="h-9 px-3 rounded-lg border border-red-500/40 text-red-500 hover:bg-red-500/10 text-xs font-semibold transition">Remove</button>
+                                            <button type="submit" class="inline-flex h-11 items-center rounded-xl px-3 text-sm font-bold text-red-600 transition hover:bg-red-50">Remove</button>
                                         </form>
                                     </div>
 
-                                    <div class="sm:text-right">
-                                        <p class="text-xs text-gray-500 dark:text-text-secondary">Line total</p>
-                                        <p class="text-lg font-bold text-orange">GH₵{{ number_format($item->product->price * $item->quantity, 2) }}</p>
+                                    <div class="sm:w-32 sm:text-right">
+                                        <p class="text-[11px] font-extrabold uppercase tracking-[.12em] text-stone-500">Line total</p>
+                                        <p class="text-lg font-extrabold text-stone-950">GH₵{{ number_format($item->product->price * $item->quantity, 2) }}</p>
                                     </div>
                                 </div>
-                            </div>
+                            </article>
                         @endforeach
                     </div>
 
-                    <div class="xl:col-span-4">
-                        <div class="bg-white dark:bg-dark-secondary rounded-xl border border-gray-200 dark:border-gray-800 p-5 xl:sticky xl:top-24">
-                            <h2 class="text-lg font-semibold mb-4">Order Summary</h2>
-
-                            <div class="space-y-2 text-sm mb-4">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600 dark:text-text-secondary">Unique items</span>
-                                    <span class="font-semibold">{{ $cartItems->count() }}</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600 dark:text-text-secondary">Total quantity</span>
-                                    <span class="font-semibold">{{ $lineItems }}</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600 dark:text-text-secondary">Average line</span>
-                                    <span class="font-semibold">GH₵{{ number_format($avgLine, 2) }}</span>
-                                </div>
+                    <aside class="lg:col-span-4">
+                        <div class="backend-card lg:sticky lg:top-24">
+                            <h2 class="text-lg font-extrabold text-stone-950">Order summary</h2>
+                            <dl class="mt-4 space-y-2 text-sm">
+                                <div class="flex justify-between"><dt class="text-stone-600">Items</dt><dd class="font-bold">{{ $cartItems->sum('quantity') }}</dd></div>
+                            </dl>
+                            <div class="mt-4 flex items-center justify-between border-t border-stone-200 pt-4">
+                                <span class="font-extrabold text-stone-950">Total</span>
+                                <span class="text-2xl font-extrabold tracking-[-.04em] text-stone-950">GH₵{{ number_format($total, 2) }}</span>
                             </div>
-
-                            <div class="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
-                                <span class="text-base font-semibold">Total</span>
-                                <span class="text-2xl font-bold text-orange">GH₵{{ number_format($total, 2) }}</span>
-                            </div>
-
-                            <a href="{{ route('checkout') }}" class="h-11 w-full inline-flex items-center justify-center bg-orange hover:bg-orange-light text-white rounded-lg font-semibold transition">
-                                Proceed to Checkout
-                            </a>
-                            <a href="{{ route('products.index') }}" class="h-10 mt-2 w-full inline-flex items-center justify-center backend-btn-muted text-sm">
-                                Continue Shopping
-                            </a>
+                            <a href="{{ route('checkout') }}" class="btn-primary mt-5 w-full">Proceed to checkout</a>
+                            <a href="{{ route('products.index') }}" class="btn-secondary mt-2 w-full">Continue shopping</a>
                         </div>
-                    </div>
+                    </aside>
                 </div>
             @else
-                <div class="bg-white dark:bg-dark-secondary rounded-2xl border border-gray-200 dark:border-gray-800 text-center py-14 px-6">
-                    <p class="text-gray-600 dark:text-text-secondary text-xl mb-6">Your cart is empty</p>
-                    <a href="{{ route('products.index') }}" class="inline-block bg-orange hover:bg-orange-light text-white px-8 py-3 rounded-lg font-semibold transition">
-                        Continue Shopping
-                    </a>
-                </div>
+                <x-empty-state title="Your cart is empty" message="Browse the marketplace and add something you like." action-label="Continue shopping" :action-href="route('products.index')" />
             @endif
         </div>
     </section>

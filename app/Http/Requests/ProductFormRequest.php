@@ -34,7 +34,7 @@ class ProductFormRequest extends FormRequest
             'condition' => ['required', Rule::in(array_keys(ProductSpecs::conditions()))],
             'whats_included' => ['nullable', 'string', 'max:1000'],
             'images' => ['nullable', 'array', 'max:5'],
-            'images.*' => ['image', 'max:4096'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp,gif', 'max:8192'],
         ], ProductSpecs::rules($this->templateKey()));
     }
 

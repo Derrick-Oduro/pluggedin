@@ -51,6 +51,8 @@ Route::get('/services/{service}', [ServiceController::class, 'show'])->name('ser
 Route::view('/about', 'about')->name('about');
 Route::view('/campuses', 'campuses')->name('campuses');
 Route::view('/contact', 'contact')->name('contact');
+Route::view('/terms', 'legal.terms')->name('legal.terms');
+Route::view('/privacy', 'legal.privacy')->name('legal.privacy');
 Route::post('/contact', [ContactMessageController::class, 'store'])->middleware('throttle:6,1')->name('contact.store');
 Route::get('/search', [GlobalSearchController::class, 'index'])->name('search.global');
 Route::get('/shops/{shop:slug}', [ShopController::class, 'show'])->name('shops.show');
@@ -81,35 +83,35 @@ Route::middleware('auth')->group(function () {
     Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::get('/payments/paystack/callback', [OrderController::class, 'paystackCallback'])->name('payments.paystack.callback');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
-    Route::post('/checkout', [OrderController::class, 'store'])->name('orders.store');
+    Route::post('/checkout', [OrderController::class, 'store'])->middleware('throttle:checkout')->name('orders.store');
 
     // Bookings
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/create/{service}', [BookingController::class, 'create'])->name('bookings.create');
-    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    Route::post('/bookings', [BookingController::class, 'store'])->middleware('throttle:submissions')->name('bookings.store');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
 
     // User Product Uploads
     Route::get('/products/upload', [UserProductController::class, 'create'])->name('products.upload.create');
-    Route::post('/products/upload', [UserProductController::class, 'store'])->name('products.upload.store');
+    Route::post('/products/upload', [UserProductController::class, 'store'])->middleware('throttle:submissions')->name('products.upload.store');
 
     // PluggedIn trade-in programme (direct exchange quotes, not peer swaps)
     Route::get('/trade-in', [TradeInController::class, 'create'])->name('trade-ins.create');
-    Route::post('/trade-in', [TradeInController::class, 'store'])->name('trade-ins.store');
+    Route::post('/trade-in', [TradeInController::class, 'store'])->middleware('throttle:submissions')->name('trade-ins.store');
     Route::get('/my-trade-ins', [TradeInController::class, 'index'])->name('trade-ins.index');
     Route::patch('/my-trade-ins/{tradeIn}/respond', [TradeInController::class, 'respond'])->name('trade-ins.respond');
     Route::get('/open-a-shop', [ShopController::class, 'create'])->name('shops.create');
-    Route::post('/open-a-shop', [ShopController::class, 'store'])->name('shops.store');
+    Route::post('/open-a-shop', [ShopController::class, 'store'])->middleware('throttle:submissions')->name('shops.store');
     Route::get('/my-shop', [ShopController::class, 'dashboard'])->name('shops.dashboard');
     Route::get('/my-shop/products/create', [ShopController::class, 'createProduct'])->name('shops.products.create');
-    Route::post('/my-shop/products', [ShopController::class, 'storeProduct'])->name('shops.products.store');
+    Route::post('/my-shop/products', [ShopController::class, 'storeProduct'])->middleware('throttle:submissions')->name('shops.products.store');
 
     // Product Reviews and Referrals
     Route::get('/my-reviews', [ProductReviewController::class, 'index'])->name('reviews.index');
-    Route::post('/products/{product}/reviews', [ProductReviewController::class, 'store'])->name('products.reviews.store');
-    Route::post('/products/{product}/report', [ProductReportController::class, 'store'])->name('products.report.store');
-    Route::post('/reviews/{review}/report', [ProductReviewController::class, 'report'])->name('reviews.report');
-    Route::post('/products/{product}/referral-links', [ReferralController::class, 'store'])->name('products.referrals.store');
+    Route::post('/products/{product}/reviews', [ProductReviewController::class, 'store'])->middleware('throttle:submissions')->name('products.reviews.store');
+    Route::post('/products/{product}/report', [ProductReportController::class, 'store'])->middleware('throttle:submissions')->name('products.report.store');
+    Route::post('/reviews/{review}/report', [ProductReviewController::class, 'report'])->middleware('throttle:submissions')->name('reviews.report');
+    Route::post('/products/{product}/referral-links', [ReferralController::class, 'store'])->middleware('throttle:submissions')->name('products.referrals.store');
 
     // User uploaded products management
     Route::get('/my-uploads', [UserProductController::class, 'index'])->name('products.upload.index');

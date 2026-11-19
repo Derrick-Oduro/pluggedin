@@ -166,7 +166,7 @@
         </div>
 
         <div>
-            <label for="pf-images" class="mb-1.5 block text-sm font-bold text-stone-800">Photos <span class="font-semibold text-stone-500">(up to 5, max 4 MB each)</span></label>
+            <label for="pf-images" class="mb-1.5 block text-sm font-bold text-stone-800">Photos <span class="font-semibold text-stone-500">(up to 5, max 8 MB each)</span></label>
             @if ($existingImages)
                 <div class="mb-3 flex flex-wrap gap-2">
                     @foreach ($existingImages as $image)

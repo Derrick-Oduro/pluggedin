@@ -40,7 +40,7 @@ class HeroSlideSeeder extends Seeder
         ];
 
         foreach ($slides as $slide) {
-            HeroSlide::updateOrCreate(
+            HeroSlide::firstOrCreate(
                 ['title' => $slide['title']],
                 $slide
             );

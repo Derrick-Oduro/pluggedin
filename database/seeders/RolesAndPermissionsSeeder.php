@@ -10,7 +10,7 @@ use Spatie\Permission\Models\Role;
 class RolesAndPermissionsSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Safe to run repeatedly: existing roles and permissions are reused.
      */
     public function run(): void
     {
@@ -38,23 +38,23 @@ class RolesAndPermissionsSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
         // Create roles and assign permissions
-        $superAdminRole = Role::create(['name' => 'super-admin']);
-        $superAdminRole->givePermissionTo(Permission::all());
+        $superAdminRole = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
+        $superAdminRole->syncPermissions(Permission::all());
 
-        $adminRole = Role::create(['name' => 'admin']);
-        $adminRole->givePermissionTo([
+        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $adminRole->syncPermissions([
             'manage products',
             'manage orders',
             'manage bookings',
             'view analytics',
         ]);
 
-        $userRole = Role::create(['name' => 'user']);
-        $userRole->givePermissionTo([
+        $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
+        $userRole->syncPermissions([
             'place orders',
             'book services',
             'view own orders',

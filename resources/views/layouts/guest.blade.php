@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'PluggedIn') }}</title>
+        <title>{{ $site['site_title'] }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=manrope:400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -36,7 +36,7 @@
                         <div class="rounded-2xl border border-stone-200 bg-white p-6 shadow-[0_24px_60px_-34px_rgba(41,30,23,.45)] sm:p-8">
                             {{ $slot }}
                         </div>
-                        <p class="mt-4 text-center text-xs text-stone-500">Need help? Email <span class="font-bold text-stone-700">support@pluggedin.com</span></p>
+                        <p class="mt-4 text-center text-xs text-stone-500">Need help? Email <a href="mailto:{{ $site['contact_email'] }}" class="font-bold text-stone-700 hover:text-brand">{{ $site['contact_email'] }}</a> · <a href="{{ route('legal.terms') }}" class="hover:text-brand">Terms</a> · <a href="{{ route('legal.privacy') }}" class="hover:text-brand">Privacy</a></p>
                     </div>
                 </div>
             </div>

@@ -23,13 +23,15 @@
             >
                 <x-slot:actions>
                     <x-status-badge :status="$order->status" />
-                    @if(in_array($order->status, ['pending', 'confirmed'], true))
-                        <form action="{{ route('orders.cancel', $order) }}" method="POST">
+                    @if($order->status === 'pending')
+                        <form action="{{ route('orders.cancel', $order) }}" method="POST" onsubmit="return confirm('Cancel this order?')">
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="reason" value="Cancelled by customer">
                             <button type="submit" class="inline-flex h-11 items-center rounded-xl border border-red-200 bg-white px-4 text-sm font-bold text-red-600 transition hover:bg-red-50">Cancel order</button>
                         </form>
+                    @elseif($order->status === 'confirmed')
+                        <a href="{{ route('contact') }}" class="btn-secondary">Need to cancel? Contact us</a>
                     @endif
                 </x-slot:actions>
             </x-page-header>

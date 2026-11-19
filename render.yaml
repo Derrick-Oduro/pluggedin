@@ -56,7 +56,25 @@ services:
       - key: FILESYSTEM_DISK
         value: public
       - key: RUN_SEEDERS_ON_BOOT
+        value: "false"
+      - key: RUN_SCHEDULER
         value: "true"
+      # Email (password resets). Fill these in the Render dashboard from your mail
+      # provider (e.g. Resend, Brevo, Mailgun). Until MAIL_MAILER is set, mail goes to the log.
+      - key: MAIL_MAILER
+        sync: false
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_FROM_ADDRESS
+        sync: false
+      - key: MAIL_FROM_NAME
+        value: PluggedIn
       - key: LOG_CHANNEL
         value: stderr
       - key: LOG_LEVEL

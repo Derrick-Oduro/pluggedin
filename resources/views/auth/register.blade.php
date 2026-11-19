@@ -53,6 +53,8 @@
             {{ __('Create account') }}
         </x-primary-button>
 
+        <p class="text-center text-xs text-stone-500">By creating an account you agree to our <a href="{{ route('legal.terms') }}" class="font-bold text-stone-700 hover:text-brand">Terms</a> and <a href="{{ route('legal.privacy') }}" class="font-bold text-stone-700 hover:text-brand">Privacy policy</a>.</p>
+
         <div class="rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-600">
             <span class="text-stone-500">Already have an account?</span>
             <a class="font-semibold text-stone-700 hover:text-brand" href="{{ route('login') }}">{{ __('Log in') }}</a>

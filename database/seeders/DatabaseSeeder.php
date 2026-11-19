@@ -12,7 +12,8 @@ class DatabaseSeeder extends Seeder
     use WithoutModelEvents;
 
     /**
-     * Seed the application's database.
+     * Reference data (roles, categories, services, slides) is safe to seed anywhere
+     * and safe to re-run. Demo accounts are only created locally.
      */
     public function run(): void
     {
@@ -25,22 +26,23 @@ class DatabaseSeeder extends Seeder
             HeroSlideSeeder::class,
         ]);
 
-        User::updateOrCreate(
-            ['email' => 'admin@pluggedin.com'],
-            [
-                'name' => 'Admin',
-                'password' => Hash::make('password'),
-                'role' => 'admin',
-            ]
-        );
+        if (! app()->environment(['local', 'testing'])) {
+            return;
+        }
 
-        User::updateOrCreate(
-            ['email' => 'test@example.com'],
-            [
-                'name' => 'Test User',
-                'password' => Hash::make('password'),
-                'role' => 'user',
-            ]
-        );
+        // Demo accounts with the password "password". firstOrCreate never resets an existing password.
+        foreach ([
+            ['admin@pluggedin.com', 'Admin', 'admin'],
+            ['test@example.com', 'Test User', 'user'],
+        ] as [$email, $name, $role]) {
+            $user = User::firstOrCreate(
+                ['email' => $email],
+                ['name' => $name, 'password' => Hash::make('password'), 'role' => $role]
+            );
+
+            if ($user->roles->isEmpty()) {
+                $user->assignRole($role);
+            }
+        }
     }
 }

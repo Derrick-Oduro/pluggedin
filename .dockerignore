@@ -11,3 +11,6 @@ storage/framework/views
 public/build
 tests
 phpunit.xml
+public/hot
+database/*.sqlite
+storage/app/public/*

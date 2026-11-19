@@ -17,7 +17,7 @@ class TradeInController extends Controller
     {
         $data = $request->validate(['desired_product_id' => 'nullable|exists:products,id', 'device_type' => 'required|string|max:80', 'brand' => 'required|string|max:80', 'model' => 'required|string|max:120', 'specifications' => 'nullable|string|max:255', 'condition' => 'required|in:excellent,good,fair,poor', 'notes' => 'nullable|string|max:2000', 'images' => 'nullable|array|max:5', 'images.*' => 'image|max:4096']);
         $paths = [];
-        foreach ($request->file('images', []) as $image) { $paths[] = $image->store('trade-ins', 'public'); }
+        foreach ($request->file('images', []) as $image) { $paths[] = \App\Support\ImageOptimizer::store($image, 'trade-ins'); }
         $data['images'] = $paths ?: null;
         $data['user_id'] = $request->user()->id;
         TradeInRequest::create($data);

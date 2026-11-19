@@ -51,7 +51,7 @@ class SuperAdminMarketingController extends Controller
         ]);
 
         if ($request->hasFile('image_file')) {
-            $path = $request->file('image_file')->store('hero-slides', 'public');
+            $path = \App\Support\ImageOptimizer::store($request->file('image_file'), 'hero-slides', 2400, 85);
             $data['image_url'] = Storage::disk('public')->url($path);
         }
 
@@ -80,7 +80,7 @@ class SuperAdminMarketingController extends Controller
         ]);
 
         if ($request->hasFile('image_file')) {
-            $path = $request->file('image_file')->store('hero-slides', 'public');
+            $path = \App\Support\ImageOptimizer::store($request->file('image_file'), 'hero-slides', 2400, 85);
             $data['image_url'] = Storage::disk('public')->url($path);
         }
 

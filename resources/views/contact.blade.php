@@ -17,7 +17,7 @@
                                 </div>
                                 <div>
                                     <h3 class="font-semibold mb-1">Email</h3>
-                                    <a href="mailto:support@pluggedin.com" class="text-brand hover:text-brand-deep font-medium">support@pluggedin.com</a>
+                                    <a href="mailto:{{ $site['contact_email'] }}" class="text-brand hover:text-brand-deep font-medium">{{ $site['contact_email'] }}</a>
                                 </div>
                             </div>
 
@@ -29,7 +29,7 @@
                                 </div>
                                 <div>
                                     <h3 class="font-semibold mb-1">Phone / WhatsApp</h3>
-                                    <a href="tel:+233594042521" class="text-brand hover:text-brand-deep font-medium">+233 594 042 521</a>
+                                    <a href="tel:{{ preg_replace('/[^0-9+]/', '', $site['contact_phone']) }}" class="text-brand hover:text-brand-deep font-medium">{{ $site['contact_phone'] }}</a>
                                 </div>
                             </div>
 
@@ -41,11 +41,7 @@
                                 </div>
                                 <div>
                                     <h3 class="font-semibold mb-1">Business Hours</h3>
-                                    <p class="text-stone-600 leading-7">
-                                        Monday - Friday: 9:00 AM - 6:00 PM<br>
-                                        Saturday: 10:00 AM - 4:00 PM<br>
-                                        Sunday: Closed
-                                    </p>
+                                    <p class="whitespace-pre-line text-stone-600 leading-7">{{ $site['business_hours'] }}</p>
                                 </div>
                             </div>
                         </div>

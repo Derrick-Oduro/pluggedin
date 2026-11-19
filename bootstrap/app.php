@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'superadmin' => \App\Http\Middleware\IsSuperAdmin::class,
         ]);
         $middleware->validateCsrfTokens(except: ['payments/paystack/webhook']);
+        // Render terminates TLS at its proxy: trust it so client IPs (rate limits) and https URLs are correct.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

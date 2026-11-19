@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Setting;
+use App\Support\SiteSettings;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller
@@ -12,30 +12,22 @@ class SettingsController extends Controller
 
     public function index()
     {
-        $data = [
-            'site_title' => Setting::get('site_title', config('app.name', 'PluggedIn')),
-            'brand_blurb' => Setting::get('brand_blurb', 'Practical upgrades and thoughtful repairs.'),
-            'contact_email' => Setting::get('contact_email', 'info@pluggedin.example'),
-            'contact_address' => Setting::get('contact_address', ''),
-        ];
-
-        return view('superadmin.settings.index', $data);
+        return view('superadmin.settings.index', ['settings' => SiteSettings::all()]);
     }
 
     public function update(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'site_title' => 'required|string|max:100',
             'brand_blurb' => 'nullable|string|max:255',
-            'contact_email' => 'nullable|email|max:150',
+            'contact_email' => 'required|email|max:150',
+            'contact_phone' => 'nullable|string|max:40',
             'contact_address' => 'nullable|string|max:255',
+            'business_hours' => 'nullable|string|max:500',
         ]);
 
-        Setting::set('site_title', $request->site_title);
-        Setting::set('brand_blurb', $request->brand_blurb);
-        Setting::set('contact_email', $request->contact_email);
-        Setting::set('contact_address', $request->contact_address);
+        SiteSettings::save($data);
 
-        return redirect()->route('superadmin.settings.index')->with('success', 'General settings updated.');
+        return redirect()->route('superadmin.settings.index')->with('success', 'Site settings updated.');
     }
 }

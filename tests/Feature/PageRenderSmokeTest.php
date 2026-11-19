@@ -27,7 +27,7 @@ class PageRenderSmokeTest extends TestCase
 
     public function test_guest_pages_render(): void
     {
-        foreach (['/', '/products', '/services', '/about', '/contact', '/login', '/register', '/forgot-password'] as $url) {
+        foreach (['/', '/products', '/services', '/about', '/contact', '/terms', '/privacy', '/login', '/register', '/forgot-password'] as $url) {
             $this->get($url)->assertOk();
         }
     }

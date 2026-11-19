@@ -27,10 +27,15 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            Category::updateOrCreate(
+            Category::firstOrCreate(
                 ['slug' => $category['slug']],
                 $category
             );
+        }
+
+        // Demo catalogue for local development only; never touch live products.
+        if (! app()->environment(['local', 'testing'])) {
+            return;
         }
 
         // Add sample products

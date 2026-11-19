@@ -2,7 +2,12 @@
 
 namespace App\Providers;
 
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+use App\Support\SiteSettings;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,5 +28,23 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
         }
+
+        $this->configureRateLimits();
+
+        // Footer, contact and legal pages read the details edited in super admin Settings.
+        View::composer(['layouts.app', 'layouts.guest', 'contact', 'legal.*'], fn ($view) => $view->with('site', SiteSettings::all()));
+    }
+
+    /** Named limits used as throttle:<name> in routes. */
+    private function configureRateLimits(): void
+    {
+        // Sign-up and password-reset forms (the reset form sends email).
+        RateLimiter::for('auth-forms', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
+
+        // Each checkout reserves stock and opens a Paystack transaction.
+        RateLimiter::for('checkout', fn (Request $request) => Limit::perMinute(6)->by($request->user()?->id ?: $request->ip()));
+
+        // Listings, reviews, reports, bookings, trade-ins and shop applications.
+        RateLimiter::for('submissions', fn (Request $request) => Limit::perMinute(10)->by($request->user()?->id ?: $request->ip()));
     }
 }

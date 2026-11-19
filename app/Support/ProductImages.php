@@ -24,7 +24,7 @@ class ProductImages
 
         $paths = [];
         foreach ($request->file('images') as $file) {
-            $paths[] = $file->store('products', 'public');
+            $paths[] = ImageOptimizer::store($file, 'products');
         }
 
         return ['images' => $paths, 'image_path' => $paths[0] ?? null];

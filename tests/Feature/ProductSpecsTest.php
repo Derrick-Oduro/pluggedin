@@ -79,11 +79,36 @@ class ProductSpecsTest extends TestCase
 
         $this->get(route('products.show', $product))
             ->assertOk()
-            ->assertSee('Full specs')
+            ->assertSee('Specifications')
             ->assertSee('Intel Core i5-1135G7')
             ->assertSee('16 GB')
             ->assertSee('88%')
             ->assertSee('Used - like new');
+    }
+
+    public function test_product_page_shows_highlights_condition_notes_and_box_contents(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('user');
+        $category = Category::create(['name' => 'Laptops', 'slug' => 'laptops']);
+
+        $this->actingAs($user)->post(route('products.upload.store'), $this->laptopPayload($category, [
+            'known_issues' => 'Small scuff on the lid',
+        ]))->assertRedirect();
+
+        $product = Product::firstOrFail();
+        $product->update(['status' => 'approved']);
+
+        $highlights = \App\Support\ProductSpecs::highlights($product->category, $product->specs);
+        $this->assertSame(['label' => 'Storage capacity', 'value' => '512 GB NVMe SSD'], $highlights[2]);
+
+        $this->get(route('products.show', $product))
+            ->assertOk()
+            ->assertSee('512 GB NVMe SSD')
+            ->assertSee("Seller's condition notes", false)
+            ->assertSee('Small scuff on the lid')
+            ->assertSee('Laptop and charger')
+            ->assertSee('More from seller');
     }
 
     public function test_spec_fields_follow_the_selected_category(): void

@@ -37,6 +37,7 @@ return [
 
         'laptop' => [
             'label' => 'Laptop',
+            'highlights' => ['processor', 'ram_size', 'storage_size', 'storage_type', 'screen_size', 'graphics', 'battery_health', 'operating_system'],
             'keywords' => ['laptop', 'notebook', 'macbook', 'chromebook', 'ultrabook'],
             'groups' => [
                 'Basics' => [
@@ -90,6 +91,7 @@ return [
 
         'desktop' => [
             'label' => 'Desktop / PC',
+            'highlights' => ['processor', 'ram_size', 'storage_size', 'graphics', 'form_factor', 'operating_system'],
             'keywords' => ['desktop', 'pc', 'computer', 'imac', 'all-in-one', 'workstation'],
             'groups' => [
                 'Basics' => [
@@ -119,6 +121,7 @@ return [
 
         'phone' => [
             'label' => 'Phone',
+            'highlights' => ['storage_size', 'ram_size', 'battery_health', 'network', 'network_lock', 'account_lock'],
             'keywords' => ['phone', 'smartphone', 'iphone', 'mobile', 'android'],
             'groups' => [
                 'Basics' => [
@@ -153,6 +156,7 @@ return [
 
         'tablet' => [
             'label' => 'Tablet',
+            'highlights' => ['storage_size', 'screen_size', 'connectivity', 'battery_health', 'account_lock'],
             'keywords' => ['tablet', 'ipad', 'tab'],
             'groups' => [
                 'Basics' => [
@@ -177,6 +181,7 @@ return [
 
         'monitor' => [
             'label' => 'Monitor / display',
+            'highlights' => ['screen_size', 'resolution', 'refresh_rate', 'panel_type', 'ports'],
             'keywords' => ['monitor', 'display', 'screen'],
             'groups' => [
                 'Specs' => [
@@ -196,6 +201,7 @@ return [
 
         'storage' => [
             'label' => 'Storage drive',
+            'highlights' => ['capacity', 'drive_type', 'interface', 'form_factor', 'read_speed', 'health'],
             'keywords' => ['storage', 'ssd', 'hdd', 'hard-drive', 'drive', 'flash'],
             'groups' => [
                 'Specs' => [
@@ -215,6 +221,7 @@ return [
 
         'memory' => [
             'label' => 'Memory (RAM)',
+            'highlights' => ['capacity', 'memory_type', 'form_factor', 'speed', 'kit_configuration'],
             'keywords' => ['memory', 'ram', 'ddr'],
             'groups' => [
                 'Specs' => [
@@ -234,6 +241,7 @@ return [
 
         'networking' => [
             'label' => 'Networking / Wi-Fi',
+            'highlights' => ['device_type', 'wifi_standard', 'bands', 'max_speed'],
             'keywords' => ['wifi', 'wi-fi', 'network', 'router', 'modem', 'mifi'],
             'groups' => [
                 'Specs' => [
@@ -252,6 +260,7 @@ return [
 
         'accessory' => [
             'label' => 'Accessory',
+            'highlights' => ['accessory_type', 'compatibility', 'connectivity'],
             'keywords' => ['accessor', 'cable', 'charger', 'mouse', 'keyboard', 'headphone', 'bag', 'case'],
             'groups' => [
                 'Specs' => [
@@ -268,6 +277,7 @@ return [
 
         'general' => [
             'label' => 'General',
+            'highlights' => ['brand', 'model'],
             'keywords' => [],
             'groups' => [
                 'Specs' => [

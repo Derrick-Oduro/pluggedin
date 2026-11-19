@@ -122,7 +122,55 @@ class ProductSpecs
      * Grouped, display-ready specs for a product page:
      * ['Performance' => [['label' => 'RAM', 'value' => '16 GB'], ...], ...]
      */
-    public static function display(?Category $category, ?array $specs): array
+    /** A spec value with its unit, e.g. "16 GB", "88%", "14 inches". */
+    public static function formatValue(array $field, mixed $value): string
+    {
+        $value = (string) $value;
+        if (! empty($field['suffix']) && ! Str::endsWith($value, $field['suffix'])) {
+            $value .= ($field['suffix'] === '%' ? '' : ' ').$field['suffix'];
+        }
+
+        return $value;
+    }
+
+    /**
+     * The handful of specs buyers check first, shown next to the price.
+     * [['label' => 'RAM', 'value' => '16 GB'], ...] in the template's "highlights" order.
+     */
+    public static function highlights(?Category $category, ?array $specs, int $limit = 6): array
+    {
+        if (empty($specs)) {
+            return [];
+        }
+
+        $template = self::templates()[self::templateKeyFor($category)] ?? self::templates()['general'];
+        $fields = self::fields(self::templateKeyFor($category));
+        $rows = [];
+
+        foreach ($template['highlights'] ?? [] as $key) {
+            if (! isset($fields[$key]) || ! filled($specs[$key] ?? null)) {
+                continue;
+            }
+
+            // Combine storage size + type into one line ("512 GB NVMe SSD").
+            if ($key === 'storage_type' && isset($rows['storage_size'])) {
+                $rows['storage_size']['value'] .= ' '.$specs[$key];
+                continue;
+            }
+
+            $rows[$key] = ['label' => $fields[$key]['label'], 'value' => self::formatValue($fields[$key], $specs[$key])];
+        }
+
+        return array_slice(array_values($rows), 0, $limit);
+    }
+
+    /**
+     * Grouped, display-ready specs for a product page:
+     * ['Performance' => [['label' => 'RAM', 'value' => '16 GB'], ...], ...]
+     *
+     * @param  string[]  $except  keys shown elsewhere on the page (e.g. known_issues)
+     */
+    public static function display(?Category $category, ?array $specs, array $except = []): array
     {
         if (empty($specs)) {
             return [];
@@ -130,20 +178,15 @@ class ProductSpecs
 
         $template = self::templates()[self::templateKeyFor($category)] ?? self::templates()['general'];
         $groups = [];
-        $shown = [];
+        $shown = $except;
 
         foreach ($template['groups'] as $groupName => $fields) {
             foreach ($fields as $key => $field) {
-                if (! isset($specs[$key]) || $specs[$key] === '') {
+                if (in_array($key, $except, true) || ! isset($specs[$key]) || $specs[$key] === '') {
                     continue;
                 }
 
-                $value = (string) $specs[$key];
-                if (! empty($field['suffix']) && ! Str::endsWith($value, $field['suffix'])) {
-                    $value .= ($field['suffix'] === '%' ? '' : ' ').$field['suffix'];
-                }
-
-                $groups[$groupName][] = ['label' => $field['label'], 'value' => $value, 'long' => $field['type'] === 'textarea'];
+                $groups[$groupName][] = ['label' => $field['label'], 'value' => self::formatValue($field, $specs[$key]), 'long' => $field['type'] === 'textarea'];
                 $shown[] = $key;
             }
         }

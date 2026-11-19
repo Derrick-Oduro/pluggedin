@@ -34,10 +34,11 @@ class ProductController extends Controller
             }
         }
 
-        $product->load(['category', 'uploader']);
+        $product->load(['category', 'uploader', 'shop']);
 
         $relatedProducts = Product::approved()->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
+            ->with('category')
             ->take(4)
             ->get();
 

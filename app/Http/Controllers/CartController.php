@@ -10,7 +10,7 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cartItems = auth()->user()->cartItems()->with('product')->get();
+        $cartItems = auth()->user()->cartItems()->with('product.category')->get();
         $total = $cartItems->sum(function($item) {
             return $item->product->price * $item->quantity;
         });
@@ -21,7 +21,7 @@ class CartController extends Controller
     public function add(Request $request, Product $product)
     {
         $request->validate([
-            'quantity' => 'required|integer|min:1'
+            'quantity' => 'nullable|integer|min:1'
         ]);
 
         if ($product->status !== 'approved' || $product->listing_state !== 'active') {
@@ -36,7 +36,7 @@ class CartController extends Controller
             ->where('product_id', $product->id)
             ->first();
 
-        $wanted = ($cartItem?->quantity ?? 0) + (int) $request->quantity;
+        $wanted = ($cartItem?->quantity ?? 0) + (int) $request->input('quantity', 1);
         $quantity = min($wanted, $product->stock_quantity);
 
         CartItem::updateOrCreate(

@@ -33,6 +33,15 @@ class AppServiceProvider extends ServiceProvider
 
         // Footer, contact and legal pages read the details edited in super admin Settings.
         View::composer(['layouts.app', 'layouts.guest', 'home', 'contact', 'legal.*'], fn ($view) => $view->with('site', SiteSettings::all()));
+
+        // Shop categories for the header menus: only ones with something on sale, cached briefly.
+        View::composer(['layouts.navigation', 'components.mobile-menu'], fn ($view) => $view->with('navCategories', \Illuminate\Support\Facades\Cache::remember(
+            'nav.categories', now()->addMinutes(10),
+            fn () => \App\Models\Category::query()
+                ->whereHas('products', fn ($q) => $q->approved())
+                ->orderBy('name')
+                ->get(['id', 'name', 'slug'])
+        )));
     }
 
     /** Named limits used as throttle:<name> in routes. */

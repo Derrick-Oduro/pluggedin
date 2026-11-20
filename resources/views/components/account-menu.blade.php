@@ -1,8 +1,9 @@
 <x-dropdown align="right" width="64">
     <x-slot name="trigger">
-        <button class="flex h-10 items-center gap-2 rounded-xl border border-stone-200 px-3 text-sm font-bold text-stone-800 transition hover:bg-stone-50">
+        <button type="button" class="flex h-10 items-center gap-1.5 rounded-xl border border-stone-200 px-2 text-sm font-bold text-stone-800 transition hover:bg-stone-50 xl:gap-2 xl:px-3" aria-label="Account menu for {{ Auth::user()->name }}">
             <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-tint text-[11px] font-extrabold text-brand-deep">{{ Str::upper(Str::substr(Auth::user()->name, 0, 1)) }}</span>
-            <span class="max-w-24 truncate">{{ Auth::user()->name }}</span>
+            {{-- First name only, and only where there's room. --}}
+            <span class="hidden max-w-24 truncate xl:inline">{{ Str::before(Auth::user()->name, ' ') }}</span>
             <svg class="h-4 w-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" /></svg>
         </button>
     </x-slot>

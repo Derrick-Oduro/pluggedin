@@ -17,14 +17,19 @@
     @endauth
 
     <p class="{{ $heading }}">Shop</p>
-    <a href="{{ route('products.index') }}" class="{{ $link }}">Browse all tech</a>
-    <a href="{{ route('products.index', ['q' => 'laptop']) }}" class="{{ $link }}">Laptops</a>
-    <a href="{{ route('products.index', ['q' => 'SSD']) }}" class="{{ $link }}">Parts &amp; upgrades</a>
+    <a href="{{ route('products.index') }}" class="{{ $link }}">Browse all tech <span class="text-brand">&rarr;</span></a>
+    @if($navCategories->isNotEmpty())
+        <div class="grid grid-cols-2 gap-x-1">
+            @foreach($navCategories as $category)
+                <a href="{{ route('products.index', ['category' => $category->slug]) }}" class="rounded-xl px-3 py-2.5 text-sm font-semibold text-stone-700 hover:bg-brand-tint hover:text-brand-deep">{{ $category->name }}</a>
+            @endforeach
+        </div>
+    @endif
     <a href="{{ route('services.index') }}" class="{{ $link }}">Repairs</a>
     <a href="{{ route('campuses') }}" class="{{ $link }}">Campus partners</a>
 
     <p class="{{ $heading }}">Sell</p>
-    <a href="{{ auth()->check() ? route('products.upload.create') : route('register') }}" class="{{ $link }}">Sell your tech</a>
+    <a href="{{ auth()->check() ? route('products.upload.create') : route('register') }}" class="{{ $link }}">List an item</a>
     <a href="{{ auth()->check() ? route('trade-ins.create') : route('register') }}" class="{{ $link }}">Trade in a device</a>
 
     @auth

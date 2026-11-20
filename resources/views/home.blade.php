@@ -2,7 +2,7 @@
     <section class="flyer-dark torn-bottom z-10 -mb-[22px] pb-[22px]">
         {{-- Flyer decorations --}}
         <div aria-hidden="true" class="pointer-events-none absolute inset-0 hidden xl:block">
-            <span class="absolute right-[6%] top-[12%] h-16 w-16 rounded-full border-[3px] border-brand"></span>
+            <span class="absolute bottom-[12%] right-[3%] h-12 w-12 rounded-full border-[3px] border-brand"></span>
             <span class="absolute right-[3%] top-[8%] text-4xl font-light text-brand">+</span>
             <span class="absolute left-[2%] top-[8%] hidden h-10 w-10 rounded-full border-[3px] border-brand 2xl:block"></span>
             <span class="absolute bottom-[10%] left-[50%] text-3xl font-light text-brand">+</span>
@@ -13,7 +13,7 @@
         <div class="content-wrap relative grid min-h-[600px] items-center gap-12 py-14 lg:grid-cols-[1.05fr_.95fr] lg:py-20">
             <div class="relative z-10 max-w-2xl">
                 <p class="text-lg font-black tracking-[-0.1em] text-white" aria-hidden="true">&raquo;&raquo;&raquo;&raquo;&raquo;&raquo;&raquo;&raquo;&raquo;</p>
-                <h1 class="display-heading mt-3 text-6xl leading-[0.95] text-white sm:text-7xl xl:text-8xl">Buy<span class="text-brand">&middot;</span>Swap<span class="hidden text-brand sm:inline">&middot;</span><br class="sm:hidden">Upgrade</h1>
+                <h1 class="display-heading mt-3 text-6xl leading-[0.95] text-white sm:text-7xl xl:text-[5.25rem] 2xl:text-8xl">Buy<span class="text-brand">&middot;</span>Swap<span class="hidden text-brand sm:inline">&middot;</span><br class="sm:hidden">Upgrade</h1>
                 <p class="tagline mt-4 text-4xl sm:text-5xl">Your One-Stop Student Hub</p>
                 <p class="mt-6 max-w-xl text-lg leading-8 text-white/75">Laptops, phones, parts and accessories, plus repairs and trade-ins. We've got all your accessories and more, delivered free on campus.</p>
                 <div class="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -31,21 +31,20 @@
                 </div>
             </div>
 
-            <div class="relative mx-auto w-full max-w-xl">
-                {{-- Orange striped circle behind the device shot, as on the flyer --}}
-                <div aria-hidden="true" class="flyer-stripes absolute left-1/2 top-1/2 aspect-square w-[105%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-95"></div>
-                <div class="relative overflow-hidden rounded-[2rem] border-4 border-stone-950 bg-stone-900 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.9)]">
+            <div class="relative mx-auto w-full max-w-[19rem] sm:max-w-sm lg:mr-[8%] xl:mr-[6%] xl:max-w-[28rem]">
+                {{-- Round device shot inside an orange striped ring, as on the flyer --}}
+                <div aria-hidden="true" class="flyer-stripes absolute -inset-[7%] rounded-full"></div>
+                <div aria-hidden="true" class="absolute -inset-[2.5%] rounded-full bg-stone-950"></div>
+                <div class="relative aspect-square overflow-hidden rounded-full bg-stone-900 ring-4 ring-brand">
                     @if($heroSlide)
-                        <img src="{{ $heroSlide->image_url }}" alt="{{ $heroSlide->alt_text ?: $heroSlide->title ?: 'PluggedIn campus tech' }}" class="h-[340px] w-full object-cover sm:h-[440px]">
-                        @if($heroSlide->caption)
-                            <div class="absolute inset-x-0 bottom-0 bg-stone-950/80 px-5 py-4 text-white">
-                                <p class="text-sm font-semibold">{{ $heroSlide->caption }}</p>
-                            </div>
-                        @endif
+                        <img src="{{ $heroSlide->image_url }}" alt="{{ $heroSlide->alt_text ?: $heroSlide->title ?: 'PluggedIn campus tech' }}" class="h-full w-full object-cover">
                     @else
-                        <div class="relative h-[340px] overflow-hidden bg-stone-900 sm:h-[440px]"><div class="absolute left-[13%] top-[14%] h-[60%] w-[74%] rounded-[1.4rem] border-[10px] border-stone-700 bg-stone-800 p-3 shadow-2xl"><div class="h-full rounded-lg bg-stone-950 p-5"><div class="flex justify-between"><span class="h-2.5 w-2.5 rounded-full bg-brand"></span><span class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/60">System refresh</span></div><p class="display-heading mt-10 text-4xl text-white">Built to<br><span class="text-brand">last.</span></p><div class="mt-6 grid grid-cols-2 gap-2"><span class="rounded-lg bg-brand p-2 text-[10px] font-bold text-stone-950">FASTER BOOT</span><span class="rounded-lg bg-brand p-2 text-[10px] font-bold text-stone-950">MORE STORAGE</span></div></div></div><div class="absolute bottom-[11%] left-[7%] h-4 w-[86%] rounded-full bg-stone-700 shadow-xl"></div></div>
+                        <div class="flex h-full flex-col items-center justify-center text-center"><p class="display-heading text-5xl text-white">Built to<br><span class="text-brand">last.</span></p><p class="mt-4 text-xs font-extrabold uppercase tracking-[0.16em] text-white/60">Faster boot &middot; More storage</p></div>
                     @endif
                 </div>
+                @if($heroSlide?->caption)
+                    <p class="absolute -bottom-2 left-1/2 z-10 w-max max-w-[90%] -translate-x-1/2 -rotate-2 rounded-xl border-2 border-stone-950 bg-brand px-4 py-2 text-center text-sm font-extrabold text-stone-950 shadow-[4px_4px_0_0_#0c0a09] sm:left-0 sm:translate-x-0">{{ $heroSlide->caption }}</p>
+                @endif
             </div>
         </div>
         @if($activeCampaign)<div class="absolute right-8 top-8 z-20 hidden rounded-full bg-brand px-4 py-2 text-sm font-extrabold text-stone-950 shadow-lg xl:block">{{ $activeCampaign->discount_percent }}% off · {{ $activeCampaign->name }}{{ $activeCampaign->code ? ' · '.$activeCampaign->code : '' }}</div>@endif

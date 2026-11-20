@@ -132,6 +132,10 @@ class PaystackPayments
                 return;
             }
 
+            if ($order->paid_at === null) {
+                $order->update(['paid_at' => now()]);
+            }
+
             if ($order->status === 'pending') {
                 $order->update(['status' => 'confirmed']);
                 OrderStatusHistory::create([
@@ -150,7 +154,8 @@ class PaystackPayments
         });
     }
 
-    private function awardReferralPoints(Order $order): void
+    /** Credit referrers once an order's money has actually been received (online or on delivery). */
+    public function awardReferralPoints(Order $order): void
     {
         $threshold = (int) config('marketplace.redeemable_points_threshold', 100);
         $points = (int) config('marketplace.referral_points_per_purchase', 10);

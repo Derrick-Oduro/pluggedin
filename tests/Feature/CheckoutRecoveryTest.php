@@ -145,6 +145,15 @@ class CheckoutRecoveryTest extends TestCase
             ->assertSee('Fix the items marked in red');
     }
 
+    public function test_marketplace_add_button_without_quantity_adds_one(): void
+    {
+        $this->actingAs($this->buyer)->from(route('products.index'))
+            ->post(route('cart.add', $this->product))
+            ->assertRedirect(route('products.index'))
+            ->assertSessionHas('success');
+        $this->assertSame(1, $this->buyer->cartItems()->first()->quantity);
+    }
+
     public function test_phone_menu_has_account_and_selling_links(): void
     {
         $this->get('/')->assertSee('aria-label="Menu"', false)->assertSee('Trade in a device')->assertSee('Join PluggedIn');

@@ -97,6 +97,36 @@
                     </div>
                 </div>
 
+                <div class="backend-card rounded-xl p-5 {{ $order->awaitingCash() ? 'border-amber-300 bg-amber-50/60' : '' }}">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h2 class="text-lg font-extrabold text-stone-950">Payment</h2>
+                        <span class="rounded-full px-2.5 py-1 text-xs font-bold {{ $order->paid_at ? 'bg-emerald-100 text-emerald-800' : ($order->awaitingCash() ? 'bg-amber-100 text-amber-800' : 'bg-stone-100 text-stone-700') }}">{{ $order->paymentLabel() }}</span>
+                    </div>
+                    @if($order->paid_at)
+                        <p class="mt-2 text-sm text-stone-600">Received {{ $order->paid_at->format('M d, Y · H:i') }}.</p>
+                    @endif
+
+                    @if($order->awaitingCash())
+                        <p class="mt-2 text-sm text-stone-700">Collect <b>GH₵{{ number_format($order->total_price, 2) }}</b> from the buyer at {{ $order->fulfilment_method === 'campus_pickup' ? 'pickup' : 'delivery' }}, then record it here. The order can't be completed until you do.</p>
+                        <form action="{{ route('admin.orders.cashReceived', $order) }}" method="POST" class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end" onsubmit="return confirm('Record GH₵{{ number_format($order->total_price, 2) }} as received?')">
+                            @csrf
+                            @method('PATCH')
+                            <div class="sm:w-48">
+                                <label for="collection_method" class="mb-1.5 block text-sm font-medium">Paid with</label>
+                                <select id="collection_method" name="collection_method" class="backend-field">
+                                    <option value="cash">Cash</option>
+                                    <option value="mobile_money">Mobile Money</option>
+                                </select>
+                            </div>
+                            <div class="flex-1">
+                                <label for="collection_reference" class="mb-1.5 block text-sm font-medium">MoMo transaction ID or note <span class="text-stone-400">(optional)</span></label>
+                                <input id="collection_reference" type="text" name="collection_reference" maxlength="120" class="backend-field">
+                            </div>
+                            <button type="submit" class="backend-btn-primary">Cash received</button>
+                        </form>
+                    @endif
+                </div>
+
                 <div class="backend-card rounded-xl p-5">
                     <h2 class="text-lg font-extrabold text-stone-950 mb-3">Update Order Status</h2>
                     <form action="{{ route('admin.orders.updateStatus', $order) }}" method="POST" class="flex flex-col sm:flex-row sm:items-end gap-3">

@@ -34,6 +34,13 @@
                             <input type="hidden" name="reason" value="Cancelled by customer">
                             <button type="submit" class="inline-flex h-11 items-center rounded-xl border border-red-200 bg-white px-4 text-sm font-bold text-red-600 transition hover:bg-red-50">Cancel order</button>
                         </form>
+                    @elseif($order->status === 'confirmed' && $order->awaitingCash())
+                        <form action="{{ route('orders.cancel', $order) }}" method="POST" onsubmit="return confirm('Cancel this order?')">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="reason" value="Cancelled by customer">
+                            <button type="submit" class="inline-flex h-11 items-center rounded-xl border border-red-200 bg-white px-4 text-sm font-bold text-red-600 transition hover:bg-red-50">Cancel order</button>
+                        </form>
                     @elseif($order->status === 'confirmed')
                         <a href="{{ route('contact') }}" class="btn-secondary">Need to cancel? Contact us</a>
                     @endif
@@ -44,6 +51,14 @@
                 <div class="mb-6 rounded-xl border border-brand-soft bg-brand-tint px-4 py-3 text-sm text-stone-800">
                     <b class="text-stone-950">Waiting for payment.</b>
                     We're holding these items for you until {{ $order->created_at->addHour()->format('H:i') }}. If you don't pay by then, the order is cancelled automatically and nothing is charged.
+                </div>
+            @elseif($order->awaitingCash())
+                <div class="mb-6 flex gap-3 rounded-xl border border-brand-soft bg-brand-tint px-4 py-3 text-sm text-stone-800">
+                    <svg class="mt-0.5 h-5 w-5 shrink-0 text-brand-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" /></svg>
+                    <p>
+                        <b class="text-stone-950">{{ $isPickup ? 'Pay on pickup' : 'Pay on delivery' }}: GH₵{{ number_format($order->total_price, 2) }}.</b>
+                        Pay in cash or Mobile Money {{ $isPickup ? 'when you collect your order' : 'when your order arrives' }}. {{ $isPickup ? "We'll let you know on {$order->delivery_phone} when it's ready." : "We'll call {$order->delivery_phone} before we come." }}
+                    </p>
                 </div>
             @endif
 
@@ -138,6 +153,10 @@
                             <div>
                                 <dt class="text-[11px] font-extrabold uppercase tracking-[.12em] text-stone-500">Phone</dt>
                                 <dd class="mt-1 font-semibold text-stone-950">{{ $order->delivery_phone }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-[11px] font-extrabold uppercase tracking-[.12em] text-stone-500">Payment</dt>
+                                <dd class="mt-1 font-semibold {{ $order->awaitingCash() ? 'text-amber-800' : 'text-stone-950' }}">{{ $order->paymentLabel() }}</dd>
                             </div>
                         </dl>
                     </section>

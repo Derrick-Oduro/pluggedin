@@ -17,6 +17,8 @@ class Order extends Model
         'discount_campaign_id',
         'applied_discount_code',
         'status',
+        'payment_method',
+        'paid_at',
         'fulfilment_method',
         'pickup_campus',
         'delivery_address',
@@ -33,10 +35,35 @@ class Order extends Model
         'total_price' => 'decimal:2',
         'subtotal_price' => 'decimal:2',
         'discount_amount' => 'decimal:2',
+        'paid_at' => 'datetime',
         'cancelled_at' => 'datetime',
         'shipped_at' => 'datetime',
         'completed_at' => 'datetime',
     ];
+
+    public const PAYSTACK = 'paystack';
+
+    public const CASH_ON_DELIVERY = 'cash_on_delivery';
+
+    public function isCashOnDelivery(): bool
+    {
+        return $this->payment_method === self::CASH_ON_DELIVERY;
+    }
+
+    /** A pay-on-delivery order whose money has not been collected yet. */
+    public function awaitingCash(): bool
+    {
+        return $this->isCashOnDelivery() && $this->paid_at === null && ! in_array($this->status, ['cancelled', 'refunded'], true);
+    }
+
+    public function paymentLabel(): string
+    {
+        if ($this->isCashOnDelivery()) {
+            return $this->paid_at ? 'Paid on '.($this->fulfilment_method === 'campus_pickup' ? 'pickup' : 'delivery') : 'Pay on '.($this->fulfilment_method === 'campus_pickup' ? 'pickup' : 'delivery');
+        }
+
+        return $this->paid_at ? 'Paid online (Paystack)' : 'Online (Paystack), not paid yet';
+    }
 
     public function user(): BelongsTo
     {

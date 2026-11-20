@@ -22,6 +22,11 @@
                             <td class="backend-td text-brand-deep font-semibold">GH₵{{ number_format($order->total_price, 2) }}</td>
                             <td class="backend-td">
                                 <x-status-badge :status="$order->status" />
+                                @if($order->awaitingCash())
+                                    <span class="mt-1 block text-[11px] font-bold text-amber-700">Collect cash</span>
+                                @elseif($order->isCashOnDelivery() && $order->paid_at)
+                                    <span class="mt-1 block text-[11px] font-bold text-emerald-700">Paid on delivery</span>
+                                @endif
                             </td>
                             <td class="backend-td text-stone-600">{{ $order->created_at->format('M d, Y') }}</td>
                             <td class="backend-td">

@@ -1,9 +1,16 @@
 <x-app-layout>
     <section class="page-shell">
         <div class="content-wrap relative z-10 max-w-5xl">
-            <x-page-header badge="Checkout" title="Place your order" subtitle="Choose delivery or campus pickup, then pay securely with Paystack." :back-href="route('cart.index')" back-label="Back to cart" />
+            <x-page-header badge="Checkout" title="Place your order" subtitle="Choose delivery or campus pickup, then pay online now or when your order arrives." :back-href="route('cart.index')" back-label="Back to cart" />
 
-            <form action="{{ route('orders.store') }}" method="POST" x-data="{ method: @js(old('fulfilment_method', 'delivery')) }" class="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+            @php
+                $codAllowed = $cashOnDelivery['allowed'];
+                $defaultPay = old('payment_method', 'paystack');
+                if ($defaultPay === 'cash_on_delivery' && ! $codAllowed) {
+                    $defaultPay = 'paystack';
+                }
+            @endphp
+            <form action="{{ route('orders.store') }}" method="POST" x-data="{ method: @js(old('fulfilment_method', 'delivery')), pay: @js($defaultPay) }" class="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
                 @csrf
 
                 <div class="space-y-6">
@@ -47,6 +54,35 @@
                     </section>
 
                     <section class="backend-card">
+                        <h2 class="text-lg font-extrabold text-stone-950">How would you like to pay?</h2>
+                        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                            <label class="flex cursor-pointer gap-3 rounded-xl border p-4 transition" x-bind:class="pay === 'paystack' ? 'border-brand bg-brand-tint' : 'border-stone-200 hover:border-stone-300'">
+                                <input type="radio" name="payment_method" value="paystack" x-model="pay" class="mt-0.5 text-brand-deep focus:ring-brand">
+                                <span>
+                                    <span class="block font-extrabold text-stone-950">Pay now online</span>
+                                    <span class="mt-1 block text-sm text-stone-600">Mobile Money or card through Paystack.</span>
+                                </span>
+                            </label>
+                            <label class="flex gap-3 rounded-xl border p-4 transition {{ $codAllowed ? 'cursor-pointer' : 'cursor-not-allowed opacity-60' }}" x-bind:class="pay === 'cash_on_delivery' ? 'border-brand bg-brand-tint' : 'border-stone-200 hover:border-stone-300'">
+                                <input type="radio" name="payment_method" value="cash_on_delivery" x-model="pay" class="mt-0.5 text-brand-deep focus:ring-brand" @disabled(! $codAllowed)>
+                                <span>
+                                    <span class="block font-extrabold text-stone-950" x-text="method === 'campus_pickup' ? 'Pay on pickup' : 'Pay on delivery'">Pay on delivery</span>
+                                    <span class="mt-1 block text-sm text-stone-600">Cash or Mobile Money when you receive your order.</span>
+                                </span>
+                            </label>
+                        </div>
+                        @if(! $codAllowed && $cashOnDelivery['reason'])
+                            <p class="mt-3 text-sm font-semibold text-amber-800">{{ $cashOnDelivery['reason'] }}</p>
+                        @elseif(! $codAllowed)
+                            <p class="mt-3 text-sm text-stone-500">Pay on delivery isn't available right now.</p>
+                        @endif
+                        @error('payment_method')<p class="mt-2 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
+                        <p x-show="pay === 'cash_on_delivery'" x-cloak class="mt-3 rounded-xl bg-stone-100 px-3 py-2 text-xs text-stone-700">
+                            Please have the exact amount ready. We'll use the phone number above to arrange the handover, so make sure it's one you answer.
+                        </p>
+                    </section>
+
+                    <section class="backend-card">
                         <h2 class="text-lg font-extrabold text-stone-950">Promo code</h2>
                         <input type="text" name="promo_code" value="{{ old('promo_code') }}" placeholder="Enter promo code (optional)" aria-label="Promo code" class="backend-field mt-4 uppercase">
                         @error('promo_code')<p class="mt-1 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
@@ -77,8 +113,9 @@
                             <span class="font-extrabold text-stone-950">Total</span>
                             <span class="text-2xl font-extrabold tracking-[-.04em] text-stone-950">GH₵{{ number_format($total, 2) }}</span>
                         </div>
-                        <button type="submit" class="btn-primary mt-5 w-full">Continue to Paystack</button>
-                        <p class="mt-3 text-center text-xs text-stone-500">You'll be redirected to Paystack to complete payment.</p>
+                        <button type="submit" class="btn-primary mt-5 w-full" x-text="pay === 'cash_on_delivery' ? 'Place order' : 'Continue to Paystack'">Continue to Paystack</button>
+                        <p class="mt-3 text-center text-xs text-stone-500" x-show="pay !== 'cash_on_delivery'">You'll be redirected to Paystack to complete payment.</p>
+                        <p class="mt-3 text-center text-xs text-stone-500" x-show="pay === 'cash_on_delivery'" x-cloak>Nothing is charged now. You pay <b class="text-stone-800">GH₵{{ number_format($total, 2) }}</b> <span x-text="method === 'campus_pickup' ? 'when you collect it' : 'when it arrives'"></span>.</p>
                     </div>
                 </aside>
             </form>

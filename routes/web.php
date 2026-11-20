@@ -166,6 +166,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::patch('/orders/{order}/cash-received', [AdminOrderController::class, 'markCashReceived'])->name('orders.cashReceived');
 
     // Referral Monitoring
     Route::get('/referrals', [AdminDashboard::class, 'referrals'])->name('referrals.index');

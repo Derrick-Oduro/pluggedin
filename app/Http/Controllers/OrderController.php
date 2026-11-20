@@ -55,8 +55,10 @@ class OrderController extends Controller
             'reason' => 'nullable|string|max:500',
         ]);
 
-        // Paid (confirmed) orders need a refund, so they go through support instead.
-        abort_unless($order->status === 'pending', 422, 'Paid orders can only be cancelled by contacting PluggedIn support.');
+        // Paid orders need a refund, so they go through support instead. Unpaid pay-on-delivery
+        // orders can be cancelled by the buyer until PluggedIn starts preparing them.
+        $cancellable = $order->status === 'pending' || ($order->status === 'confirmed' && $order->awaitingCash());
+        abort_unless($cancellable, 422, 'This order can only be cancelled by contacting PluggedIn support.');
 
         $order->cancelAndRestoreInventory(auth()->id(), $request->input('reason'));
 
@@ -88,7 +90,31 @@ class OrderController extends Controller
             $total = max(0, $subtotal - $discountAmount);
         }
 
-        return view('orders.checkout', compact('cartItems', 'subtotal', 'total', 'autoCampaign', 'discountAmount'));
+        $cashOnDelivery = $this->cashOnDeliveryAvailability();
+
+        return view('orders.checkout', compact('cartItems', 'subtotal', 'total', 'autoCampaign', 'discountAmount', 'cashOnDelivery'));
+    }
+
+    /**
+     * Whether this buyer may choose pay-on-delivery: ['allowed' => bool, 'reason' => ?string].
+     * Each open (unpaid) pay-on-delivery order holds stock, so buyers get a small number at once.
+     */
+    private function cashOnDeliveryAvailability(): array
+    {
+        if (! config('marketplace.cash_on_delivery')) {
+            return ['allowed' => false, 'reason' => null];
+        }
+
+        $limit = max(1, (int) config('marketplace.cash_on_delivery_open_limit', 2));
+        $open = auth()->user()->orders()
+            ->where('payment_method', Order::CASH_ON_DELIVERY)
+            ->whereNull('paid_at')
+            ->whereNotIn('status', ['cancelled', 'refunded'])
+            ->count();
+
+        return $open >= $limit
+            ? ['allowed' => false, 'reason' => "You already have {$open} pay-on-delivery ".\Illuminate\Support\Str::plural('order', $open).' waiting. Pay for or receive those first, or pay this one online.']
+            : ['allowed' => true, 'reason' => null];
     }
 
     public function store(Request $request)
@@ -99,6 +125,7 @@ class OrderController extends Controller
             'delivery_address' => 'required_if:fulfilment_method,delivery|nullable|string',
             'delivery_phone' => 'required|string',
             'promo_code' => 'nullable|string|max:100',
+            'payment_method' => 'nullable|in:'.Order::PAYSTACK.','.Order::CASH_ON_DELIVERY,
         ]);
 
         $cartItems = auth()->user()->cartItems()->with('product')->get();
@@ -107,9 +134,17 @@ class OrderController extends Controller
             return redirect()->route('cart.index')->with('error', 'Your cart is empty!');
         }
 
+        $payOnDelivery = $request->input('payment_method') === Order::CASH_ON_DELIVERY;
+
+        if ($payOnDelivery && ! ($cod = $this->cashOnDeliveryAvailability())['allowed']) {
+            return redirect()->route('checkout')->withInput()->withErrors([
+                'payment_method' => $cod['reason'] ?? 'Pay on delivery is not available right now. Please pay online.',
+            ]);
+        }
+
         $promoCode = $request->filled('promo_code') ? strtoupper(trim((string) $request->input('promo_code'))) : null;
 
-        $order = DB::transaction(function() use ($request, $cartItems, $promoCode) {
+        $order = DB::transaction(function() use ($request, $cartItems, $promoCode, $payOnDelivery) {
             $subtotal = $cartItems->sum(function($item) {
                 return $item->product->price * $item->quantity;
             });
@@ -156,6 +191,7 @@ class OrderController extends Controller
                 'discount_campaign_id' => $campaign?->id,
                 'applied_discount_code' => $campaign?->code,
                 'status' => 'pending',
+                'payment_method' => $payOnDelivery ? Order::CASH_ON_DELIVERY : Order::PAYSTACK,
                 'fulfilment_method' => $request->fulfilment_method,
                 'pickup_campus' => $request->pickup_campus,
                 'delivery_address' => $request->delivery_address,
@@ -200,8 +236,34 @@ class OrderController extends Controller
                 $product->decrement('stock_quantity', $cartItem->quantity);
             }
 
+            if ($payOnDelivery) {
+                // Nothing to wait for online: the order goes straight to PluggedIn to prepare,
+                // and the money is collected on delivery or pickup (see the admin "Cash received" action).
+                $order->update(['status' => 'confirmed']);
+                OrderStatusHistory::create([
+                    'order_id' => $order->id,
+                    'changed_by' => auth()->id(),
+                    'from_status' => 'pending',
+                    'to_status' => 'confirmed',
+                ]);
+
+                if ($campaign) {
+                    $campaign->increment('used_count');
+                }
+            }
+
             return $order;
         });
+
+        if ($payOnDelivery) {
+            auth()->user()->cartItems()->delete();
+            session()->forget('referrals');
+
+            $when = $order->fulfilment_method === 'campus_pickup' ? 'when you collect it' : 'when it is delivered';
+
+            return redirect()->route('orders.show', $order)
+                ->with('success', "Order placed. Pay GH₵".number_format((float) $order->total_price, 2)." in cash or Mobile Money {$when}.");
+        }
 
         $paymentUrl = app(PaystackPayments::class)->initialize($order, auth()->user()->email);
 

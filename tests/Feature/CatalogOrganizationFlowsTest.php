@@ -109,8 +109,10 @@ class CatalogOrganizationFlowsTest extends TestCase
             ->firstOrFail();
 
         $this->actingAs($user)
+            ->from(route('wishlist.index'))
             ->post(route('wishlist.move-to-cart', $wishlistItem))
-            ->assertRedirect(route('cart.index'));
+            ->assertRedirect(route('wishlist.index'))
+            ->assertSessionHas('success');
 
         $this->assertDatabaseHas('cart_items', [
             'user_id' => $user->id,

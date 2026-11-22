@@ -22,11 +22,34 @@ use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
-    public function index()
-    {
-        $orders = auth()->user()->orders()->with('items.product')->latest()->paginate(10);
+    /** Status groups for the "My orders" tabs. */
+    private const ORDER_FILTERS = [
+        'active' => ['pending', 'confirmed', 'processing', 'ready_for_pickup', 'shipped'],
+        'completed' => ['completed'],
+        'cancelled' => ['cancelled', 'refunded'],
+    ];
 
-        return view('orders.index', compact('orders'));
+    public function index(Request $request)
+    {
+        $filter = array_key_exists($request->query('filter'), self::ORDER_FILTERS) ? $request->query('filter') : 'all';
+
+        $counts = auth()->user()->orders()
+            ->selectRaw('status, count(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+        $filterCounts = ['all' => (int) $counts->sum()];
+        foreach (self::ORDER_FILTERS as $key => $statuses) {
+            $filterCounts[$key] = (int) $counts->only($statuses)->sum();
+        }
+
+        $orders = auth()->user()->orders()
+            ->with('items.product')
+            ->when($filter !== 'all', fn ($query) => $query->whereIn('status', self::ORDER_FILTERS[$filter]))
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('orders.index', compact('orders', 'filter', 'filterCounts'));
     }
 
     public function show(Order $order)

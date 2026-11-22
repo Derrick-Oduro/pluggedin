@@ -58,6 +58,10 @@ class Order extends Model
 
     public function paymentLabel(): string
     {
+        if ($this->paid_at === null && in_array($this->status, ['cancelled', 'refunded'], true)) {
+            return 'Not charged';
+        }
+
         if ($this->isCashOnDelivery()) {
             return $this->paid_at ? 'Paid on '.($this->fulfilment_method === 'campus_pickup' ? 'pickup' : 'delivery') : 'Pay on '.($this->fulfilment_method === 'campus_pickup' ? 'pickup' : 'delivery');
         }

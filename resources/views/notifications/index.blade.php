@@ -75,7 +75,9 @@
                                 <p class="mt-1 text-sm leading-6 text-stone-600">{{ $notification->data['message'] ?? 'There is a new update for your account.' }}</p>
 
                                 <div class="mt-4 flex flex-wrap items-center gap-4">
-                                    @if (! empty($notification->data['order_id']))
+                                    @if (! empty($notification->data['url']) && str_starts_with($notification->data['url'], url('/')))
+                                        <a href="{{ $notification->data['url'] }}" class="text-sm font-extrabold text-brand-deep hover:text-brand-deep">{{ $notification->data['url_label'] ?? 'View' }} →</a>
+                                    @elseif (! empty($notification->data['order_id']))
                                         <a href="{{ route('orders.show', $notification->data['order_id']) }}" class="text-sm font-extrabold text-brand-deep hover:text-brand-deep">View order →</a>
                                     @elseif (! empty($notification->data['booking_id']))
                                         <a href="{{ route('bookings.show', $notification->data['booking_id']) }}" class="text-sm font-extrabold text-brand-deep hover:text-brand-deep">View booking →</a>

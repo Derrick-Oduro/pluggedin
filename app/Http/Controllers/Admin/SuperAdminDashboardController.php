@@ -4,91 +4,94 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
-use App\Models\Booking;
-use App\Models\DiscountCampaign;
-use App\Models\HeroSlide;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use App\Support\SuperAdminQueues;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class SuperAdminDashboardController extends Controller
 {
     public function index()
     {
-        $stats = [
-            'total_users' => User::count(),
-            'total_admins' => User::role(['admin', 'super-admin'])->count(),
-            'total_products' => Product::count(),
-            'pending_user_uploads' => Product::where('is_user_uploaded', true)->where('status', 'pending')->count(),
-            'total_orders' => Order::count(),
-            'total_bookings' => Booking::count(),
-            'total_revenue' => Order::where('status', 'completed')->sum('total_price'),
-            'active_discount_campaigns' => DiscountCampaign::active()->count(),
-            'carousel_slides' => HeroSlide::count(),
+        $queues = SuperAdminQueues::counts();
+
+        // This month vs last month. "Money in" is what was actually paid (online or cash on delivery).
+        $thisMonth = now()->startOfMonth();
+        $lastMonth = now()->subMonthNoOverflow()->startOfMonth();
+        $sameDayLastMonth = now()->subMonthNoOverflow(); // compare like for like: 1st to today
+
+        $kpis = [
+            'money_in' => [
+                'label' => 'Money in',
+                'now' => (float) Order::whereBetween('paid_at', [$thisMonth, now()])->sum('total_price'),
+                'before' => (float) Order::whereBetween('paid_at', [$lastMonth, $sameDayLastMonth])->sum('total_price'),
+                'money' => true,
+            ],
+            'orders' => [
+                'label' => 'Orders placed',
+                'now' => Order::whereBetween('created_at', [$thisMonth, now()])->count(),
+                'before' => Order::whereBetween('created_at', [$lastMonth, $sameDayLastMonth])->count(),
+            ],
+            'users' => [
+                'label' => 'New members',
+                'now' => User::whereBetween('created_at', [$thisMonth, now()])->count(),
+                'before' => User::whereBetween('created_at', [$lastMonth, $sameDayLastMonth])->count(),
+            ],
+            'listings' => [
+                'label' => 'New listings',
+                'now' => Product::whereBetween('created_at', [$thisMonth, now()])->count(),
+                'before' => Product::whereBetween('created_at', [$lastMonth, $sameDayLastMonth])->count(),
+            ],
         ];
 
-        $recent_users = User::latest()->take(5)->get();
-        $recent_orders = Order::with('user')->latest()->take(5)->get();
-        $recent_pending_uploads = Product::with('uploader')
-            ->where('is_user_uploaded', true)
-            ->where('status', 'pending')
-            ->latest()
-            ->take(5)
-            ->get();
-        $recent_audit_logs = AuditLog::with('user')->latest()->take(8)->get();
-
-        $months = collect(range(5, 0))->reverse()->map(function ($offset) {
-            $date = now()->subMonths($offset);
-            return [
-                'key' => $date->format('Y-m'),
-                'label' => $date->format('M Y'),
-            ];
-        })->values();
-
-        $periodStart = Carbon::parse($months->first()['key'].'-01')->startOfMonth();
-
-        $ordersInPeriod = Order::query()
-            ->where('created_at', '>=', $periodStart)
-            ->get(['id', 'status', 'total_price', 'created_at']);
-
-        $ordersByMonth = $ordersInPeriod->groupBy(fn ($order) => $order->created_at->format('Y-m'));
-
-        $monthlyOrderCounts = $months->map(fn ($month) => ($ordersByMonth->get($month['key']) ?? collect())->count())->values();
-        $monthlyRevenue = $months->map(function ($month) use ($ordersByMonth) {
-            return ($ordersByMonth->get($month['key']) ?? collect())
-                ->where('status', 'completed')
-                ->sum('total_price');
-        })->values();
-
-        $statusCounts = [
-            'pending' => Order::where('status', 'pending')->count(),
-            'confirmed' => Order::where('status', 'confirmed')->count(),
-            'completed' => Order::where('status', 'completed')->count(),
-            'cancelled' => Order::where('status', 'cancelled')->count(),
+        $totals = [
+            'members' => User::count(),
+            'live_listings' => Product::where('status', 'approved')->where('listing_state', 'active')->count(),
+            'open_orders' => Order::whereNotIn('status', ['completed', 'cancelled', 'refunded'])->count(),
         ];
 
-        $userRoleCounts = [
-            'users' => User::role('user')->count(),
-            'admins' => User::role('admin')->count(),
-            'super_admins' => User::role('super-admin')->count(),
-        ];
+        $recentOrders = Order::with('user')->latest()->take(6)->get();
+        $recentAudits = AuditLog::with('user')->latest()->take(6)->get();
+
+        // Six-month trend for the chart.
+        $months = collect(range(5, 0))->map(fn ($offset) => now()->startOfMonth()->subMonthsNoOverflow($offset));
+        $periodStart = $months->first();
+        $placed = Order::where('created_at', '>=', $periodStart)->get(['created_at'])
+            ->countBy(fn ($order) => $order->created_at->format('Y-m'));
+        $paid = Order::where('paid_at', '>=', $periodStart)->get(['paid_at', 'total_price'])
+            ->groupBy(fn ($order) => $order->paid_at->format('Y-m'))
+            ->map(fn ($group) => round((float) $group->sum('total_price'), 2));
 
         $chartData = [
-            'labels' => $months->pluck('label')->values(),
-            'monthly_orders' => $monthlyOrderCounts,
-            'monthly_revenue' => $monthlyRevenue,
-            'order_status' => $statusCounts,
-            'user_roles' => $userRoleCounts,
+            'labels' => $months->map(fn (Carbon $m) => $m->format('M'))->values(),
+            'orders' => $months->map(fn (Carbon $m) => $placed->get($m->format('Y-m'), 0))->values(),
+            'money' => $months->map(fn (Carbon $m) => $paid->get($m->format('Y-m'), 0))->values(),
+            'status' => Order::selectRaw('status, count(*) as total')->groupBy('status')->pluck('total', 'status'),
         ];
 
-        return view('superadmin.dashboard', compact('stats', 'recent_users', 'recent_orders', 'recent_pending_uploads', 'recent_audit_logs', 'chartData'));
+        return view('superadmin.dashboard', compact('queues', 'kpis', 'totals', 'recentOrders', 'recentAudits', 'chartData'));
     }
 
-    public function auditLogs()
+    public function auditLogs(Request $request)
     {
-        $logs = AuditLog::with('user')->latest()->paginate(25);
+        $area = (string) $request->query('area', '');
+        $actorId = $request->integer('actor') ?: null;
 
-        return view('superadmin.audit-logs.index', compact('logs'));
+        $logs = AuditLog::with('user')
+            ->when($area !== '', fn ($query) => $query->where(fn ($q) => $q->where('action', 'like', $area.'.%')->orWhere('action', 'like', '%.'.$area.'.%')))
+            ->when($actorId, fn ($query) => $query->where('user_id', $actorId))
+            ->latest()
+            ->paginate(25)
+            ->withQueryString();
+
+        // Filter options built from what's actually in the log.
+        $areas = AuditLog::query()->distinct()->pluck('action')
+            ->map(fn ($action) => explode('.', $action)[1] ?? explode('.', $action)[0])
+            ->unique()->sort()->values();
+        $actors = User::whereIn('id', AuditLog::query()->distinct()->whereNotNull('user_id')->pluck('user_id'))->orderBy('name')->get(['id', 'name']);
+
+        return view('superadmin.audit-logs.index', compact('logs', 'areas', 'actors', 'area', 'actorId'));
     }
 }

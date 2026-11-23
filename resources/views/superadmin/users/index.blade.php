@@ -1,21 +1,30 @@
-@section('page-title', 'Users')
-
-<x-superadmin-layout>
-    <div class="space-y-6">
+<x-superadmin-layout title="Users & roles">
+    <div class="space-y-5">
         <div class="flex flex-wrap items-end justify-between gap-4">
-            <div><p class="brand-badge">Access control</p><h1 class="display-heading mt-3 text-3xl text-stone-950">Team members</h1><p class="mt-1 text-sm text-stone-600">Manage platform access without leaving this page.</p></div>
+            <div><p class="brand-badge">People</p><h1 class="display-heading mt-3 text-3xl text-stone-950">Users &amp; roles</h1><p class="mt-1 text-sm text-stone-600">Find any member, change their access level, or add a new team member.</p></div>
             <a href="{{ route('superadmin.users.index', ['modal' => 'create-user']) }}" class="backend-btn-primary"><svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>Add member</a>
         </div>
 
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <x-admin-tabs route="superadmin.users.index" :current="$tab" :counts="$tabCounts" :keep="array_filter(['q' => $search])"
+                :tabs="['all' => 'Everyone', 'team' => 'Admin team', 'user' => 'Members']" />
+            <form method="GET" class="flex w-full gap-2 sm:w-auto" role="search">
+                <input type="hidden" name="tab" value="{{ $tab }}">
+                <label for="user-search" class="sr-only">Search users</label>
+                <input id="user-search" type="search" name="q" value="{{ $search }}" placeholder="Name or email" class="backend-field sm:w-64">
+                <button class="btn-secondary px-4">Search</button>
+            </form>
+        </div>
+
         @if($users->count())
-            <div class="backend-table-wrap"><div class="flex items-center justify-between border-b border-stone-100 px-5 py-4"><p class="text-sm font-bold text-stone-950">All members</p><p class="text-xs font-semibold text-stone-500">{{ $users->total() }} total</p></div><div class="overflow-x-auto"><table class="backend-table min-w-[760px]"><thead><tr><th class="backend-th">Member</th><th class="backend-th">Role</th><th class="backend-th">Joined</th><th class="backend-th text-right">Actions</th></tr></thead><tbody>
+            <div class="backend-table-wrap"><div class="flex items-center justify-between border-b border-stone-100 px-5 py-4"><p class="text-sm font-bold text-stone-950">{{ $search !== '' ? 'Results for “'.$search.'”' : ['all' => 'Everyone', 'team' => 'Admin team', 'user' => 'Members'][$tab] }}</p><p class="text-xs font-semibold text-stone-500">{{ $users->total() }} total</p></div><div class="overflow-x-auto"><table class="backend-table min-w-[660px]"><thead><tr><th class="backend-th">Member</th><th class="backend-th">Role</th><th class="backend-th">Orders</th><th class="backend-th">Joined</th><th class="backend-th text-right">Actions</th></tr></thead><tbody>
                 @foreach($users as $user)
                     @php($role = $user->roles->first()?->name ?? 'user')
-                    <tr class="backend-row"><td class="backend-td"><p class="font-bold text-stone-950">{{ $user->name }}</p><p class="mt-0.5 text-xs text-stone-500">{{ $user->email }}</p></td><td class="backend-td"><span class="inline-flex rounded-full px-2.5 py-1 text-xs font-bold {{ $role === 'super-admin' ? 'bg-red-50 text-red-700' : ($role === 'admin' ? 'bg-brand-tint text-brand-deep' : 'bg-stone-100 text-stone-600') }}">{{ $role === 'super-admin' ? 'Super admin' : ucfirst($role) }}</span></td><td class="backend-td text-stone-500">{{ $user->created_at->format('M j, Y') }}</td><td class="backend-td"><div class="flex justify-end gap-3"><a class="text-sm font-bold text-brand-deep hover:text-brand-deep" href="{{ route('superadmin.users.index', ['modal' => 'edit-user-'.$user->id]) }}">Edit</a>@if($user->id !== auth()->id())<a class="text-sm font-bold text-red-600 hover:text-red-800" href="{{ route('superadmin.users.index', ['modal' => 'delete-user-'.$user->id]) }}">Delete</a>@endif</div></td></tr>
+                    <tr class="backend-row"><td class="backend-td"><p class="font-bold text-stone-950">{{ $user->name }}</p><p class="mt-0.5 text-xs text-stone-500">{{ $user->email }}</p></td><td class="backend-td"><span class="inline-flex rounded-full px-2.5 py-1 text-xs font-bold {{ $role === 'super-admin' ? 'bg-red-50 text-red-700' : ($role === 'admin' ? 'bg-brand-tint text-brand-deep' : 'bg-stone-100 text-stone-600') }}">{{ $role === 'super-admin' ? 'Super admin' : ucfirst($role) }}</span></td><td class="backend-td text-stone-600">{{ $user->orders_count }}</td><td class="backend-td text-stone-500">{{ $user->created_at->format('M j, Y') }}</td><td class="backend-td"><div class="flex justify-end gap-3"><a class="text-sm font-bold text-brand-deep hover:text-brand-deep" href="{{ route('superadmin.users.index', ['modal' => 'edit-user-'.$user->id]) }}">Edit</a>@if($user->id !== auth()->id())<a class="text-sm font-bold text-red-600 hover:text-red-800" href="{{ route('superadmin.users.index', ['modal' => 'delete-user-'.$user->id]) }}">Delete</a>@endif</div></td></tr>
                 @endforeach
             </tbody></table></div></div>
         @else
-            <div class="backend-card py-14 text-center"><h2 class="text-lg font-extrabold text-stone-950">Add your first team member</h2><p class="mt-1 text-sm text-stone-600">Give the right people the right level of access.</p><a href="{{ route('superadmin.users.index', ['modal' => 'create-user']) }}" class="mt-5 backend-btn-primary">Add member</a></div>
+            <div class="backend-card py-14 text-center"><h2 class="text-lg font-extrabold text-stone-950">{{ $search !== '' ? "No one matches “{$search}”" : 'No one here yet' }}</h2><p class="mt-1 text-sm text-stone-600">Try another name or email, or add a new member.</p><a href="{{ route('superadmin.users.index', ['modal' => 'create-user']) }}" class="mt-5 backend-btn-primary">Add member</a></div>
         @endif
         <div>{{ $users->links() }}</div>
     </div>

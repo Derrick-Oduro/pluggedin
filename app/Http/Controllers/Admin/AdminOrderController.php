@@ -109,6 +109,8 @@ class AdminOrderController extends Controller
             'tracking_number' => $request->input('tracking_number'),
             'shipped_at' => $newStatus === 'shipped' ? now() : $order->shipped_at,
             'completed_at' => $newStatus === 'completed' ? now() : $order->completed_at,
+            // Confirming an online order by hand means the admin has checked it was paid.
+            'paid_at' => ($previousStatus === 'pending' && $newStatus === 'confirmed' && ! $order->isCashOnDelivery() && ! $order->paid_at) ? now() : $order->paid_at,
         ]);
 
         if ($previousStatus !== $newStatus) {

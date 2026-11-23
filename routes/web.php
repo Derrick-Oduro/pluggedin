@@ -183,8 +183,11 @@ Route::prefix('superadmin')->middleware(['auth', 'superadmin'])->name('superadmi
     Route::get('/dashboard', [SuperAdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/audit-logs', [SuperAdminDashboardController::class, 'auditLogs'])->name('audit-logs.index');
     Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
+    Route::patch('/contact-messages/{message}', [ContactMessageController::class, 'update'])->name('contact-messages.update');
     Route::get('/trade-ins', [TradeInManagementController::class, 'index'])->name('trade-ins.index');
+    Route::patch('/trade-ins/{tradeIn}/review', [TradeInManagementController::class, 'review'])->name('trade-ins.review');
     Route::patch('/trade-ins/{tradeIn}/quote', [TradeInManagementController::class, 'quote'])->name('trade-ins.quote');
+    Route::patch('/trade-ins/{tradeIn}/complete', [TradeInManagementController::class, 'complete'])->name('trade-ins.complete');
     Route::get('/shops', [ShopManagementController::class, 'index'])->name('shops.index');
     Route::patch('/shops/{shop}', [ShopManagementController::class, 'update'])->name('shops.update');
     Route::get('/product-reports', [ProductReportManagementController::class, 'index'])->name('product-reports.index');
@@ -197,6 +200,7 @@ Route::prefix('superadmin')->middleware(['auth', 'superadmin'])->name('superadmi
 
     // Category Management
     Route::resource('categories', CategoryManagementController::class)->except(['show']);
+
 
     // Marketing and Homepage Controls
     Route::get('/marketing', [SuperAdminMarketingController::class, 'index'])->name('marketing.index');

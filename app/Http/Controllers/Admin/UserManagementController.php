@@ -14,11 +14,42 @@ class UserManagementController extends Controller
     /**
      * Display a listing of users.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('roles')->orderBy('created_at', 'desc')->paginate(20);
+        $search = trim((string) $request->query('q', ''));
+        $tabCounts = [
+            'all' => User::count(),
+            'team' => User::role(['admin', 'super-admin'])->count(),
+            'user' => User::role('user')->count(),
+        ];
+        $tab = array_key_exists($request->query('tab'), $tabCounts) ? $request->query('tab') : 'all';
 
-        return view('superadmin.users.index', compact('users'));
+        $users = User::with('roles')
+            ->withCount('orders')
+            ->when($tab === 'team', fn ($q) => $q->role(['admin', 'super-admin']))
+            ->when($tab === 'user', fn ($q) => $q->role('user'))
+            ->when($search !== '', fn ($q) => $q->where(fn ($w) => $w->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%")))
+            ->orderBy('created_at', 'desc')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('superadmin.users.index', compact('users', 'tab', 'tabCounts', 'search'));
+    }
+
+    /** Stops changes that would leave nobody able to run the platform. */
+    private function guardSuperAdmins(User $user, ?string $newRole, string $verb): ?string
+    {
+        $isSuper = $user->hasRole('super-admin');
+        $losingSuper = $isSuper && $newRole !== 'super-admin';
+
+        if ($losingSuper && $user->id === auth()->id()) {
+            return "You can't {$verb} your own super admin access. Ask another super admin to do it.";
+        }
+        if ($losingSuper && User::role('super-admin')->count() <= 1) {
+            return "{$user->name} is the only super admin. Make someone else a super admin first.";
+        }
+
+        return null;
     }
 
     /**
@@ -77,6 +108,10 @@ class UserManagementController extends Controller
             'role' => ['required', Rule::in(['user', 'admin', 'super-admin'])],
         ]);
 
+        if ($problem = $this->guardSuperAdmins($user, $request->role, 'remove')) {
+            return redirect()->route('superadmin.users.index')->with('error', $problem);
+        }
+
         $data = [
             'name' => $request->name,
             'email' => $request->email,
@@ -105,6 +140,10 @@ class UserManagementController extends Controller
         // Prevent deleting yourself
         if ($user->id === auth()->id()) {
             return back()->with('error', 'You cannot delete your own account!');
+        }
+
+        if ($problem = $this->guardSuperAdmins($user, null, 'delete')) {
+            return back()->with('error', $problem);
         }
 
         $userId = $user->id;

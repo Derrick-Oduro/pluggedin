@@ -28,9 +28,10 @@ class SuperAdminWorkflowsTest extends TestCase
         foreach (['user', 'admin', 'super-admin'] as $role) {
             Role::firstOrCreate(['name' => $role]);
         }
-        $this->owner = User::factory()->create(['name' => 'Owner One']);
+        // Fixed emails so searching "Ama" can't match a random fake address.
+        $this->owner = User::factory()->create(['name' => 'Owner One', 'email' => 'owner@example.test']);
         $this->owner->assignRole('super-admin');
-        $this->member = User::factory()->create(['name' => 'Ama Member']);
+        $this->member = User::factory()->create(['name' => 'Ama Member', 'email' => 'ama@example.test']);
         $this->member->assignRole('user');
     }
 

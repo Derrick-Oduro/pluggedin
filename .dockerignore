@@ -14,3 +14,7 @@ phpunit.xml
 public/hot
 database/*.sqlite
 storage/app/public/*
+
+# Demo catalogue (local previews only): keep its photos and data out of the live image.
+database/seeders/demo-images
+database/seeders/data

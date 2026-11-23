@@ -18,25 +18,46 @@ class BookingController extends Controller
 
     public function create(Service $service)
     {
+        abort_unless($service->is_active, 404);
+
         return view('bookings.create', compact('service'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $service = Service::findOrFail($request->input('service_id'));
+        abort_unless($service->is_active, 422, 'This service is no longer offered.');
+
+        // Only device types the service covers (any, when it lists none).
+        $allowedDevices = $service->device_types ?: array_keys(Service::DEVICE_TYPES);
+
+        $data = $request->validate([
             'service_id' => 'required|exists:services,id',
-            'device_model' => 'required|string',
-            'preferred_date' => 'required|date|after:today',
-            'notes' => 'nullable|string'
+            'device_type' => ['required', \Illuminate\Validation\Rule::in($allowedDevices)],
+            'device_model' => 'required|string|max:120',
+            'contact_phone' => ['required', 'string', 'max:40', 'regex:/^[0-9+ ()-]{9,}$/'],
+            'handover_method' => 'required|in:drop_off,pickup',
+            'pickup_location' => 'required_if:handover_method,pickup|nullable|string|max:255',
+            'preferred_date' => 'required|date|after:today|before:+3 months',
+            'notes' => [$service->type === 'diagnosis' ? 'required' : 'nullable', 'string', 'max:2000'],
+        ], [
+            'device_type.in' => 'This service isn’t available for that kind of device.',
+            'contact_phone.regex' => 'Enter a phone number we can call, e.g. 024 123 4567.',
+            'pickup_location.required_if' => 'Tell us where to collect the device.',
+            'notes.required' => 'Describe what’s wrong so we know what to check.',
         ]);
 
         $booking = Booking::create([
             'user_id' => auth()->id(),
-            'service_id' => $request->service_id,
-            'device_model' => $request->device_model,
-            'preferred_date' => $request->preferred_date,
+            'service_id' => $service->id,
+            'device_type' => $data['device_type'],
+            'device_model' => $data['device_model'],
+            'contact_phone' => $data['contact_phone'],
+            'handover_method' => $data['handover_method'],
+            'pickup_location' => $data['handover_method'] === 'pickup' ? $data['pickup_location'] : null,
+            'preferred_date' => $data['preferred_date'],
             'status' => 'pending',
-            'notes' => $request->notes
+            'notes' => $data['notes'] ?? null,
         ]);
 
         BookingStatusHistory::create([
@@ -46,7 +67,7 @@ class BookingController extends Controller
             'to_status' => 'pending',
         ]);
 
-        return redirect()->route('bookings.index')->with('success', 'Booking request submitted successfully!');
+        return redirect()->route('bookings.show', $booking)->with('success', 'Booking sent. We’ll call '.$booking->contact_phone.' to confirm the time and price.');
     }
 
     public function show(Booking $booking)

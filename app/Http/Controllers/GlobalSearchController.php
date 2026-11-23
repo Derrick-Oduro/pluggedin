@@ -93,7 +93,7 @@ class GlobalSearchController extends Controller
             }
 
             if (in_array($type, ['all', 'services'], true)) {
-                $servicesQuery = Service::query()
+                $servicesQuery = Service::active()
                     ->when($minPrice !== null, fn ($query) => $query->where('price', '>=', $minPrice))
                     ->when($maxPrice !== null, fn ($query) => $query->where('price', '<=', $maxPrice))
                     ->where(function ($query) use ($term) {

@@ -201,6 +201,13 @@ Route::prefix('superadmin')->middleware(['auth', 'superadmin'])->name('superadmi
     // Category Management
     Route::resource('categories', CategoryManagementController::class)->except(['show']);
 
+    // Repairs & services (the workshop menu)
+    Route::get('/services', [\App\Http\Controllers\Admin\ServiceManagementController::class, 'index'])->name('services.index');
+    Route::post('/services', [\App\Http\Controllers\Admin\ServiceManagementController::class, 'store'])->name('services.store');
+    Route::patch('/services/{service}', [\App\Http\Controllers\Admin\ServiceManagementController::class, 'update'])->name('services.update');
+    Route::patch('/services/{service}/toggle', [\App\Http\Controllers\Admin\ServiceManagementController::class, 'toggle'])->name('services.toggle');
+    Route::patch('/services/{service}/move', [\App\Http\Controllers\Admin\ServiceManagementController::class, 'move'])->name('services.move');
+    Route::delete('/services/{service}', [\App\Http\Controllers\Admin\ServiceManagementController::class, 'destroy'])->name('services.destroy');
 
     // Marketing and Homepage Controls
     Route::get('/marketing', [SuperAdminMarketingController::class, 'index'])->name('marketing.index');

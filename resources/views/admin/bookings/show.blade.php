@@ -29,8 +29,10 @@
                 <h2 class="text-lg font-extrabold text-stone-950 mb-3">Service Details</h2>
                 <div class="space-y-2 text-stone-600">
                     <p><span class="font-semibold text-stone-950">Service:</span> {{ $booking->service->name }}</p>
-                    <p><span class="font-semibold text-stone-950">Price:</span> <span class="text-brand-deep font-bold">GH₵{{ number_format($booking->service->price, 2) }}</span></p>
-                    <p><span class="font-semibold text-stone-950">Device Model:</span> {{ $booking->device_model }}</p>
+                    <p><span class="font-semibold text-stone-950">Price:</span> <span class="text-brand-deep font-bold">{{ $booking->service->priceLabel() }}</span></p>
+                    <p><span class="font-semibold text-stone-950">Device:</span> {{ $booking->device_model }}@if($booking->device_type) <span class="text-stone-400">({{ AppModelsService::DEVICE_TYPES[$booking->device_type] ?? $booking->device_type }})</span>@endif</p>
+                    @if($booking->contact_phone)<p><span class="font-semibold text-stone-950">Phone:</span> <a href="tel:{{ preg_replace('/[^0-9+]/', '', $booking->contact_phone) }}" class="font-bold text-brand-deep hover:underline">{{ $booking->contact_phone }}</a></p>@endif
+                    <p><span class="font-semibold text-stone-950">Handover:</span> {{ $booking->handoverLabel() }}</p>
                     <p><span class="font-semibold text-stone-950">Preferred Date:</span> {{ $booking->preferred_date->format('M d, Y') }}</p>
                 </div>
             </div>

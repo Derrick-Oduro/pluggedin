@@ -1,82 +1,85 @@
 <x-app-layout>
+    @php
+        $bookHref = fn ($service) => auth()->check() ? route('bookings.create', $service) : route('login');
+    @endphp
+
     <section class="page-shell">
-        <div class="content-wrap relative z-10">
-            <x-page-header badge="Repairs & upgrades" title="Expert service, real results" subtitle="From diagnostics to installation, every service is built to make your device faster, more reliable and longer-lasting." />
+        <div class="content-wrap relative z-10 space-y-12">
+            <x-page-header badge="Repairs & upgrades" title="Fixed on campus. Checked before it’s handed back." subtitle="Cracked screen, tired battery or a laptop that’s just slow: book it in, drop it off or have us collect it, and we confirm the price before any work starts." />
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-16">
-                @foreach($services as $service)
-                    <div class="group bg-white rounded-2xl p-8 border border-stone-200/70 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand/10 transition duration-300">
-                        <div class="flex items-start justify-between gap-3 mb-5">
-                            <div class="w-11 h-11 rounded-xl bg-brand/15 text-brand-deep flex items-center justify-center shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5.1 14.4a2.25 2.25 0 0 0-.659 1.591v3.905a1.5 1.5 0 0 0 2.56 1.06l3.683-3.683a2.25 2.25 0 0 1 1.591-.659h5.714a2.25 2.25 0 0 0 1.591-.659l1.316-1.316a2.25 2.25 0 0 0 0-3.182L12.93 3.763a2.25 2.25 0 0 0-3.18 0Z" />
-                                </svg>
-                            </div>
-                            <p class="text-3xl font-bold text-brand-deep">GH₵{{ number_format($service->price, 2) }}</p>
+            {{-- Not sure what's wrong? --}}
+            @if($diagnosis)
+                <div class="flyer-dark relative overflow-hidden rounded-3xl px-6 py-7 sm:px-10 sm:py-9">
+                    <div class="flyer-stripes pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full opacity-80"></div>
+                    <div class="pointer-events-none absolute -right-6 -top-6 h-32 w-32 rounded-full bg-stone-950"></div>
+                    <div class="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                        <div class="max-w-xl">
+                            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-brand">Not sure what’s wrong?</p>
+                            <h2 class="display-heading mt-2 text-3xl text-white sm:text-4xl">{{ $diagnosis->name }}</h2>
+                            <p class="mt-2 text-sm leading-6 text-stone-300">{{ $diagnosis->description }}</p>
+                            <p class="mt-3 text-sm font-bold text-white">{{ $diagnosis->priceLabel() }}@if($diagnosis->turnaround) <span class="font-normal text-stone-400">· {{ $diagnosis->turnaround }}</span>@endif</p>
                         </div>
-
-                        <h3 class="text-2xl font-bold mb-3 group-hover:text-brand-deep transition">{{ $service->name }}</h3>
-                        <p class="text-stone-600 mb-7 leading-relaxed">{{ $service->description }}</p>
-
-                        @auth
-                            <a href="{{ route('bookings.create', $service) }}" class="btn-primary w-full">
-                                Book Now
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" />
-                                </svg>
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}" class="btn-primary w-full">
-                                Login to Book
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" />
-                                </svg>
-                            </a>
-                        @endauth
-                    </div>
-                @endforeach
-            </div>
-
-            <!-- What to Expect -->
-            <div class="bg-white/95 rounded-2xl p-8 sm:p-12 border border-stone-200/70 shadow-sm">
-                <div class="text-center max-w-2xl mx-auto mb-10">
-                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand-deep mb-3">Process</p>
-                    <h2 class="text-3xl sm:text-4xl font-bold mb-4">What to Expect</h2>
-                    <p class="text-stone-600">A simple, transparent flow from booking to completed service.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="text-center rounded-xl bg-brand-tint/70 p-6 border border-brand/20">
-                        <div class="mx-auto w-12 h-12 rounded-xl bg-brand text-stone-950 flex items-center justify-center mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25m10.5-2.25v2.25M3 18.75V8.25a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 8.25v10.5A2.25 2.25 0 0 1 18.75 21H5.25A2.25 2.25 0 0 1 3 18.75Zm0-7.5h18" />
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-2">1. Book Online</h3>
-                        <p class="text-stone-600">Choose your service and preferred date.</p>
-                    </div>
-
-                    <div class="text-center rounded-xl bg-brand-tint/70 p-6 border border-brand/20">
-                        <div class="mx-auto w-12 h-12 rounded-xl bg-brand text-stone-950 flex items-center justify-center mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m6 2.25a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-2">2. Confirmation</h3>
-                        <p class="text-stone-600">We review details and confirm your booking.</p>
-                    </div>
-
-                    <div class="text-center rounded-xl bg-brand-tint/70 p-6 border border-brand/20">
-                        <div class="mx-auto w-12 h-12 rounded-xl bg-brand text-stone-950 flex items-center justify-center mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5 7.5 8.25m0 0L4.5 11.25m3-3 5.25 5.25m0 0 3-3m-3 3-3.75 3.75M7.5 8.25 12 3.75a2.121 2.121 0 0 1 3 3l-4.5 4.5m0 0L9 12.75" />
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-2">3. Professional Service</h3>
-                        <p class="text-stone-600">Expert installation, testing, and handoff.</p>
+                        <a href="{{ $bookHref($diagnosis) }}" class="btn-primary h-12 shrink-0 px-6 text-base hover:bg-white hover:text-stone-950">{{ auth()->check() ? 'Book a check-up' : 'Log in to book' }}</a>
                     </div>
                 </div>
-            </div>
+            @endif
+
+            @foreach(['Repairs' => [$repairs, 'Something broken? Pick the closest match. If it’s not listed, book a check-up.'], 'Upgrades' => [$upgrades, 'Make a working device faster. Buy the part here or bring your own, and we fit it.']] as $heading => [$list, $lead])
+                @continue($list->isEmpty())
+                <section>
+                    <div class="mb-5">
+                        <h2 class="section-title">{{ $heading }}</h2>
+                        <p class="section-subtitle mt-1 max-w-2xl">{{ $lead }}</p>
+                    </div>
+                    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                        @foreach($list as $service)
+                            <article class="flex flex-col rounded-2xl border border-stone-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-brand hover:shadow-[0_16px_35px_-24px_rgba(168,85,0,0.5)]">
+                                <div class="flex items-start justify-between gap-3">
+                                    <h3 class="text-lg font-extrabold leading-snug text-stone-950">{{ $service->name }}</h3>
+                                    <p class="shrink-0 text-right">
+                                        @if($service->price_is_from)<span class="block text-[10px] font-bold uppercase tracking-wide text-stone-400">from</span>@endif
+                                        <span class="text-xl font-extrabold text-brand-deep">{{ (float) $service->price > 0 ? 'GH₵'.number_format($service->price, 0) : 'Free' }}</span>
+                                    </p>
+                                </div>
+                                <p class="mt-2 flex-1 text-sm leading-6 text-stone-600">{{ $service->description }}</p>
+                                <p class="mt-4 flex flex-wrap gap-2 text-[11px] font-bold">
+                                    @if($service->turnaround)<span class="rounded-full bg-stone-100 px-2.5 py-1 text-stone-700">&#9201; {{ $service->turnaround }}</span>@endif
+                                    <span class="rounded-full bg-stone-100 px-2.5 py-1 text-stone-700">{{ $service->devicesLabel() ?? 'Any device' }}</span>
+                                </p>
+                                <div class="mt-5 flex gap-2">
+                                    <a href="{{ $bookHref($service) }}" class="btn-primary h-10 flex-1 px-3 text-sm">{{ auth()->check() ? 'Book' : 'Log in to book' }}</a>
+                                    @if($service->partsCategory)
+                                        <a href="{{ route('products.index', ['category' => $service->partsCategory->slug]) }}" class="btn-secondary h-10 px-3 text-sm">Shop parts</a>
+                                    @endif
+                                </div>
+                            </article>
+                        @endforeach
+                    </div>
+                </section>
+            @endforeach
+
+            @if(! $diagnosis && $repairs->isEmpty() && $upgrades->isEmpty())
+                <x-empty-state title="Bookings are closed for now" message="Our workshop menu is being updated. Check back soon or contact us." action-label="Contact us" :action-href="route('contact')" />
+            @endif
+
+            {{-- How it works --}}
+            <section class="rounded-3xl border border-stone-200 bg-white p-6 sm:p-10">
+                <h2 class="section-title text-center">How it works</h2>
+                <ol class="mt-8 grid gap-6 md:grid-cols-4">
+                    @foreach([
+                        ['Book online', 'Pick a service and a day. Tell us the model and what’s wrong.'],
+                        ['Hand it over', 'Drop it at the PluggedIn point on campus, or we come and collect it.'],
+                        ['We confirm the price', 'We check the device and agree the final price with you before any work starts.'],
+                        ['Get it back working', 'Fixed and tested, then ready to collect or brought back to you.'],
+                    ] as $i => [$title, $text])
+                        <li class="relative rounded-2xl bg-brand-tint/70 p-5">
+                            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-stone-950 text-sm font-extrabold text-brand">{{ $i + 1 }}</span>
+                            <h3 class="mt-3 font-extrabold text-stone-950">{{ $title }}</h3>
+                            <p class="mt-1 text-sm leading-6 text-stone-600">{{ $text }}</p>
+                        </li>
+                    @endforeach
+                </ol>
+            </section>
         </div>
     </section>
 </x-app-layout>

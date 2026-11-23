@@ -11,11 +11,22 @@ class Booking extends Model
     protected $fillable = [
         'user_id',
         'service_id',
+        'device_type',
         'device_model',
+        'contact_phone',
+        'handover_method',
+        'pickup_location',
         'preferred_date',
         'status',
         'notes'
     ];
+
+    public function handoverLabel(): string
+    {
+        return $this->handover_method === 'pickup'
+            ? 'We collect it'.($this->pickup_location ? ' from '.$this->pickup_location : '')
+            : 'Drop-off at the PluggedIn point';
+    }
 
     protected $casts = [
         'preferred_date' => 'date',

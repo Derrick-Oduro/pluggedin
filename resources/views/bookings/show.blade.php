@@ -20,9 +20,11 @@
                         <dl class="mt-4 grid gap-4 sm:grid-cols-2">
                             @foreach([
                                 'Service' => $booking->service->name,
-                                'Price' => 'GH₵'.number_format($booking->service->price, 2),
+                                'Price' => $booking->service->priceLabel(),
                                 'Device' => $booking->device_model,
                                 'Preferred date' => $booking->preferred_date->format('M d, Y'),
+                                'Handover' => $booking->handoverLabel(),
+                                'Contact phone' => $booking->contact_phone ?: '—',
                             ] as $label => $value)
                                 <div>
                                     <dt class="text-[11px] font-extrabold uppercase tracking-[.12em] text-stone-500">{{ $label }}</dt>

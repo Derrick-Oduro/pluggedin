@@ -13,7 +13,7 @@ class HomeController extends Controller
     public function index()
     {
         $featuredProducts = Product::approved()->with('category')->latest()->take(6)->get();
-        $services = Service::all();
+        $services = Service::active()->ordered()->get();
 
         // The premium hero displays one deliberate image rather than rotating
         // through a carousel. Super Admin selects it by making it active and

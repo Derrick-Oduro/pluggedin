@@ -207,12 +207,15 @@ Route::prefix('superadmin')->middleware(['auth', 'superadmin'])->name('superadmi
     Route::post('/marketing/slides', [SuperAdminMarketingController::class, 'storeSlide'])->name('marketing.slides.store');
     Route::post('/marketing/slides/select-live', [SuperAdminMarketingController::class, 'selectLiveSlide'])->name('marketing.slides.select-live');
     Route::post('/marketing/slides/{slide}/make-live', [SuperAdminMarketingController::class, 'makeSlideLive'])->name('marketing.slides.make-live');
+    Route::post('/marketing/slides/{slide}/take-off', [SuperAdminMarketingController::class, 'takeSlideOffHomepage'])->name('marketing.slides.take-off');
     Route::patch('/marketing/slides/{slide}', [SuperAdminMarketingController::class, 'updateSlide'])->name('marketing.slides.update');
     Route::delete('/marketing/slides/{slide}', [SuperAdminMarketingController::class, 'destroySlide'])->name('marketing.slides.destroy');
     Route::post('/marketing/slides/{id}/restore', [SuperAdminMarketingController::class, 'restoreSlide'])->name('marketing.slides.restore');
 
     Route::post('/marketing/campaigns', [SuperAdminMarketingController::class, 'storeCampaign'])->name('marketing.campaigns.store');
     Route::patch('/marketing/campaigns/{campaign}', [SuperAdminMarketingController::class, 'updateCampaign'])->name('marketing.campaigns.update');
+    Route::patch('/marketing/campaigns/{campaign}/state', [SuperAdminMarketingController::class, 'changeCampaignState'])->name('marketing.campaigns.state');
+    Route::post('/marketing/campaigns/{campaign}/duplicate', [SuperAdminMarketingController::class, 'duplicateCampaign'])->name('marketing.campaigns.duplicate');
     Route::delete('/marketing/campaigns/{campaign}', [SuperAdminMarketingController::class, 'destroyCampaign'])->name('marketing.campaigns.destroy');
     Route::post('/marketing/campaigns/{id}/restore', [SuperAdminMarketingController::class, 'restoreCampaign'])->name('marketing.campaigns.restore');
 
